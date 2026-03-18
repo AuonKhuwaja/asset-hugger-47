@@ -1,43 +1,60 @@
-import { motion } from "framer-motion";
-import { Asset } from "@/lib/mock-data";
-import { StatusBadge } from "@/components/StatusBadge";
+import { type Asset } from "@/lib/mock-data";
+import { StatusBadge } from "./StatusBadge";
+import { QrCode, User, Building2 } from "lucide-react";
 
 export function AssetCard({ asset }: { asset: Asset }) {
   return (
-    <motion.div
-      whileHover={{ y: -2 }}
-      transition={{ duration: 0.15, ease: [0.2, 0, 0, 1] }}
-      className="bg-card border border-border border-top-highlight p-4 rounded-lg shadow-industrial flex flex-col gap-4 cursor-pointer hover:shadow-card-hover transition-shadow duration-150"
-    >
-      <div className="flex justify-between items-start">
-        <div className="space-y-1 min-w-0">
-          <span className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">
-            {asset.category}
-          </span>
-          <h3 className="text-base font-semibold tracking-tighter-custom leading-none truncate">
-            {asset.name}
-          </h3>
-          <code className="text-xs tabular-data text-primary">
-            ID: {asset.serialNumber}
-          </code>
+    <div className="glass-card glass-card-hover rounded-xl p-4 shadow-glass group">
+      <div className="flex items-start justify-between mb-3">
+        <div className="min-w-0">
+          <p className="text-sm font-semibold text-foreground truncate">{asset.name}</p>
+          <p className="text-xs text-muted-foreground font-mono">{asset.id}</p>
         </div>
         <StatusBadge status={asset.status} />
       </div>
 
-      <div className="grid grid-cols-2 gap-2 pt-3 border-t border-border/50">
-        <div className="text-xs">
-          <p className="text-muted-foreground">Current Value</p>
-          <p className="font-medium tabular-data">
-            ${asset.currentValue.toLocaleString()}
-          </p>
+      <div className="space-y-2 text-xs text-muted-foreground">
+        <div className="flex items-center justify-between">
+          <span>Model</span>
+          <span className="text-foreground font-medium">{asset.model}</span>
         </div>
-        <div className="text-xs">
-          <p className="text-muted-foreground">Assigned To</p>
-          <p className="font-medium truncate">
-            {asset.assignee || "Unassigned"}
-          </p>
+        <div className="flex items-center justify-between">
+          <span>Serial</span>
+          <span className="text-foreground font-mono text-[11px]">{asset.serialNumber}</span>
+        </div>
+        <div className="flex items-center justify-between">
+          <span>Category</span>
+          <span className="text-foreground">{asset.category}</span>
+        </div>
+        <div className="flex items-center justify-between">
+          <span>Value</span>
+          <span className="text-foreground tabular-data font-semibold">
+            PKR {asset.currentValue.toLocaleString()}
+          </span>
         </div>
       </div>
-    </motion.div>
+
+      <div className="mt-3 pt-3 border-t border-border/30 flex items-center justify-between text-xs">
+        {asset.assignee ? (
+          <div className="flex items-center gap-1.5 text-muted-foreground">
+            <User className="w-3.5 h-3.5" />
+            <span className="truncate">{asset.assignee}</span>
+          </div>
+        ) : (
+          <span className="text-muted-foreground italic">Unassigned</span>
+        )}
+        {asset.department && (
+          <div className="flex items-center gap-1 text-muted-foreground">
+            <Building2 className="w-3.5 h-3.5" />
+            <span>{asset.department}</span>
+          </div>
+        )}
+      </div>
+
+      <div className="mt-2 flex items-center gap-1.5 text-[10px] text-muted-foreground/60">
+        <QrCode className="w-3 h-3" />
+        <span className="font-mono">{asset.qrCode}</span>
+      </div>
+    </div>
   );
 }
