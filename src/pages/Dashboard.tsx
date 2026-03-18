@@ -2,164 +2,170 @@ import {
   Package,
   DollarSign,
   AlertTriangle,
-  Users,
   Activity,
   Wrench,
   ArrowLeftRight,
   PackagePlus,
   ArrowRight,
+  Users,
 } from "lucide-react";
 import { KpiCard } from "@/components/KpiCard";
 import { StatusBadge } from "@/components/StatusBadge";
+import { GlobeCanvas } from "@/components/GlobeCanvas";
 import { assets, departmentCosts, monthlyData, recentActivity } from "@/lib/mock-data";
 import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  Legend,
-  PieChart,
-  Pie,
-  Cell,
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
+  PieChart, Pie, Cell,
 } from "recharts";
 
 const totalValue = assets.reduce((s, a) => s + a.currentValue, 0);
 const inUseCount = assets.filter((a) => a.status === "in-use").length;
 const maintenanceCount = assets.filter((a) => a.status === "maintenance").length;
 const damagedCount = assets.filter((a) => a.status === "damaged").length;
-const utilizationRate = Math.round((inUseCount / assets.length) * 100);
 
-const pieData = departmentCosts.map((d) => ({
-  name: d.department,
-  value: d.assetCount,
-}));
+const pieData = departmentCosts.map((d) => ({ name: d.department, value: d.assetCount }));
 const PIE_COLORS = [
-  "hsl(187, 92%, 41%)", // cyan
-  "hsl(239, 84%, 67%)", // indigo
-  "hsl(142, 76%, 36%)", // green
-  "hsl(38, 92%, 50%)", // amber
-  "hsl(0, 84%, 60%)", // red
-  "hsl(280, 67%, 55%)", // purple
-  "hsl(187, 60%, 60%)", // light cyan
-  "hsl(215, 70%, 55%)", // blue
+  "hsl(213, 80%, 57%)", "hsl(258, 100%, 67%)", "hsl(142, 76%, 36%)",
+  "hsl(38, 92%, 50%)", "hsl(0, 84%, 60%)", "hsl(280, 67%, 55%)",
+  "hsl(180, 60%, 50%)", "hsl(320, 70%, 55%)",
 ];
 
 const activityIcons: Record<string, React.ElementType> = {
-  registration: PackagePlus,
-  assignment: Users,
-  maintenance: Wrench,
-  transfer: ArrowLeftRight,
-  return: ArrowRight,
+  registration: PackagePlus, assignment: Users, maintenance: Wrench,
+  transfer: ArrowLeftRight, return: ArrowRight,
+};
+
+const tooltipStyle = {
+  backgroundColor: "rgba(6, 11, 40, 0.9)",
+  border: "1px solid rgba(226, 232, 240, 0.08)",
+  borderRadius: 16,
+  color: "#e2e8f0",
+  fontSize: 12,
+  backdropFilter: "blur(16px)",
 };
 
 export default function Dashboard() {
   return (
     <div className="space-y-6">
-      {/* KPI Row */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <KpiCard
-          title="Total Asset Value"
-          value={`PKR ${totalValue.toLocaleString()}`}
-          icon={DollarSign}
-          trend={{ value: "-12.4% YTD depreciation", positive: false }}
-        />
-        <KpiCard
-          title="Total Assets"
-          value={String(assets.length)}
-          subtitle={`${inUseCount} currently assigned`}
-          icon={Package}
-          iconColor="bg-secondary/20 text-secondary"
-        />
-        <KpiCard
-          title="Under Maintenance"
-          value={String(maintenanceCount + damagedCount)}
-          subtitle={`${maintenanceCount} maintenance · ${damagedCount} damaged`}
-          icon={AlertTriangle}
-          iconColor="bg-warning/20 text-warning"
-        />
-        <KpiCard
-          title="Utilization Rate"
-          value={`${utilizationRate}%`}
-          subtitle={`${assets.length - inUseCount} idle`}
-          icon={Activity}
-          trend={{ value: "+3.2% vs last month", positive: true }}
-          iconColor="bg-success/20 text-success"
-        />
+      {/* Page title */}
+      <h2 className="text-xl font-bold text-foreground">General Statistics</h2>
+
+      {/* KPI row + Globe */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <KpiCard
+            title="Total Asset Value"
+            value={`PKR ${totalValue.toLocaleString()}`}
+            icon={DollarSign}
+            trend={{ value: "-12.4% YTD", positive: false }}
+          />
+          <KpiCard
+            title="Assets Assigned"
+            value={String(inUseCount)}
+            subtitle={`of ${assets.length} total`}
+            icon={Package}
+            iconGlow="icon-glow-purple"
+          />
+          <KpiCard
+            title="Under Maintenance"
+            value={String(maintenanceCount + damagedCount)}
+            subtitle={`${maintenanceCount} maint · ${damagedCount} damaged`}
+            icon={AlertTriangle}
+            iconGlow="icon-glow-orange"
+          />
+          <KpiCard
+            title="Total Assets"
+            value={String(assets.length)}
+            subtitle={`${Math.round((inUseCount / assets.length) * 100)}% utilization`}
+            icon={Activity}
+            trend={{ value: "+3.2% vs last month", positive: true }}
+            iconGlow="icon-glow-green"
+          />
+        </div>
+
+        {/* Globe */}
+        <div className="hidden lg:block relative">
+          <div className="globe-glow top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+          <div className="w-full h-[300px]">
+            <GlobeCanvas />
+          </div>
+        </div>
+      </div>
+
+      {/* Department Table */}
+      <div className="vision-card p-6">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground mb-4">Assets by Department</h3>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-border/20">
+                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">Department</th>
+                <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-muted-foreground">Assets</th>
+                <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-muted-foreground">Value</th>
+                <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-muted-foreground">Utilization %</th>
+              </tr>
+            </thead>
+            <tbody>
+              {departmentCosts.map((d) => (
+                <tr key={d.department} className="border-b border-border/10 hover:bg-muted/10 transition-colors">
+                  <td className="px-4 py-3 font-medium">{d.department}</td>
+                  <td className="px-4 py-3 text-right tabular-data">{d.assetCount}</td>
+                  <td className="px-4 py-3 text-right tabular-data">PKR {d.totalValue.toLocaleString()}</td>
+                  <td className="px-4 py-3 text-right">
+                    <div className="flex items-center justify-end gap-2">
+                      <div className="w-16 h-1.5 bg-muted rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-gradient-to-r from-primary to-primary/60 rounded-full"
+                          style={{ width: `${Math.min(95, 50 + Math.random() * 40)}%` }}
+                        />
+                      </div>
+                      <span className="tabular-data text-xs font-medium">{Math.round(50 + Math.random() * 40)}%</span>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Bar Chart */}
-        <div className="lg:col-span-2 glass-card rounded-xl p-5 shadow-glass">
-          <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-4">
-            Monthly Cost Analysis
-          </h2>
+        <div className="lg:col-span-2 vision-card p-6">
+          <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground mb-4">Monthly Cost Analysis</h3>
           <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={monthlyData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(217, 33%, 25%)" />
-                <XAxis dataKey="month" stroke="hsl(215, 20%, 55%)" fontSize={12} />
-                <YAxis stroke="hsl(215, 20%, 55%)" fontSize={12} tickFormatter={(v) => `${v / 1000}k`} />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: "hsl(217, 33%, 17%)",
-                    border: "1px solid hsl(217, 33%, 30%)",
-                    borderRadius: 12,
-                    color: "hsl(210, 40%, 98%)",
-                    fontSize: 12,
-                    backdropFilter: "blur(12px)",
-                  }}
-                  formatter={(value: number) => [`PKR ${value.toLocaleString()}`, undefined]}
-                />
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(226,232,240,0.06)" />
+                <XAxis dataKey="month" stroke="#718096" fontSize={12} />
+                <YAxis stroke="#718096" fontSize={12} tickFormatter={(v) => `${v / 1000}k`} />
+                <Tooltip contentStyle={tooltipStyle} formatter={(value: number) => [`PKR ${value.toLocaleString()}`, undefined]} />
                 <Legend wrapperStyle={{ fontSize: 12 }} />
-                <Bar dataKey="maintenance" fill="hsl(187, 92%, 41%)" name="Maintenance" radius={[6, 6, 0, 0]} />
-                <Bar dataKey="depreciation" fill="hsl(239, 84%, 67%)" name="Depreciation" radius={[6, 6, 0, 0]} />
-                <Bar dataKey="repairs" fill="hsl(38, 92%, 50%)" name="Repairs" radius={[6, 6, 0, 0]} />
+                <Bar dataKey="maintenance" fill="hsl(213, 80%, 57%)" name="Maintenance" radius={[8, 8, 0, 0]} />
+                <Bar dataKey="depreciation" fill="hsl(258, 100%, 67%)" name="Depreciation" radius={[8, 8, 0, 0]} />
+                <Bar dataKey="repairs" fill="hsl(38, 92%, 50%)" name="Repairs" radius={[8, 8, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
 
         {/* Pie Chart */}
-        <div className="glass-card rounded-xl p-5 shadow-glass">
-          <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-4">
-            Department Distribution
-          </h2>
-          <div className="h-56">
+        <div className="vision-card p-6">
+          <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground mb-4">Category Distribution</h3>
+          <div className="h-52">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
-                <Pie
-                  data={pieData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={50}
-                  outerRadius={80}
-                  paddingAngle={3}
-                  dataKey="value"
-                >
-                  {pieData.map((_, idx) => (
-                    <Cell key={idx} fill={PIE_COLORS[idx % PIE_COLORS.length]} />
-                  ))}
+                <Pie data={pieData} cx="50%" cy="50%" innerRadius={45} outerRadius={75} paddingAngle={3} dataKey="value">
+                  {pieData.map((_, i) => <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />)}
                 </Pie>
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: "hsl(217, 33%, 17%)",
-                    border: "1px solid hsl(217, 33%, 30%)",
-                    borderRadius: 12,
-                    color: "hsl(210, 40%, 98%)",
-                    fontSize: 12,
-                  }}
-                  formatter={(value: number, name: string) => [`${value} assets`, name]}
-                />
+                <Tooltip contentStyle={tooltipStyle} formatter={(value: number, name: string) => [`${value} assets`, name]} />
               </PieChart>
             </ResponsiveContainer>
           </div>
-          <div className="grid grid-cols-2 gap-1.5 mt-2">
+          <div className="grid grid-cols-2 gap-1.5 mt-3">
             {pieData.map((d, i) => (
-              <div key={d.name} className="flex items-center gap-1.5 text-xs text-muted-foreground">
+              <div key={d.name} className="flex items-center gap-2 text-xs text-muted-foreground">
                 <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: PIE_COLORS[i] }} />
                 <span className="truncate">{d.name}</span>
               </div>
@@ -169,23 +175,19 @@ export default function Dashboard() {
       </div>
 
       {/* Recent Activity */}
-      <div className="glass-card rounded-xl p-5 shadow-glass">
-        <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-4">
-          Recent Activity
-        </h2>
+      <div className="vision-card p-6">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground mb-4">Recent Activity</h3>
         <div className="space-y-3">
           {recentActivity.map((item) => {
             const Icon = activityIcons[item.type] || Activity;
             return (
-              <div key={item.id} className="flex items-center gap-4 p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors">
-                <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+              <div key={item.id} className="flex items-center gap-4 p-3 rounded-xl hover:bg-muted/10 transition-colors">
+                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
                   <Icon className="w-4 h-4 text-primary" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-foreground">{item.action}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {item.asset} · by {item.user}
-                  </p>
+                  <p className="text-sm font-semibold text-foreground">{item.action}</p>
+                  <p className="text-xs text-muted-foreground">{item.asset} · {item.user}</p>
                 </div>
                 <span className="text-xs text-muted-foreground whitespace-nowrap">{item.time}</span>
               </div>
