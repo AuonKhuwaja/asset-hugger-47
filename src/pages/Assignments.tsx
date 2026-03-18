@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { transferRecords, assets, employees, departments } from "@/lib/mock-data";
+import { transferRecords, assets, employees } from "@/lib/mock-data";
 import { StatusBadge } from "@/components/StatusBadge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -37,15 +37,19 @@ export default function Assignments() {
 
   return (
     <div className="space-y-6">
-      {/* Form */}
-      <div className="glass-card rounded-xl p-5 shadow-glass">
-        <div className="flex gap-2 mb-5">
+      <h2 className="text-xl font-bold text-foreground">Assignments & Transfers</h2>
+
+      {/* Form Card */}
+      <div className="vision-card p-6 animate-fade-in">
+        <div className="flex gap-2 mb-6">
           {tabs.map((t) => (
             <button
               key={t.key}
               onClick={() => setTab(t.key)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                tab === t.key ? "bg-primary/20 text-primary border border-primary/30" : "text-muted-foreground hover:text-foreground hover:bg-muted/30"
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all ${
+                tab === t.key
+                  ? "bg-gradient-to-r from-primary/20 to-primary/10 text-primary border border-primary/30"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted/20"
               }`}
             >
               <t.icon className="w-4 h-4" />
@@ -58,59 +62,59 @@ export default function Assignments() {
           {tab === "issue" && (
             <>
               <div className="space-y-1.5">
-                <Label>Select Asset</Label>
-                <select className="flex h-10 w-full rounded-md border border-input bg-muted/50 px-3 py-2 text-sm text-foreground">
+                <Label className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Select Asset</Label>
+                <select className="select-vision">
                   <option value="">Choose asset...</option>
                   {availableAssets.map((a) => <option key={a.id} value={a.id}>{a.name} ({a.id})</option>)}
                 </select>
               </div>
               <div className="space-y-1.5">
-                <Label>Assign To</Label>
-                <select className="flex h-10 w-full rounded-md border border-input bg-muted/50 px-3 py-2 text-sm text-foreground">
+                <Label className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Assign To</Label>
+                <select className="select-vision">
                   <option value="">Choose employee...</option>
                   {employees.map((e) => <option key={e} value={e}>{e}</option>)}
                 </select>
               </div>
               <div className="space-y-1.5">
-                <Label>Issue Date</Label>
-                <Input type="date" className="bg-muted/50" />
+                <Label className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Issue Date</Label>
+                <Input type="date" className="bg-[rgba(6,11,40,0.6)] border-border/30 rounded-xl" />
               </div>
             </>
           )}
           {tab === "transfer" && (
             <>
               <div className="space-y-1.5">
-                <Label>Select Asset</Label>
-                <select className="flex h-10 w-full rounded-md border border-input bg-muted/50 px-3 py-2 text-sm text-foreground">
+                <Label className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Select Asset</Label>
+                <select className="select-vision">
                   <option value="">Choose asset...</option>
                   {assignedAssets.map((a) => <option key={a.id} value={a.id}>{a.name} → {a.assignee}</option>)}
                 </select>
               </div>
               <div className="space-y-1.5">
-                <Label>Transfer To</Label>
-                <select className="flex h-10 w-full rounded-md border border-input bg-muted/50 px-3 py-2 text-sm text-foreground">
+                <Label className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Transfer To</Label>
+                <select className="select-vision">
                   <option value="">Choose employee...</option>
                   {employees.map((e) => <option key={e} value={e}>{e}</option>)}
                 </select>
               </div>
               <div className="space-y-1.5">
-                <Label>Transfer Date</Label>
-                <Input type="date" className="bg-muted/50" />
+                <Label className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Transfer Date</Label>
+                <Input type="date" className="bg-[rgba(6,11,40,0.6)] border-border/30 rounded-xl" />
               </div>
             </>
           )}
           {tab === "return" && (
             <>
               <div className="space-y-1.5">
-                <Label>Select Asset</Label>
-                <select className="flex h-10 w-full rounded-md border border-input bg-muted/50 px-3 py-2 text-sm text-foreground">
+                <Label className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Select Asset</Label>
+                <select className="select-vision">
                   <option value="">Choose asset...</option>
                   {assignedAssets.map((a) => <option key={a.id} value={a.id}>{a.name} ({a.assignee})</option>)}
                 </select>
               </div>
               <div className="space-y-1.5">
-                <Label>Condition on Return</Label>
-                <select className="flex h-10 w-full rounded-md border border-input bg-muted/50 px-3 py-2 text-sm text-foreground">
+                <Label className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Condition</Label>
+                <select className="select-vision">
                   <option value="Good">Good</option>
                   <option value="Fair">Fair</option>
                   <option value="Poor">Poor</option>
@@ -118,13 +122,13 @@ export default function Assignments() {
                 </select>
               </div>
               <div className="space-y-1.5">
-                <Label>Return Date</Label>
-                <Input type="date" className="bg-muted/50" />
+                <Label className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Return Date</Label>
+                <Input type="date" className="bg-[rgba(6,11,40,0.6)] border-border/30 rounded-xl" />
               </div>
             </>
           )}
           <div className="md:col-span-3">
-            <Button type="submit" className="mt-2">
+            <Button type="submit" className="mt-2 bg-gradient-to-r from-primary to-primary/80 font-bold rounded-xl">
               {tab === "issue" ? "Issue Equipment" : tab === "transfer" ? "Initiate Transfer" : "Process Return"}
             </Button>
           </div>
@@ -132,36 +136,26 @@ export default function Assignments() {
       </div>
 
       {/* Table */}
-      <div className="glass-card rounded-xl shadow-glass overflow-hidden">
-        <div className="p-4 border-b border-border/30 flex items-center justify-between">
-          <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Assignment History</h2>
+      <div className="vision-card overflow-hidden">
+        <div className="p-5 border-b border-border/10 flex items-center justify-between">
+          <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground">Assignment History</h3>
           <div className="relative w-64">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <input
-              type="text"
-              placeholder="Search..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-9 pr-3 py-2 bg-muted/50 border border-border rounded-lg text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/50"
-            />
+            <input type="text" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} className="w-full pl-9 pr-3 py-2 rounded-xl bg-muted/20 border border-border/20 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30" />
           </div>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-border/50">
-                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">ID</th>
-                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">Asset</th>
-                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">Type</th>
-                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">From</th>
-                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">To</th>
-                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">Date</th>
-                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">Status</th>
+              <tr className="border-b border-border/10">
+                {["ID", "Asset", "Type", "From", "To", "Date", "Status"].map((h) => (
+                  <th key={h} className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">{h}</th>
+                ))}
               </tr>
             </thead>
             <tbody>
               {filtered.map((t) => (
-                <tr key={t.id} className="border-b border-border/30 hover:bg-muted/20 transition-colors">
+                <tr key={t.id} className="border-b border-border/10 hover:bg-muted/10 transition-colors">
                   <td className="px-4 py-3 font-mono text-xs text-muted-foreground">{t.id}</td>
                   <td className="px-4 py-3 font-medium">{t.assetName}</td>
                   <td className="px-4 py-3 capitalize text-muted-foreground">{t.type}</td>
