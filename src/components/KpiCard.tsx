@@ -1,5 +1,4 @@
-import { motion } from "framer-motion";
-import { LucideIcon } from "lucide-react";
+import { type LucideIcon, TrendingUp, TrendingDown } from "lucide-react";
 
 interface KpiCardProps {
   title: string;
@@ -7,40 +6,28 @@ interface KpiCardProps {
   subtitle?: string;
   icon: LucideIcon;
   trend?: { value: string; positive: boolean };
+  iconColor?: string;
 }
 
-export function KpiCard({ title, value, subtitle, icon: Icon, trend }: KpiCardProps) {
+export function KpiCard({ title, value, subtitle, icon: Icon, trend, iconColor }: KpiCardProps) {
   return (
-    <motion.div
-      whileHover={{ y: -2 }}
-      transition={{ duration: 0.15, ease: [0.2, 0, 0, 1] }}
-      className="bg-card border border-border border-top-highlight rounded-lg p-4 shadow-industrial"
-    >
+    <div className="glass-card glass-card-hover rounded-xl p-5 shadow-glass">
       <div className="flex items-start justify-between">
         <div className="space-y-1">
-          <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">
-            {title}
-          </p>
-          <p className="text-2xl font-bold tracking-tighter-custom tabular-data">
-            {value}
-          </p>
-          {subtitle && (
-            <p className="text-xs text-muted-foreground">{subtitle}</p>
-          )}
+          <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">{title}</p>
+          <p className="text-2xl font-bold tabular-data text-foreground">{value}</p>
+          {subtitle && <p className="text-xs text-muted-foreground">{subtitle}</p>}
           {trend && (
-            <p
-              className={`text-xs font-medium tabular-data ${
-                trend.positive ? "text-success" : "text-destructive"
-              }`}
-            >
-              {trend.value}
-            </p>
+            <div className={`flex items-center gap-1 text-xs font-medium ${trend.positive ? "text-success" : "text-destructive"}`}>
+              {trend.positive ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+              <span>{trend.value}</span>
+            </div>
           )}
         </div>
-        <div className="p-2 rounded-md bg-secondary">
-          <Icon className="w-5 h-5 text-muted-foreground" />
+        <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${iconColor || "bg-primary/15 text-primary"}`}>
+          <Icon className="w-5 h-5" />
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }

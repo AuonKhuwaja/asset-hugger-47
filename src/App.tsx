@@ -6,10 +6,12 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AppLayout } from "@/components/AppLayout";
 import Dashboard from "@/pages/Dashboard";
 import Assets from "@/pages/Assets";
-import Transfers from "@/pages/Transfers";
+import AddAsset from "@/pages/AddAsset";
+import Assignments from "@/pages/Assignments";
 import Maintenance from "@/pages/Maintenance";
 import Billing from "@/pages/Billing";
 import Reports from "@/pages/Reports";
+import Settings from "@/pages/Settings";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,10 +26,12 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/assets" element={<Assets />} />
-            <Route path="/transfers" element={<Transfers />} />
+            <Route path="/assets/add" element={<AddAsset />} />
+            <Route path="/assignments" element={<Assignments />} />
             <Route path="/maintenance" element={<Maintenance />} />
             <Route path="/billing" element={<Billing />} />
             <Route path="/reports" element={<Reports />} />
+            <Route path="/settings" element={<Settings />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AppLayout>
