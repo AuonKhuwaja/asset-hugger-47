@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { KpiCard } from "@/components/KpiCard";
 import { StatusBadge } from "@/components/StatusBadge";
-import { GlobeCanvas } from "@/components/GlobeCanvas";
+import { AssetTrackerCanvas } from "@/components/AssetTrackerCanvas";
 import { assets, departmentCosts, monthlyData, recentActivity } from "@/lib/mock-data";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
@@ -83,11 +83,11 @@ export default function Dashboard() {
           />
         </div>
 
-        {/* Globe */}
+        {/* Asset Tracker Animation */}
         <div className="hidden lg:block relative">
           <div className="globe-glow top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
           <div className="w-full h-[300px]">
-            <GlobeCanvas />
+            <AssetTrackerCanvas />
           </div>
         </div>
       </div>
