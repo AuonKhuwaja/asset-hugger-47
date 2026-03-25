@@ -4,18 +4,19 @@ interface AssetNode {
   label: string;
   color: string;
   statusColor: string;
-  angle: number;
-  orbitRadius: number;
-  speed: number;
-  size: number;
+  // Fixed position as percentage of canvas
+  px: number;
+  py: number;
+  icon: "laptop" | "printer" | "forklift" | "projector" | "mobile" | "monitor";
 }
 
 const NODES: AssetNode[] = [
-  { label: "Laptop", color: "#4299e1", statusColor: "#4299e1", angle: 0, orbitRadius: 0.32, speed: 0.006, size: 0.07 },
-  { label: "Printer", color: "#48bb78", statusColor: "#48bb78", angle: 2.1, orbitRadius: 0.36, speed: 0.004, size: 0.06 },
-  { label: "Forklift", color: "#f56565", statusColor: "#f56565", angle: 4.2, orbitRadius: 0.34, speed: 0.005, size: 0.06 },
-  { label: "Projector", color: "#ecc94b", statusColor: "#ecc94b", angle: 1.05, orbitRadius: 0.28, speed: 0.007, size: 0.055 },
-  { label: "Mobile", color: "#9f7aea", statusColor: "#9f7aea", angle: 3.5, orbitRadius: 0.30, speed: 0.0055, size: 0.055 },
+  { label: "Laptop", color: "#4299e1", statusColor: "#4299e1", px: 0.15, py: 0.18, icon: "laptop" },
+  { label: "Printer", color: "#48bb78", statusColor: "#48bb78", px: 0.82, py: 0.22, icon: "printer" },
+  { label: "Forklift", color: "#f56565", statusColor: "#f56565", px: 0.12, py: 0.72, icon: "forklift" },
+  { label: "Projector", color: "#ecc94b", statusColor: "#ecc94b", px: 0.78, py: 0.68, icon: "projector" },
+  { label: "Mobile", color: "#9f7aea", statusColor: "#9f7aea", px: 0.5, py: 0.12, icon: "mobile" },
+  { label: "Monitor", color: "#06b6d4", statusColor: "#06b6d4", px: 0.85, py: 0.45, icon: "monitor" },
 ];
 
 export function AssetTrackerCanvas() {
@@ -41,23 +42,163 @@ export function AssetTrackerCanvas() {
     const W = () => canvas.offsetWidth;
     const H = () => canvas.offsetHeight;
 
-    // QR code grid pattern
-    const qrGrid = (() => {
-      const cells: boolean[][] = [];
-      const size = 9;
-      for (let r = 0; r < size; r++) {
-        cells[r] = [];
-        for (let c = 0; c < size; c++) {
-          // Corner markers
-          if ((r < 3 && c < 3) || (r < 3 && c >= size - 3) || (r >= size - 3 && c < 3)) {
-            cells[r][c] = true;
-          } else {
-            cells[r][c] = Math.random() > 0.45;
-          }
-        }
+    // --- Icon drawing functions ---
+    const drawLaptopIcon = (x: number, y: number, s: number, color: string) => {
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1.5;
+      ctx.lineJoin = "round";
+      // Screen
+      const sw = s * 0.7, sh = s * 0.45;
+      ctx.beginPath();
+      ctx.rect(x - sw / 2, y - sh / 2 - s * 0.08, sw, sh);
+      ctx.stroke();
+      // Base
+      ctx.beginPath();
+      ctx.moveTo(x - sw / 2 - s * 0.1, y + sh / 2 - s * 0.08);
+      ctx.lineTo(x + sw / 2 + s * 0.1, y + sh / 2 - s * 0.08);
+      ctx.stroke();
+      // Screen content line
+      ctx.strokeStyle = color + "66";
+      ctx.beginPath();
+      ctx.moveTo(x - sw / 4, y - s * 0.12);
+      ctx.lineTo(x + sw / 4, y - s * 0.12);
+      ctx.stroke();
+    };
+
+    const drawPrinterIcon = (x: number, y: number, s: number, color: string) => {
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1.5;
+      const bw = s * 0.6, bh = s * 0.35;
+      // Body
+      ctx.beginPath();
+      ctx.rect(x - bw / 2, y - bh / 2, bw, bh);
+      ctx.stroke();
+      // Paper tray top
+      const pw = s * 0.4;
+      ctx.beginPath();
+      ctx.rect(x - pw / 2, y - bh / 2 - s * 0.18, pw, s * 0.18);
+      ctx.stroke();
+      // Paper output
+      ctx.beginPath();
+      ctx.moveTo(x - pw / 2, y + bh / 2);
+      ctx.lineTo(x - pw / 2, y + bh / 2 + s * 0.15);
+      ctx.lineTo(x + pw / 2, y + bh / 2 + s * 0.15);
+      ctx.lineTo(x + pw / 2, y + bh / 2);
+      ctx.stroke();
+      // Detail dot
+      ctx.beginPath();
+      ctx.arc(x + bw / 4, y - bh / 4, 2, 0, Math.PI * 2);
+      ctx.fillStyle = color;
+      ctx.fill();
+    };
+
+    const drawForkliftIcon = (x: number, y: number, s: number, color: string) => {
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1.5;
+      // Body
+      ctx.beginPath();
+      ctx.rect(x - s * 0.2, y - s * 0.3, s * 0.4, s * 0.35);
+      ctx.stroke();
+      // Forks
+      ctx.beginPath();
+      ctx.moveTo(x + s * 0.2, y + s * 0.05);
+      ctx.lineTo(x + s * 0.4, y + s * 0.05);
+      ctx.lineTo(x + s * 0.4, y + s * 0.3);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(x + s * 0.2, y + s * 0.15);
+      ctx.lineTo(x + s * 0.35, y + s * 0.15);
+      ctx.lineTo(x + s * 0.35, y + s * 0.3);
+      ctx.stroke();
+      // Wheels
+      ctx.beginPath();
+      ctx.arc(x - s * 0.1, y + s * 0.1, s * 0.07, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(x + s * 0.1, y + s * 0.1, s * 0.07, 0, Math.PI * 2);
+      ctx.stroke();
+    };
+
+    const drawProjectorIcon = (x: number, y: number, s: number, color: string) => {
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1.5;
+      // Body
+      const bw = s * 0.65, bh = s * 0.3;
+      ctx.beginPath();
+      ctx.rect(x - bw / 2, y - bh / 2, bw, bh);
+      ctx.stroke();
+      // Lens
+      ctx.beginPath();
+      ctx.arc(x + bw / 2, y, s * 0.12, 0, Math.PI * 2);
+      ctx.stroke();
+      // Light beam
+      ctx.strokeStyle = color + "44";
+      ctx.beginPath();
+      ctx.moveTo(x + bw / 2 + s * 0.12, y - s * 0.08);
+      ctx.lineTo(x + bw / 2 + s * 0.35, y - s * 0.2);
+      ctx.moveTo(x + bw / 2 + s * 0.12, y + s * 0.08);
+      ctx.lineTo(x + bw / 2 + s * 0.35, y + s * 0.2);
+      ctx.stroke();
+    };
+
+    const drawMobileIcon = (x: number, y: number, s: number, color: string) => {
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1.5;
+      const pw = s * 0.3, ph = s * 0.55;
+      // Body rounded
+      const r = 3;
+      ctx.beginPath();
+      ctx.moveTo(x - pw / 2 + r, y - ph / 2);
+      ctx.lineTo(x + pw / 2 - r, y - ph / 2);
+      ctx.quadraticCurveTo(x + pw / 2, y - ph / 2, x + pw / 2, y - ph / 2 + r);
+      ctx.lineTo(x + pw / 2, y + ph / 2 - r);
+      ctx.quadraticCurveTo(x + pw / 2, y + ph / 2, x + pw / 2 - r, y + ph / 2);
+      ctx.lineTo(x - pw / 2 + r, y + ph / 2);
+      ctx.quadraticCurveTo(x - pw / 2, y + ph / 2, x - pw / 2, y + ph / 2 - r);
+      ctx.lineTo(x - pw / 2, y - ph / 2 + r);
+      ctx.quadraticCurveTo(x - pw / 2, y - ph / 2, x - pw / 2 + r, y - ph / 2);
+      ctx.closePath();
+      ctx.stroke();
+      // Screen line
+      ctx.beginPath();
+      ctx.moveTo(x - pw / 2, y - ph / 2 + ph * 0.15);
+      ctx.lineTo(x + pw / 2, y - ph / 2 + ph * 0.15);
+      ctx.stroke();
+      // Home button
+      ctx.beginPath();
+      ctx.arc(x, y + ph / 2 - s * 0.06, 2, 0, Math.PI * 2);
+      ctx.stroke();
+    };
+
+    const drawMonitorIcon = (x: number, y: number, s: number, color: string) => {
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1.5;
+      const mw = s * 0.65, mh = s * 0.4;
+      ctx.beginPath();
+      ctx.rect(x - mw / 2, y - mh / 2 - s * 0.05, mw, mh);
+      ctx.stroke();
+      // Stand
+      ctx.beginPath();
+      ctx.moveTo(x, y + mh / 2 - s * 0.05);
+      ctx.lineTo(x, y + mh / 2 + s * 0.1);
+      ctx.stroke();
+      // Base
+      ctx.beginPath();
+      ctx.moveTo(x - s * 0.15, y + mh / 2 + s * 0.1);
+      ctx.lineTo(x + s * 0.15, y + mh / 2 + s * 0.1);
+      ctx.stroke();
+    };
+
+    const drawIcon = (x: number, y: number, s: number, color: string, icon: string) => {
+      switch (icon) {
+        case "laptop": drawLaptopIcon(x, y, s, color); break;
+        case "printer": drawPrinterIcon(x, y, s, color); break;
+        case "forklift": drawForkliftIcon(x, y, s, color); break;
+        case "projector": drawProjectorIcon(x, y, s, color); break;
+        case "mobile": drawMobileIcon(x, y, s, color); break;
+        case "monitor": drawMonitorIcon(x, y, s, color); break;
       }
-      return cells;
-    })();
+    };
 
     const drawRoundedRect = (x: number, y: number, w: number, h: number, r: number) => {
       ctx.beginPath();
@@ -73,142 +214,77 @@ export function AssetTrackerCanvas() {
       ctx.closePath();
     };
 
-    const drawQRPanel = (cx: number, cy: number, size: number) => {
-      // Panel background
-      drawRoundedRect(cx - size / 2, cy - size / 2, size, size, 8);
-      ctx.fillStyle = "rgba(10, 15, 46, 0.85)";
-      ctx.fill();
-      ctx.strokeStyle = "rgba(66, 153, 225, 0.3)";
-      ctx.lineWidth = 1.5;
-      ctx.stroke();
+    const drawAssetNode = (x: number, y: number, node: AssetNode, idx: number) => {
+      const w = W(), h = H();
+      const cx = w * 0.5, cy = h * 0.48;
 
-      // QR cells
-      const padding = size * 0.15;
-      const inner = size - padding * 2;
-      const cellSize = inner / 9;
-      for (let r = 0; r < 9; r++) {
-        for (let c = 0; c < 9; c++) {
-          if (qrGrid[r][c]) {
-            ctx.fillStyle = "rgba(66, 153, 225, 0.7)";
-            ctx.fillRect(
-              cx - size / 2 + padding + c * cellSize + 1,
-              cy - size / 2 + padding + r * cellSize + 1,
-              cellSize - 2, cellSize - 2
-            );
-          }
-        }
-      }
-
-      // Scanning beam
-      const beamY = cy - size / 2 + padding + (inner * ((Math.sin(t * 1.5) + 1) / 2));
-      ctx.beginPath();
-      ctx.moveTo(cx - size / 2 + padding, beamY);
-      ctx.lineTo(cx + size / 2 - padding, beamY);
-      const beamGrad = ctx.createLinearGradient(cx - size / 2 + padding, 0, cx + size / 2 - padding, 0);
-      beamGrad.addColorStop(0, "transparent");
-      beamGrad.addColorStop(0.3, "rgba(66, 153, 225, 0.8)");
-      beamGrad.addColorStop(0.7, "rgba(66, 153, 225, 0.8)");
-      beamGrad.addColorStop(1, "transparent");
-      ctx.strokeStyle = beamGrad;
-      ctx.lineWidth = 2;
-      ctx.stroke();
-
-      // Beam glow
-      const glowGrad = ctx.createRadialGradient(cx, beamY, 0, cx, beamY, size * 0.4);
-      glowGrad.addColorStop(0, "rgba(66, 153, 225, 0.12)");
-      glowGrad.addColorStop(1, "transparent");
-      ctx.fillStyle = glowGrad;
-      ctx.fillRect(cx - size / 2, beamY - size * 0.3, size, size * 0.6);
-
-      // Label
-      ctx.fillStyle = "rgba(160, 174, 192, 0.7)";
-      ctx.font = "600 9px 'Plus Jakarta Sans', sans-serif";
-      ctx.textAlign = "center";
-      ctx.fillText("QR SCANNER", cx, cy + size / 2 + 14);
-    };
-
-    const drawAssetNode = (
-      x: number, y: number, node: AssetNode, w: number, h: number, pulse: number
-    ) => {
-      // Connection line to center
-      const cxCenter = w * 0.5;
-      const cyCenter = h * 0.48;
-
-      // Dashed line
+      // Dashed connection line to center
       ctx.beginPath();
       ctx.setLineDash([4, 4]);
-      ctx.moveTo(cxCenter, cyCenter);
+      ctx.moveTo(cx, cy);
       ctx.lineTo(x, y);
-      const lineAlpha = 0.08 + Math.sin(t * 2 + node.angle) * 0.06;
+      const lineAlpha = 0.08 + Math.sin(t * 2 + idx * 1.2) * 0.06;
       ctx.strokeStyle = `rgba(66, 153, 225, ${lineAlpha})`;
       ctx.lineWidth = 1;
       ctx.stroke();
       ctx.setLineDash([]);
 
-      // Pulsing data packet along line
-      const packetT = (Math.sin(t * 1.5 + node.angle * 2) + 1) / 2;
-      const packetX = cxCenter + (x - cxCenter) * packetT;
-      const packetY = cyCenter + (y - cyCenter) * packetT;
+      // Pulsing data packet
+      const packetT = (Math.sin(t * 1.5 + idx * 2) + 1) / 2;
+      const packetX = cx + (x - cx) * packetT;
+      const packetY = cy + (y - cy) * packetT;
       ctx.beginPath();
       ctx.arc(packetX, packetY, 2.5, 0, Math.PI * 2);
       ctx.fillStyle = node.color;
       ctx.fill();
 
-      // Node card
-      const cardW = 80;
-      const cardH = 34;
-      drawRoundedRect(x - cardW / 2, y - cardH / 2, cardW, cardH, 6);
-      ctx.fillStyle = "rgba(10, 15, 46, 0.9)";
+      // Glow behind icon
+      const glowR = 22 + Math.sin(t * 2 + idx) * 3;
+      const glow = ctx.createRadialGradient(x, y, 0, x, y, glowR);
+      glow.addColorStop(0, node.color + "22");
+      glow.addColorStop(1, "transparent");
+      ctx.fillStyle = glow;
+      ctx.beginPath();
+      ctx.arc(x, y, glowR, 0, Math.PI * 2);
       ctx.fill();
-      ctx.strokeStyle = `${node.color}44`;
+
+      // Icon circle background
+      ctx.beginPath();
+      ctx.arc(x, y, 18, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(10, 15, 46, 0.92)";
+      ctx.fill();
+      ctx.strokeStyle = node.color + "66";
       ctx.lineWidth = 1.2;
       ctx.stroke();
 
-      // Status dot with pulse
-      const dotX = x - cardW / 2 + 12;
-      const dotY = y - 3;
+      // Draw the device icon
+      drawIcon(x, y, 32, node.color, node.icon);
 
       // Pulse ring
-      const pulseAlpha = 0.3 * (1 - pulse % 1);
-      const pulseR = 4 + (pulse % 1) * 8;
-      ctx.beginPath();
-      ctx.arc(dotX, dotY, pulseR, 0, Math.PI * 2);
-      ctx.strokeStyle = `${node.statusColor}${Math.round(pulseAlpha * 255).toString(16).padStart(2, '0')}`;
-      ctx.lineWidth = 1;
-      ctx.stroke();
-
-      // Solid dot
-      ctx.beginPath();
-      ctx.arc(dotX, dotY, 3, 0, Math.PI * 2);
-      ctx.fillStyle = node.statusColor;
-      ctx.fill();
-
-      // Lines (simulated content bars)
-      ctx.fillStyle = "rgba(160, 174, 192, 0.4)";
-      ctx.fillRect(x - cardW / 2 + 22, y - 7, 38, 3);
-      ctx.fillStyle = "rgba(160, 174, 192, 0.25)";
-      ctx.fillRect(x - cardW / 2 + 22, y, 28, 3);
-
-      // Label
-      ctx.fillStyle = node.color;
-      ctx.font = "600 9px 'Plus Jakarta Sans', sans-serif";
-      ctx.textAlign = "center";
-      ctx.fillText(node.label, x, y + cardH / 2 + 12);
+      const pulseAlpha = 0.3 * (1 - (t * 0.8 + idx) % 2 / 2);
+      const pulseR = 18 + ((t * 0.8 + idx) % 2) * 12;
+      if (pulseAlpha > 0) {
+        ctx.beginPath();
+        ctx.arc(x, y, pulseR, 0, Math.PI * 2);
+        ctx.strokeStyle = `${node.statusColor}${Math.round(Math.max(0, pulseAlpha) * 255).toString(16).padStart(2, '0')}`;
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      }
     };
 
     const drawOrbitRing = (cx: number, cy: number, radius: number) => {
       ctx.beginPath();
-      ctx.ellipse(cx, cy, radius, radius * 0.45, -0.15, 0, Math.PI * 2);
+      ctx.ellipse(cx, cy, radius, radius * 0.55, 0, 0, Math.PI * 2);
       ctx.strokeStyle = "rgba(66, 153, 225, 0.07)";
       ctx.lineWidth = 1;
       ctx.setLineDash([3, 6]);
       ctx.stroke();
       ctx.setLineDash([]);
 
-      // Spinning bright point on ring
-      const spinAngle = t * 0.8;
+      // Spinning bright point
+      const spinAngle = t * 0.6;
       const px = cx + Math.cos(spinAngle) * radius;
-      const py = cy + Math.sin(spinAngle) * radius * 0.45;
+      const py = cy + Math.sin(spinAngle) * radius * 0.55;
       ctx.beginPath();
       ctx.arc(px, py, 3, 0, Math.PI * 2);
       ctx.fillStyle = "rgba(66, 153, 225, 0.6)";
@@ -226,59 +302,52 @@ export function AssetTrackerCanvas() {
 
     const drawCenterHub = (cx: number, cy: number) => {
       // Outer glow
-      const glow = ctx.createRadialGradient(cx, cy, 0, cx, cy, 50);
-      glow.addColorStop(0, "rgba(66, 153, 225, 0.15)");
-      glow.addColorStop(0.5, "rgba(66, 153, 225, 0.05)");
+      const glow = ctx.createRadialGradient(cx, cy, 0, cx, cy, 55);
+      glow.addColorStop(0, "rgba(66, 153, 225, 0.18)");
+      glow.addColorStop(0.4, "rgba(99, 102, 241, 0.08)");
       glow.addColorStop(1, "transparent");
       ctx.fillStyle = glow;
-      ctx.fillRect(cx - 60, cy - 60, 120, 120);
+      ctx.fillRect(cx - 65, cy - 65, 130, 130);
 
-      // Hub circle
-      ctx.beginPath();
-      ctx.arc(cx, cy, 18, 0, Math.PI * 2);
-      ctx.fillStyle = "rgba(10, 15, 46, 0.95)";
+      // Hub rounded square
+      drawRoundedRect(cx - 22, cy - 22, 44, 44, 12);
+      const hubGrad = ctx.createLinearGradient(cx - 22, cy - 22, cx + 22, cy + 22);
+      hubGrad.addColorStop(0, "rgba(66, 153, 225, 0.7)");
+      hubGrad.addColorStop(1, "rgba(99, 102, 241, 0.7)");
+      ctx.fillStyle = hubGrad;
       ctx.fill();
-      ctx.strokeStyle = "rgba(66, 153, 225, 0.4)";
-      ctx.lineWidth = 1.5;
+      ctx.strokeStyle = "rgba(66, 153, 225, 0.3)";
+      ctx.lineWidth = 1;
       ctx.stroke();
 
-      // Inner icon (crosshair-like)
-      ctx.strokeStyle = "rgba(66, 153, 225, 0.7)";
-      ctx.lineWidth = 1.5;
-      // Horizontal
-      ctx.beginPath();
-      ctx.moveTo(cx - 8, cy);
-      ctx.lineTo(cx + 8, cy);
-      ctx.stroke();
-      // Vertical
-      ctx.beginPath();
-      ctx.moveTo(cx, cy - 8);
-      ctx.lineTo(cx, cy + 8);
-      ctx.stroke();
+      // WiFi/signal icon inside hub
+      ctx.strokeStyle = "rgba(255,255,255,0.9)";
+      ctx.lineWidth = 2;
       // Center dot
       ctx.beginPath();
-      ctx.arc(cx, cy, 2.5, 0, Math.PI * 2);
-      ctx.fillStyle = "#4299e1";
+      ctx.arc(cx, cy + 4, 2, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(255,255,255,0.9)";
       ctx.fill();
+      // Arcs
+      for (let i = 1; i <= 3; i++) {
+        ctx.beginPath();
+        ctx.arc(cx, cy + 4, 6 * i, -Math.PI * 0.75, -Math.PI * 0.25);
+        ctx.strokeStyle = `rgba(255,255,255,${0.9 - i * 0.2})`;
+        ctx.stroke();
+      }
 
       // Rotating scan arc
       ctx.beginPath();
-      ctx.arc(cx, cy, 24, t * 2, t * 2 + 1.2);
-      ctx.strokeStyle = "rgba(66, 153, 225, 0.25)";
+      ctx.arc(cx, cy, 30, t * 2, t * 2 + 1);
+      ctx.strokeStyle = "rgba(66, 153, 225, 0.2)";
       ctx.lineWidth = 2;
       ctx.stroke();
-
-      ctx.fillStyle = "rgba(160, 174, 192, 0.5)";
-      ctx.font = "700 8px 'Plus Jakarta Sans', sans-serif";
-      ctx.textAlign = "center";
-      ctx.fillText("HUB", cx, cy + 32);
     };
 
     const drawStatusTicker = (w: number, h: number) => {
-      const tickerY = h - 22;
+      const tickerY = h - 24;
       const tickerH = 20;
 
-      // Background bar
       drawRoundedRect(w * 0.1, tickerY, w * 0.8, tickerH, 10);
       ctx.fillStyle = "rgba(10, 15, 46, 0.85)";
       ctx.fill();
@@ -300,64 +369,14 @@ export function AssetTrackerCanvas() {
       items.forEach((item, i) => {
         const ix = startX + spacing * i;
         const iy = tickerY + tickerH / 2;
-
-        // Dot
         ctx.beginPath();
         ctx.arc(ix, iy, 3, 0, Math.PI * 2);
         ctx.fillStyle = item.color;
         ctx.fill();
-
-        // Text
         ctx.fillStyle = "rgba(160, 174, 192, 0.8)";
         ctx.textAlign = "left";
         ctx.fillText(`${item.label}: ${item.count}`, ix + 7, iy + 3);
       });
-    };
-
-    // Floating laptop with asset card
-    const drawFloatingLaptop = (cx: number, cy: number, size: number) => {
-      const floatOffset = Math.sin(t * 0.8) * 4;
-      const ly = cy + floatOffset;
-
-      // Laptop base (trapezoid-like)
-      const baseW = size * 1.1;
-      const baseH = size * 0.08;
-      ctx.beginPath();
-      ctx.moveTo(cx - baseW / 2 + 4, ly + size * 0.3 + baseH);
-      ctx.lineTo(cx + baseW / 2 - 4, ly + size * 0.3 + baseH);
-      ctx.lineTo(cx + baseW / 2 - 10, ly + size * 0.3);
-      ctx.lineTo(cx - baseW / 2 + 10, ly + size * 0.3);
-      ctx.closePath();
-      ctx.fillStyle = "rgba(160, 174, 192, 0.25)";
-      ctx.fill();
-
-      // Screen
-      const screenW = size * 0.85;
-      const screenH = size * 0.55;
-      drawRoundedRect(cx - screenW / 2, ly - screenH / 2 - 5, screenW, screenH, 4);
-      ctx.fillStyle = "rgba(10, 15, 46, 0.95)";
-      ctx.fill();
-      ctx.strokeStyle = "rgba(237, 186, 52, 0.5)";
-      ctx.lineWidth = 1.5;
-      ctx.stroke();
-
-      // Screen content lines
-      const contentX = cx - screenW / 2 + 8;
-      const contentY = ly - screenH / 2 + 3;
-      // Title bar
-      ctx.fillStyle = "rgba(160, 174, 192, 0.5)";
-      ctx.fillRect(contentX, contentY, screenW * 0.5, 3);
-      // Content lines
-      ctx.fillStyle = "rgba(160, 174, 192, 0.3)";
-      ctx.fillRect(contentX, contentY + 7, screenW * 0.65, 2.5);
-      ctx.fillRect(contentX, contentY + 13, screenW * 0.45, 2.5);
-      // Status indicator
-      ctx.beginPath();
-      ctx.arc(contentX + 3, contentY + 21, 3, 0, Math.PI * 2);
-      ctx.fillStyle = "#48bb78";
-      ctx.fill();
-      ctx.fillStyle = "rgba(72, 187, 120, 0.3)";
-      ctx.fillRect(contentX + 10, contentY + 19.5, screenW * 0.35, 3);
     };
 
     const draw = () => {
@@ -377,27 +396,22 @@ export function AssetTrackerCanvas() {
       ctx.fillRect(0, 0, w, h);
 
       // Orbit rings
-      const orbitR = Math.min(w, h) * 0.35;
+      const orbitR = Math.min(w, h) * 0.38;
       drawOrbitRing(cx, cy, orbitR);
-      drawOrbitRing(cx, cy, orbitR * 0.7);
+      drawOrbitRing(cx, cy, orbitR * 0.65);
 
       // Center hub
       drawCenterHub(cx, cy);
 
-      // QR panel (offset to one side)
-      drawQRPanel(cx + w * 0.22, cy - h * 0.12, Math.min(w, h) * 0.18);
-
-      // Floating laptop
-      drawFloatingLaptop(cx - w * 0.2, cy + h * 0.08, Math.min(w, h) * 0.28);
-
-      // Orbiting asset nodes
-      for (const node of NODES) {
-        const a = node.angle + t * node.speed * 60;
-        const r = Math.min(w, h) * node.orbitRadius;
-        const nx = cx + Math.cos(a) * r;
-        const ny = cy + Math.sin(a) * r * 0.5; // elliptical
-        const pulse = t * 1.5 + node.angle;
-        drawAssetNode(nx, ny, node, w, h, pulse);
+      // Asset nodes at fixed positions (no overlap)
+      for (let i = 0; i < NODES.length; i++) {
+        const node = NODES[i];
+        // Slight float animation without causing overlap
+        const floatX = Math.sin(t * 0.5 + i * 1.5) * 3;
+        const floatY = Math.cos(t * 0.4 + i * 1.8) * 3;
+        const nx = w * node.px + floatX;
+        const ny = h * node.py + floatY;
+        drawAssetNode(nx, ny, node, i);
       }
 
       // Status ticker
