@@ -116,7 +116,7 @@
 
 /* ── Main background gradient ── */
 .bg-vision {
-  background: linear-gradient(127.09deg, #060b20 0%, #0a0f2e 50%, #060b20 100%);
+  background: linear-gradient(135deg, hsl(222 47% 9%) 0%, hsl(224 40% 13%) 40%, hsl(228 35% 11%) 100%);
 }
 .light .bg-vision {
   background: linear-gradient(135deg, hsl(220 20% 97%) 0%, hsl(220 25% 94%) 50%, hsl(220 20% 97%) 100%);
@@ -124,8 +124,8 @@
 
 /* ── Glass card ── */
 .vision-card {
-  background: linear-gradient(127.09deg, rgba(6, 11, 40, 0.74) 19.41%, rgba(10, 14, 35, 0.71) 76.65%);
-  border: 1.5px solid rgba(226, 232, 240, 0.06);
+  background: linear-gradient(135deg, hsl(223 37% 15% / 0.8) 0%, hsl(225 32% 13% / 0.75) 100%);
+  border: 1.5px solid hsl(215 20% 60% / 0.08);
   border-radius: 1.25rem;
   backdrop-filter: blur(24px);
 }
@@ -139,8 +139,8 @@
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .vision-card-hover:hover {
-  border-color: rgba(66, 153, 225, 0.2);
-  box-shadow: 0 8px 32px rgba(66, 153, 225, 0.08);
+  border-color: hsl(213 94% 58% / 0.18);
+  box-shadow: 0 8px 32px hsl(213 94% 58% / 0.1);
   transform: translateY(-2px);
 }
 .light .vision-card-hover:hover {
@@ -150,12 +150,12 @@
 
 /* ── Sidebar gradient ── */
 .bg-sidebar-vision {
-  background: linear-gradient(160deg,
-    hsl(220 50% 14%) 0%,
-    hsl(215 60% 12%) 25%,
-    hsl(230 45% 10%) 50%,
-    hsl(245 40% 13%) 75%,
-    hsl(220 50% 9%) 100%
+  background: linear-gradient(170deg,
+    hsl(224 42% 15%) 0%,
+    hsl(220 38% 12%) 30%,
+    hsl(230 35% 11%) 60%,
+    hsl(240 30% 13%) 85%,
+    hsl(224 42% 10%) 100%
   );
 }
 .light .bg-sidebar-vision {
@@ -165,6 +165,28 @@
     hsl(230 35% 95%) 65%,
     hsl(245 25% 96%) 100%
   );
+}
+
+/* ── Sidebar active pill ── */
+.sidebar-active {
+  background: linear-gradient(90deg, hsl(213 94% 58% / 0.15), hsl(213 94% 58% / 0.05));
+  border-radius: 12px;
+}
+
+/* ── Navbar glass ── */
+.navbar-glass {
+  background: hsl(222 47% 11% / 0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid hsl(215 20% 60% / 0.08);
+}
+.light .navbar-glass {
+  background: rgba(255, 255, 255, 0.85);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+/* ── Dark input background ── */
+.input-dark {
+  background: hsl(223 37% 15% / 0.7);
 }
 
 /* ── Sidebar active pill ── */
