@@ -6,53 +6,53 @@
 
 @layer base {
   :root {
-    /* Vision UI Pro inspired deep navy palette */
-    --background: 230 58% 8%;
-    --foreground: 210 40% 98%;
+    /* Refined dark palette — warmer navy with better contrast */
+    --background: 222 47% 11%;
+    --foreground: 213 31% 91%;
 
-    --card: 228 40% 16%;
-    --card-foreground: 210 40% 98%;
+    --card: 223 37% 15%;
+    --card-foreground: 213 31% 91%;
 
-    --popover: 228 40% 16%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 223 37% 15%;
+    --popover-foreground: 213 31% 91%;
 
-    --primary: 213 80% 57%;
-    --primary-foreground: 230 58% 8%;
+    --primary: 213 94% 58%;
+    --primary-foreground: 222 47% 8%;
 
-    --secondary: 258 100% 67%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 258 90% 66%;
+    --secondary-foreground: 213 31% 91%;
 
-    --muted: 228 40% 20%;
-    --muted-foreground: 215 20% 65%;
+    --muted: 223 30% 19%;
+    --muted-foreground: 215 20% 60%;
 
-    --accent: 213 80% 57%;
-    --accent-foreground: 230 58% 8%;
+    --accent: 213 94% 58%;
+    --accent-foreground: 222 47% 8%;
 
     --destructive: 0 84% 60%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 213 31% 91%;
 
-    --border: 228 30% 22%;
-    --input: 228 30% 22%;
-    --ring: 213 80% 57%;
+    --border: 222 20% 24%;
+    --input: 222 25% 20%;
+    --ring: 213 94% 58%;
 
     --radius: 0.75rem;
 
-    /* Sidebar - very dark navy */
-    --sidebar-background: 232 50% 12%;
-    --sidebar-foreground: 215 20% 65%;
-    --sidebar-primary: 213 80% 57%;
-    --sidebar-primary-foreground: 230 58% 8%;
-    --sidebar-accent: 233 45% 20%;
-    --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 228 30% 18%;
-    --sidebar-ring: 213 80% 57%;
+    /* Sidebar */
+    --sidebar-background: 224 42% 12%;
+    --sidebar-foreground: 215 20% 60%;
+    --sidebar-primary: 213 94% 58%;
+    --sidebar-primary-foreground: 222 47% 8%;
+    --sidebar-accent: 223 35% 22%;
+    --sidebar-accent-foreground: 213 31% 91%;
+    --sidebar-border: 222 20% 20%;
+    --sidebar-ring: 213 94% 58%;
 
     --success: 142 76% 36%;
-    --success-foreground: 210 40% 98%;
+    --success-foreground: 213 31% 91%;
     --warning: 38 92% 50%;
-    --warning-foreground: 230 58% 8%;
-    --info: 213 80% 57%;
-    --info-foreground: 210 40% 98%;
+    --warning-foreground: 222 47% 8%;
+    --info: 213 94% 58%;
+    --info-foreground: 213 31% 91%;
   }
 
   /* Light mode */
