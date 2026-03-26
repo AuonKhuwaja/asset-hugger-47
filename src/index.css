@@ -195,16 +195,6 @@
   border-radius: 12px;
 }
 
-/* ── Navbar glass ── */
-.navbar-glass {
-  background: rgba(10, 15, 46, 0.8);
-  backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(226, 232, 240, 0.06);
-}
-.light .navbar-glass {
-  background: rgba(255, 255, 255, 0.85);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-}
 /* ── Glow icon container ── */
 .icon-glow {
   background: linear-gradient(135deg, hsl(213 80% 57%), hsl(213 80% 42%));
