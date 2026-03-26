@@ -6,53 +6,53 @@
 
 @layer base {
   :root {
-    /* Vision UI Pro inspired deep navy palette */
-    --background: 230 58% 8%;
-    --foreground: 210 40% 98%;
+    /* Refined dark palette — warmer navy with better contrast */
+    --background: 222 47% 11%;
+    --foreground: 213 31% 91%;
 
-    --card: 228 40% 16%;
-    --card-foreground: 210 40% 98%;
+    --card: 223 37% 15%;
+    --card-foreground: 213 31% 91%;
 
-    --popover: 228 40% 16%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 223 37% 15%;
+    --popover-foreground: 213 31% 91%;
 
-    --primary: 213 80% 57%;
-    --primary-foreground: 230 58% 8%;
+    --primary: 213 94% 58%;
+    --primary-foreground: 222 47% 8%;
 
-    --secondary: 258 100% 67%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 258 90% 66%;
+    --secondary-foreground: 213 31% 91%;
 
-    --muted: 228 40% 20%;
-    --muted-foreground: 215 20% 65%;
+    --muted: 223 30% 19%;
+    --muted-foreground: 215 20% 60%;
 
-    --accent: 213 80% 57%;
-    --accent-foreground: 230 58% 8%;
+    --accent: 213 94% 58%;
+    --accent-foreground: 222 47% 8%;
 
     --destructive: 0 84% 60%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 213 31% 91%;
 
-    --border: 228 30% 22%;
-    --input: 228 30% 22%;
-    --ring: 213 80% 57%;
+    --border: 222 20% 24%;
+    --input: 222 25% 20%;
+    --ring: 213 94% 58%;
 
     --radius: 0.75rem;
 
-    /* Sidebar - very dark navy */
-    --sidebar-background: 232 50% 12%;
-    --sidebar-foreground: 215 20% 65%;
-    --sidebar-primary: 213 80% 57%;
-    --sidebar-primary-foreground: 230 58% 8%;
-    --sidebar-accent: 233 45% 20%;
-    --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 228 30% 18%;
-    --sidebar-ring: 213 80% 57%;
+    /* Sidebar */
+    --sidebar-background: 224 42% 12%;
+    --sidebar-foreground: 215 20% 60%;
+    --sidebar-primary: 213 94% 58%;
+    --sidebar-primary-foreground: 222 47% 8%;
+    --sidebar-accent: 223 35% 22%;
+    --sidebar-accent-foreground: 213 31% 91%;
+    --sidebar-border: 222 20% 20%;
+    --sidebar-ring: 213 94% 58%;
 
     --success: 142 76% 36%;
-    --success-foreground: 210 40% 98%;
+    --success-foreground: 213 31% 91%;
     --warning: 38 92% 50%;
-    --warning-foreground: 230 58% 8%;
-    --info: 213 80% 57%;
-    --info-foreground: 210 40% 98%;
+    --warning-foreground: 222 47% 8%;
+    --info: 213 94% 58%;
+    --info-foreground: 213 31% 91%;
   }
 
   /* Light mode */
@@ -116,7 +116,7 @@
 
 /* ── Main background gradient ── */
 .bg-vision {
-  background: linear-gradient(127.09deg, #060b20 0%, #0a0f2e 50%, #060b20 100%);
+  background: linear-gradient(135deg, hsl(222 47% 9%) 0%, hsl(224 40% 13%) 40%, hsl(228 35% 11%) 100%);
 }
 .light .bg-vision {
   background: linear-gradient(135deg, hsl(220 20% 97%) 0%, hsl(220 25% 94%) 50%, hsl(220 20% 97%) 100%);
@@ -124,8 +124,8 @@
 
 /* ── Glass card ── */
 .vision-card {
-  background: linear-gradient(127.09deg, rgba(6, 11, 40, 0.74) 19.41%, rgba(10, 14, 35, 0.71) 76.65%);
-  border: 1.5px solid rgba(226, 232, 240, 0.06);
+  background: linear-gradient(135deg, hsl(223 37% 15% / 0.8) 0%, hsl(225 32% 13% / 0.75) 100%);
+  border: 1.5px solid hsl(215 20% 60% / 0.08);
   border-radius: 1.25rem;
   backdrop-filter: blur(24px);
 }
@@ -139,8 +139,8 @@
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .vision-card-hover:hover {
-  border-color: rgba(66, 153, 225, 0.2);
-  box-shadow: 0 8px 32px rgba(66, 153, 225, 0.08);
+  border-color: hsl(213 94% 58% / 0.18);
+  box-shadow: 0 8px 32px hsl(213 94% 58% / 0.1);
   transform: translateY(-2px);
 }
 .light .vision-card-hover:hover {
@@ -150,12 +150,12 @@
 
 /* ── Sidebar gradient ── */
 .bg-sidebar-vision {
-  background: linear-gradient(160deg,
-    hsl(220 50% 14%) 0%,
-    hsl(215 60% 12%) 25%,
-    hsl(230 45% 10%) 50%,
-    hsl(245 40% 13%) 75%,
-    hsl(220 50% 9%) 100%
+  background: linear-gradient(170deg,
+    hsl(224 42% 15%) 0%,
+    hsl(220 38% 12%) 30%,
+    hsl(230 35% 11%) 60%,
+    hsl(240 30% 13%) 85%,
+    hsl(224 42% 10%) 100%
   );
 }
 .light .bg-sidebar-vision {
@@ -169,20 +169,32 @@
 
 /* ── Sidebar active pill ── */
 .sidebar-active {
-  background: linear-gradient(90deg, rgba(66, 153, 225, 0.15), rgba(66, 153, 225, 0.05));
+  background: linear-gradient(90deg, hsl(213 94% 58% / 0.15), hsl(213 94% 58% / 0.05));
   border-radius: 12px;
 }
 
 /* ── Navbar glass ── */
 .navbar-glass {
-  background: rgba(10, 15, 46, 0.8);
-  backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(226, 232, 240, 0.06);
+  background: hsl(222 47% 11% / 0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid hsl(215 20% 60% / 0.08);
 }
 .light .navbar-glass {
   background: rgba(255, 255, 255, 0.85);
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 }
+
+/* ── Dark input background ── */
+.input-dark {
+  background: hsl(223 37% 15% / 0.7);
+}
+
+/* ── Sidebar active pill ── */
+.sidebar-active {
+  background: linear-gradient(90deg, rgba(66, 153, 225, 0.15), rgba(66, 153, 225, 0.05));
+  border-radius: 12px;
+}
+
 /* ── Glow icon container ── */
 .icon-glow {
   background: linear-gradient(135deg, hsl(213 80% 57%), hsl(213 80% 42%));
@@ -224,13 +236,6 @@
   pointer-events: none;
 }
 
-/* ── Navbar glass ── */
-.navbar-glass {
-  background: rgba(10, 15, 46, 0.8);
-  backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(226, 232, 240, 0.06);
-}
-
 /* ── Tabular numbers ── */
 .tabular-data {
   font-variant-numeric: tabular-nums;
@@ -239,7 +244,8 @@
 
 /* ── Select dark styling ── */
 .select-vision {
-  @apply flex h-10 w-full rounded-xl border border-border bg-[rgba(6,11,40,0.6)] px-3 py-2 text-sm text-foreground;
+  @apply flex h-10 w-full rounded-xl border border-border px-3 py-2 text-sm text-foreground;
+  background: hsl(var(--input));
   @apply focus:outline-none focus:ring-2 focus:ring-primary/40;
 }
 
