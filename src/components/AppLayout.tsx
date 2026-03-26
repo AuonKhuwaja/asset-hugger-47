@@ -233,6 +233,8 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
               <Bell className="w-5 h-5 text-muted-foreground" />
               <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-primary rounded-full" />
             </button>
+            {/* Theme Toggle */}
+            <ThemeToggle />
             {/* Settings */}
             <button className="p-2.5 rounded-xl hover:bg-muted/30 transition-colors">
               <Settings className="w-5 h-5 text-muted-foreground" />
