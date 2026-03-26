@@ -58,20 +58,21 @@ export default function Dashboard() {
             value={`PKR ${totalValue.toLocaleString()}`}
             icon={DollarSign}
             trend={{ value: "-12.4% YTD", positive: false }}
+            gradient="linear-gradient(135deg, #1a237e 0%, #0d47a1 50%, #1565c0 100%)"
           />
           <KpiCard
             title="Assets Assigned"
             value={String(inUseCount)}
             subtitle={`of ${assets.length} total`}
             icon={Package}
-            iconGlow="icon-glow-purple"
+            gradient="linear-gradient(135deg, #4a148c 0%, #6a1b9a 50%, #7b1fa2 100%)"
           />
           <KpiCard
             title="Under Maintenance"
             value={String(maintenanceCount + damagedCount)}
             subtitle={`${maintenanceCount} maint · ${damagedCount} damaged`}
             icon={AlertTriangle}
-            iconGlow="icon-glow-orange"
+            gradient="linear-gradient(135deg, #e65100 0%, #ef6c00 50%, #f57c00 100%)"
           />
           <KpiCard
             title="Total Assets"
@@ -79,7 +80,7 @@ export default function Dashboard() {
             subtitle={`${Math.round((inUseCount / assets.length) * 100)}% utilization`}
             icon={Activity}
             trend={{ value: "+3.2% vs last month", positive: true }}
-            iconGlow="icon-glow-green"
+            gradient="linear-gradient(135deg, #1b5e20 0%, #2e7d32 50%, #388e3c 100%)"
           />
         </div>
 
