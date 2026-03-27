@@ -12,6 +12,7 @@ import Maintenance from "@/pages/Maintenance";
 import Billing from "@/pages/Billing";
 import Reports from "@/pages/Reports";
 import Settings from "@/pages/Settings";
+import Auth from "@/pages/Auth";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -32,6 +33,7 @@ const App = () => (
             <Route path="/billing" element={<Billing />} />
             <Route path="/reports" element={<Reports />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/auth" element={<Auth />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AppLayout>
