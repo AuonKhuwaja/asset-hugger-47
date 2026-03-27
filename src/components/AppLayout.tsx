@@ -1,4 +1,4 @@
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
   Package,
@@ -17,12 +17,14 @@ import {
   Star,
   ChevronRight,
   X,
+  LogOut,
 } from "lucide-react";
 import { useState } from "react";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { useAuth } from "@/contexts/AuthContext";
 
 const navItems = [
-  { to: "/", icon: LayoutDashboard, label: "Dashboard" },
+  { to: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
   {
     label: "Assets",
     icon: Package,
@@ -39,9 +41,9 @@ const navItems = [
 ];
 
 function getBreadcrumbs(pathname: string) {
-  const crumbs = [{ label: "Home", path: "/" }];
-  if (pathname === "/") {
-    crumbs.push({ label: "Dashboard", path: "/" });
+  const crumbs = [{ label: "Home", path: "/dashboard" }];
+  if (pathname === "/dashboard") {
+    crumbs.push({ label: "Dashboard", path: "/dashboard" });
   } else if (pathname === "/assets") {
     crumbs.push({ label: "Assets", path: "/assets" });
   } else if (pathname === "/assets/add") {
@@ -65,10 +67,12 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [assetsOpen, setAssetsOpen] = useState(true);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
   const breadcrumbs = getBreadcrumbs(location.pathname);
 
   const isActive = (path: string) =>
-    path === "/" ? location.pathname === "/" : location.pathname.startsWith(path);
+    path === "/dashboard" ? location.pathname === "/dashboard" : location.pathname.startsWith(path);
 
   return (
     <div className="flex h-screen overflow-hidden">
@@ -239,10 +243,14 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             <button className="p-2.5 rounded-xl hover:bg-muted/30 transition-colors">
               <Settings className="w-5 h-5 text-muted-foreground" />
             </button>
-            {/* Sign In */}
-            <button className="flex items-center gap-2 px-4 py-2 rounded-xl bg-primary/10 border border-primary/20 text-primary text-sm font-semibold hover:bg-primary/20 transition-colors">
-              <User className="w-4 h-4" />
-              <span className="hidden sm:inline">Sign In</span>
+            {/* User & Logout */}
+            <span className="hidden sm:inline text-sm text-muted-foreground font-medium">{user?.name}</span>
+            <button
+              onClick={() => { logout(); navigate("/"); }}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive text-sm font-semibold hover:bg-destructive/20 transition-colors"
+            >
+              <LogOut className="w-4 h-4" />
+              <span className="hidden sm:inline">Logout</span>
             </button>
           </div>
         </header>
