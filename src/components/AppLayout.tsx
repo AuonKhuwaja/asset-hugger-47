@@ -180,18 +180,26 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         </nav>
 
         {/* Help Widget */}
-        <div className="p-4">
-          <div className="help-card-gradient p-5 text-center">
-            <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center mx-auto mb-3">
-              <Star className="w-5 h-5 text-white" />
-            </div>
-            <p className="text-white font-semibold text-sm mb-1">Need Help?</p>
-            <p className="text-white/70 text-xs mb-3">Check our documentation</p>
-            <button className="w-full px-4 py-2 rounded-xl bg-white/10 border border-white/20 text-white text-xs font-semibold hover:bg-white/20 transition-colors">
-              Documentation
-            </button>
-          </div>
-        </div>
+   <div className="p-4">
+  <div className="help-card-gradient flex items-center p-1 rounded-lg w-full max-w-md mx-auto">
+    
+    {/* Profile Image on the left */}
+    <div className="w-16 h-16 rounded-full overflow-hidden flex-shrink-0 mr-4">
+      <img 
+        src="/path/to/fa0f913e-a95d-4ee4-bdb0-db4f2351a884.png" 
+        alt="Profile" 
+        className="w-full h-full object-cover"
+      />
+    </div>
+    
+    {/* Name and Role */}
+    <div className="flex flex-col">
+      <p className="text-white font-semibold text-base mb-1">Ahmed Khan</p>
+      <p className="text-white/70 text-sm">Administrator</p>
+    </div>
+
+  </div>
+</div>
       </aside>
 
       {/* ── Main content ── */}
@@ -248,7 +256,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         </header>
 
         {/* Page content */}
-        <div className="flex-1 overflow-y-auto p-4 md:p-8 z-10 animate-fade-in">
+        <div className="flex-1 overflow-y-auto overflow-x-hidden p-4 md:p-8 z-10 animate-fade-in">
           {children}
         </div>
       </main>

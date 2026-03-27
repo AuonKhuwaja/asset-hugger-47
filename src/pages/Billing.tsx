@@ -46,9 +46,31 @@ export default function Billing() {
 
       {/* KPIs */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <KpiCard title="Total Maintenance" value={`PKR ${totalMaintenance.toLocaleString()}`} icon={Wrench} />
-        <KpiCard title="Total Depreciation" value={`PKR ${totalDepreciation.toLocaleString()}`} icon={TrendingDown} iconGlow="icon-glow-orange" />
-        <KpiCard title="Grand Total Cost" value={`PKR ${grandTotal.toLocaleString()}`} icon={DollarSign} iconGlow="icon-glow-purple" />
+          <KpiCard
+                    title="Total Maintenance" 
+                   value={`PKR ${totalMaintenance.toLocaleString()}`}
+                   icon={Wrench}
+                  
+                               gradient="linear-gradient(135deg, #4a148c 0%, #6a1b9a 50%, #7b1fa2 100%)"
+                  />
+                   <KpiCard
+                  title="Total Depreciation"
+                   value={`PKR ${totalDepreciation.toLocaleString()}`}
+                   icon={TrendingDown}
+                  
+                    gradient="linear-gradient(135deg, #1a237e 0%, #0d47a1 50%, #1565c0 100%)"
+                  />
+                    <KpiCard
+                  title="Grand Total Cost"
+                   value={`PKR ${totalDepreciation.toLocaleString()}`}
+                   icon={TrendingDown}
+                  
+
+                                gradient="linear-gradient(135deg, #e65100 0%, #ef6c00 50%, #f57c00 100%)"
+                  />
+        {/* <KpiCard title="Total Maintenance" value={`PKR ${totalMaintenance.toLoca  String()}`} icon={Wrench} />
+        <KpiCard title="Total Depreciation" value={`PKR ${totalDepreciation.toLocaleString()}`} icon={TrendingDown} iconGlow="icon-glow-orange" /> */}
+        {/* <KpiCard title="Grand Total Cost" value={`PKR ${grandTotal.toLocaleString()}`} icon={DollarSign} iconGlow="icon-glow-purple" /> */}
       </div>
 
       {/* Actions */}

@@ -41,10 +41,20 @@ export default function Reports() {
 
       {/* KPIs */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <KpiCard title="Total Asset Value" value={`PKR ${totalValue.toLocaleString()}`} icon={DollarSign} />
-        <KpiCard title="Purchase Cost" value={`PKR ${totalPurchase.toLocaleString()}`} icon={Package} iconGlow="icon-glow-purple" />
-        <KpiCard title="Depreciation" value={`PKR ${totalDepreciation.toLocaleString()}`} icon={TrendingDown} iconGlow="icon-glow-orange" />
-        <KpiCard title="Maintenance Cost" value={`PKR ${totalMaintenance.toLocaleString()}`} icon={BarChart3} iconGlow="icon-glow-green" />
+         <KpiCard
+                          title="Total Asset Value"
+                           value={`PKR ${totalValue.toLocaleString()}`}
+                           icon={DollarSign}
+                          
+                            gradient="linear-gradient(135deg, #1a237e 0%, #0d47a1 50%, #1565c0 100%)"
+                          />
+       
+        <KpiCard title="Purchase Cost" value={`PKR ${totalPurchase.toLocaleString()}`} icon={Package} iconGlow="icon-glow-purple"
+         gradient="linear-gradient(135deg, #4a148c 0%, #6a1b9a 50%, #7b1fa2 100%)" />
+        <KpiCard title="Depreciation" value={`PKR ${totalDepreciation.toLocaleString()}`} icon={TrendingDown} iconGlow="icon-glow-orange" 
+         gradient="linear-gradient(135deg, #e65100 0%, #ef6c00 50%, #f57c00 100%)"/>
+        <KpiCard title="Maintenance Cost" value={`PKR ${totalMaintenance.toLocaleString()}`} icon={BarChart3} iconGlow="icon-glow-green"
+       gradient="linear-gradient(135deg, #1b5e20 0%, #2e7d32 50%, #388e3c 100%)"/>
       </div>
 
       {/* Charts */}

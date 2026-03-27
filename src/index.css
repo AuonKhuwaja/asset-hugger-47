@@ -149,7 +149,7 @@
 }
 
 /* ── Sidebar gradient ── */
-.bg-sidebar-vision {
+/* .bg-sidebar-vision {
   background: linear-gradient(170deg,
     hsl(224 42% 15%) 0%,
     hsl(220 38% 12%) 30%,
@@ -157,7 +157,18 @@
     hsl(240 30% 13%) 85%,
     hsl(224 42% 10%) 100%
   );
+} */
+
+.bg-sidebar-vision {
+  background: linear-gradient(170deg,
+    hsl(210, 50%, 15%) 0%,   /* deep dark blue */
+    hsl(220, 60%, 18%) 30%,  /* darker blue */
+    hsl(287, 57%, 30%) 60%,  /* dark violet */
+    hsl(250, 60%, 22%) 85%,  /* dark purple */
+    hsl(270, 50%, 18%) 100%  /* deep dark purple */
+  );
 }
+
 .light .bg-sidebar-vision {
   background: linear-gradient(180deg,
     hsl(220 30% 96%) 0%,
@@ -245,7 +256,8 @@
 /* ── Select dark styling ── */
 .select-vision {
   @apply flex h-10 w-full rounded-xl border border-border px-3 py-2 text-sm text-foreground;
-  background: hsl(var(--input));
+  /* background: hsl(var(--input)); */
+      background-color: hsl(var(--background));
   @apply focus:outline-none focus:ring-2 focus:ring-primary/40;
 }
 

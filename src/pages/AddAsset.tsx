@@ -72,7 +72,7 @@ export default function AddAsset() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <div className="space-y-1.5">
             <Label htmlFor="name" className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Asset Name <span className="text-destructive">*</span></Label>
-            <Input id="name" placeholder="e.g. MacBook Pro 16 inch" value={form.name} onChange={(e) => update("name", e.target.value)} className="input-dark border-border/30 rounded-xl" />
+            <Input id="name" placeholder="e.g. MacBook Pro 16 inch" value={form.name} onChange={(e) => update("name", e.target.value)} className="border-border/30 rounded-xl" />
             {errors.name && <p className="text-xs text-destructive">{errors.name}</p>}
           </div>
 
@@ -85,31 +85,31 @@ export default function AddAsset() {
 
           <div className="space-y-1.5">
             <Label htmlFor="model" className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Model Number <span className="text-destructive">*</span></Label>
-            <Input id="model" placeholder="e.g. A2485" value={form.model} onChange={(e) => update("model", e.target.value)} className="input-dark border-border/30 rounded-xl" />
+            <Input id="model" placeholder="e.g. A2485" value={form.model} onChange={(e) => update("model", e.target.value)} className="border-border/30 rounded-xl" />
             {errors.model && <p className="text-xs text-destructive">{errors.model}</p>}
           </div>
 
           <div className="space-y-1.5">
             <Label htmlFor="serial" className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Serial Number <span className="text-destructive">*</span></Label>
-            <Input id="serial" placeholder="e.g. C02FW3LYMD6T" value={form.serialNumber} onChange={(e) => update("serialNumber", e.target.value)} className="input-dark border-border/30 rounded-xl" />
+            <Input id="serial" placeholder="e.g. C02FW3LYMD6T" value={form.serialNumber} onChange={(e) => update("serialNumber", e.target.value)} className="border-border/30 rounded-xl" />
             {errors.serialNumber && <p className="text-xs text-destructive">{errors.serialNumber}</p>}
           </div>
 
           <div className="space-y-1.5">
             <Label htmlFor="date" className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Purchase Date <span className="text-destructive">*</span></Label>
-            <Input id="date" type="date" value={form.purchaseDate} onChange={(e) => update("purchaseDate", e.target.value)} className="input-dark border-border/30 rounded-xl" />
+            <Input id="date" type="date" value={form.purchaseDate} onChange={(e) => update("purchaseDate", e.target.value)} className="border-border/30 rounded-xl" />
             {errors.purchaseDate && <p className="text-xs text-destructive">{errors.purchaseDate}</p>}
           </div>
 
           <div className="space-y-1.5">
             <Label htmlFor="cost" className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Purchase Cost (PKR) <span className="text-destructive">*</span></Label>
-            <Input id="cost" type="number" placeholder="e.g. 250000" value={form.purchaseCost} onChange={(e) => update("purchaseCost", e.target.value)} className="input-dark border-border/30 rounded-xl" />
+            <Input id="cost" type="number" placeholder="e.g. 250000" value={form.purchaseCost} onChange={(e) => update("purchaseCost", e.target.value)} className=" border-border/30 rounded-xl" />
             {errors.purchaseCost && <p className="text-xs text-destructive">{errors.purchaseCost}</p>}
           </div>
 
           <div className="space-y-1.5">
             <Label htmlFor="vendor" className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Vendor Name <span className="text-destructive">*</span></Label>
-            <Input id="vendor" placeholder="e.g. Apple Inc." value={form.vendor} onChange={(e) => update("vendor", e.target.value)} className="input-dark border-border/30 rounded-xl" />
+            <Input id="vendor" placeholder="e.g. Apple Inc." value={form.vendor} onChange={(e) => update("vendor", e.target.value)} className=" border-border/30 rounded-xl" />
             {errors.vendor && <p className="text-xs text-destructive">{errors.vendor}</p>}
           </div>
 
@@ -131,7 +131,7 @@ export default function AddAsset() {
           <div className="space-y-1.5">
             <Label className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">QR/Barcode Tag</Label>
             <div className="flex items-center gap-3">
-              <Input value={qrCode} readOnly className="bg-[rgba(6,11,40,0.4)] border-border/20 font-mono text-primary rounded-xl" />
+              <Input value={qrCode} readOnly className=" border-border/20 font-mono text-primary rounded-xl" />
               <div className="w-10 h-10 icon-glow flex items-center justify-center shrink-0">
                 <QrCode className="w-5 h-5 text-white" />
               </div>
@@ -151,7 +151,7 @@ export default function AddAsset() {
 
         <div className="space-y-1.5">
           <Label htmlFor="desc" className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Notes</Label>
-          <Textarea id="desc" placeholder="Additional notes..." value={form.description} onChange={(e) => update("description", e.target.value)} className="input-dark border-border/30 rounded-xl min-h-[100px]" />
+          <Textarea id="desc" placeholder="Additional notes..." value={form.description} onChange={(e) => update("description", e.target.value)} className="border-border/30 rounded-xl min-h-[100px]" />
         </div>
 
         <Button type="submit" size="lg" className="w-full md:w-auto bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 font-bold rounded-xl">
