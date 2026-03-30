@@ -18,27 +18,36 @@ import {
   ChevronRight,
   X,
   LogOut,
+  FolderOpen,
+  Building2,
+  UserCog,
 } from "lucide-react";
 import { useState } from "react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useAuth } from "@/contexts/AuthContext";
 
-const navItems = [
-  { to: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
-  {
-    label: "Assets",
-    icon: Package,
-    children: [
-      { to: "/assets", label: "All Assets", icon: Package },
-      { to: "/assets/add", label: "Add Asset", icon: PackagePlus },
-    ],
-  },
-  { to: "/assignments", icon: ArrowLeftRight, label: "Assignments" },
-  { to: "/maintenance", icon: Wrench, label: "Maintenance" },
-  { to: "/billing", icon: Receipt, label: "Billing & Charging" },
-  { to: "/reports", icon: BarChart3, label: "Reports" },
-  { to: "/settings", icon: Settings, label: "Settings" },
-];
+const getNavItems = (isAdmin: boolean, isSuperAdmin: boolean) => {
+  const items: any[] = [
+    { to: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
+    {
+      label: "Assets",
+      icon: Package,
+      children: [
+        { to: "/assets", label: "All Assets", icon: Package },
+        ...(isAdmin ? [{ to: "/assets/add", label: "Add Asset", icon: PackagePlus }] : []),
+      ],
+    },
+    { to: "/categories", icon: FolderOpen, label: "Categories" },
+    { to: "/assignments", icon: ArrowLeftRight, label: "Assignments" },
+    { to: "/maintenance", icon: Wrench, label: "Maintenance" },
+    { to: "/billing", icon: Receipt, label: "Billing & Charging" },
+    { to: "/reports", icon: BarChart3, label: "Reports" },
+    { to: "/companies", icon: Building2, label: "Companies" },
+    { to: "/profile", icon: UserCog, label: "My Profile" },
+    { to: "/settings", icon: Settings, label: "Settings" },
+  ];
+  return items;
+};
 
 function getBreadcrumbs(pathname: string) {
   const crumbs = [{ label: "Home", path: "/dashboard" }];
