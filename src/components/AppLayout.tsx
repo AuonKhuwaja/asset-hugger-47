@@ -77,7 +77,8 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   const [assetsOpen, setAssetsOpen] = useState(true);
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
+  const { user, logout, isAdmin, isSuperAdmin } = useAuth();
+  const navItems = getNavItems(isAdmin, isSuperAdmin);
   const breadcrumbs = getBreadcrumbs(location.pathname);
 
   const isActive = (path: string) =>
