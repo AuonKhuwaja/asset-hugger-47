@@ -18,27 +18,36 @@ import {
   ChevronRight,
   X,
   LogOut,
+  FolderOpen,
+  Building2,
+  UserCog,
 } from "lucide-react";
 import { useState } from "react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useAuth } from "@/contexts/AuthContext";
 
-const navItems = [
-  { to: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
-  {
-    label: "Assets",
-    icon: Package,
-    children: [
-      { to: "/assets", label: "All Assets", icon: Package },
-      { to: "/assets/add", label: "Add Asset", icon: PackagePlus },
-    ],
-  },
-  { to: "/assignments", icon: ArrowLeftRight, label: "Assignments" },
-  { to: "/maintenance", icon: Wrench, label: "Maintenance" },
-  { to: "/billing", icon: Receipt, label: "Billing & Charging" },
-  { to: "/reports", icon: BarChart3, label: "Reports" },
-  { to: "/settings", icon: Settings, label: "Settings" },
-];
+const getNavItems = (isAdmin: boolean, isSuperAdmin: boolean) => {
+  const items: any[] = [
+    { to: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
+    {
+      label: "Assets",
+      icon: Package,
+      children: [
+        { to: "/assets", label: "All Assets", icon: Package },
+        ...(isAdmin ? [{ to: "/assets/add", label: "Add Asset", icon: PackagePlus }] : []),
+      ],
+    },
+    { to: "/categories", icon: FolderOpen, label: "Categories" },
+    { to: "/assignments", icon: ArrowLeftRight, label: "Assignments" },
+    { to: "/maintenance", icon: Wrench, label: "Maintenance" },
+    { to: "/billing", icon: Receipt, label: "Billing & Charging" },
+    { to: "/reports", icon: BarChart3, label: "Reports" },
+    { to: "/companies", icon: Building2, label: "Companies" },
+    { to: "/profile", icon: UserCog, label: "My Profile" },
+    { to: "/settings", icon: Settings, label: "Settings" },
+  ];
+  return items;
+};
 
 function getBreadcrumbs(pathname: string) {
   const crumbs = [{ label: "Home", path: "/dashboard" }];
@@ -59,6 +68,12 @@ function getBreadcrumbs(pathname: string) {
     crumbs.push({ label: "Reports", path: "/reports" });
   } else if (pathname.startsWith("/settings")) {
     crumbs.push({ label: "Settings", path: "/settings" });
+  } else if (pathname.startsWith("/categories")) {
+    crumbs.push({ label: "Categories", path: "/categories" });
+  } else if (pathname.startsWith("/profile")) {
+    crumbs.push({ label: "Profile", path: "/profile" });
+  } else if (pathname.startsWith("/companies")) {
+    crumbs.push({ label: "Companies", path: "/companies" });
   }
   return crumbs;
 }
@@ -68,7 +83,8 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   const [assetsOpen, setAssetsOpen] = useState(true);
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
+  const { user, logout, isAdmin, isSuperAdmin } = useAuth();
+  const navItems = getNavItems(isAdmin, isSuperAdmin);
   const breadcrumbs = getBreadcrumbs(location.pathname);
 
   const isActive = (path: string) =>

@@ -58,7 +58,7 @@ export default function Assignments() {
           ))}
         </div>
 
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {tab === "issue" && (
             <>
               <div className="space-y-1.5">
@@ -73,6 +73,15 @@ export default function Assignments() {
                 <select className="select-vision">
                   <option value="">Choose employee...</option>
                   {employees.map((e) => <option key={e} value={e}>{e}</option>)}
+                </select>
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Department</Label>
+                <select className="select-vision">
+                  <option value="">Choose department...</option>
+                  <option value="Engineering">Engineering</option>
+                  <option value="Marketing">Marketing</option>
+                  <option value="Operations">Operations</option>
                 </select>
               </div>
               <div className="space-y-1.5">
@@ -98,6 +107,15 @@ export default function Assignments() {
                 </select>
               </div>
               <div className="space-y-1.5">
+                <Label className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Department</Label>
+                <select className="select-vision">
+                  <option value="">Choose department...</option>
+                  <option value="Engineering">Engineering</option>
+                  <option value="Marketing">Marketing</option>
+                  <option value="Operations">Operations</option>
+                </select>
+              </div>
+              <div className="space-y-1.5">
                 <Label className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Transfer Date</Label>
                 <Input type="date" className="border-border/30 rounded-xl" />
               </div>
@@ -119,6 +137,15 @@ export default function Assignments() {
                   <option value="Fair">Fair</option>
                   <option value="Poor">Poor</option>
                   <option value="Damaged">Damaged</option>
+                </select>
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Department</Label>
+                <select className="select-vision">
+                  <option value="">Choose department...</option>
+                  <option value="Engineering">Engineering</option>
+                  <option value="Marketing">Marketing</option>
+                  <option value="Operations">Operations</option>
                 </select>
               </div>
               <div className="space-y-1.5">

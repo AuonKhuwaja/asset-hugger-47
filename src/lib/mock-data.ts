@@ -132,6 +132,65 @@ export const recentActivity: ActivityItem[] = [
   { id: "ACT-006", action: "Repair Completed", asset: "HP LaserJet Pro", user: "Alex Kim", time: "4 days ago", type: "maintenance" },
 ];
 
+// ── Categories ──
+export interface Category {
+  id: string;
+  name: string;
+  description: string;
+  assetCount: number;
+  createdAt: string;
+}
+
+export const categories: Category[] = [
+  { id: "CAT-001", name: "Laptop", description: "Portable computing devices", assetCount: 3, createdAt: "2024-01-10" },
+  { id: "CAT-002", name: "Printer", description: "Printing and scanning devices", assetCount: 2, createdAt: "2024-01-10" },
+  { id: "CAT-003", name: "Monitor", description: "Display screens and monitors", assetCount: 1, createdAt: "2024-01-10" },
+  { id: "CAT-004", name: "Phone", description: "Mobile phones and handsets", assetCount: 0, createdAt: "2024-02-15" },
+  { id: "CAT-005", name: "Server", description: "Server and rack equipment", assetCount: 1, createdAt: "2024-02-15" },
+  { id: "CAT-006", name: "Tablet", description: "Tablet devices", assetCount: 2, createdAt: "2024-03-01" },
+  { id: "CAT-007", name: "Projector", description: "Projection equipment", assetCount: 1, createdAt: "2024-03-01" },
+  { id: "CAT-008", name: "Network Equipment", description: "Routers, switches, and network gear", assetCount: 1, createdAt: "2024-03-15" },
+  { id: "CAT-009", name: "Mobile", description: "Mobile devices and accessories", assetCount: 2, createdAt: "2024-04-01" },
+  { id: "CAT-010", name: "Other", description: "Miscellaneous equipment", assetCount: 0, createdAt: "2024-04-01" },
+];
+
+// ── Companies ──
+export interface Company {
+  id: string;
+  name: string;
+  industry: string;
+  assetCount: number;
+  employeeCount: number;
+  location: string;
+}
+
+export const companies: Company[] = [
+  { id: "CMP-001", name: "TechVault Corp", industry: "Technology", assetCount: 85, employeeCount: 120, location: "Islamabad" },
+  { id: "CMP-002", name: "Global Logistics", industry: "Logistics", assetCount: 210, employeeCount: 300, location: "Karachi" },
+  { id: "CMP-003", name: "Creative Solutions", industry: "Design", assetCount: 42, employeeCount: 55, location: "Lahore" },
+  { id: "CMP-004", name: "FinanceHub Ltd", industry: "Finance", assetCount: 65, employeeCount: 80, location: "Rawalpindi" },
+];
+
+// ── Roles ──
+export type UserRole = "super_admin" | "admin" | "viewer";
+
+export interface AppUser {
+  email: string;
+  password: string;
+  name: string;
+  role: UserRole;
+  phone: string;
+  department: string;
+  assignedCompanies: string[]; // company IDs
+  avatar?: string;
+}
+
+export const appUsers: AppUser[] = [
+  { email: "superadmin@trackvault.com", password: "super123", name: "Super Admin", role: "super_admin", phone: "+92 300 1234567", department: "Management", assignedCompanies: ["CMP-001", "CMP-002", "CMP-003", "CMP-004"] },
+  { email: "admin@trackvault.com", password: "admin123", name: "Ahmed Khan", role: "admin", phone: "+92 312 9876543", department: "IT", assignedCompanies: ["CMP-001", "CMP-002"] },
+  { email: "viewer@trackvault.com", password: "viewer123", name: "Sara Ali", role: "viewer", phone: "+92 321 5556666", department: "Operations", assignedCompanies: ["CMP-001"] },
+];
+
 export const depreciationData = assets.map(a => ({
   id: a.id,
   name: a.name,
