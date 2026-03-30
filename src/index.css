@@ -160,15 +160,53 @@
 } */
 
 .bg-sidebar-vision {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+
   background: linear-gradient(170deg,
-    hsl(210, 50%, 15%) 0%,   /* deep dark blue */
-    hsl(220, 60%, 18%) 30%,  /* darker blue */
-    hsl(287, 57%, 30%) 60%,  /* dark violet */
-    hsl(250, 60%, 22%) 85%,  /* dark purple */
-    hsl(270, 50%, 18%) 100%  /* deep dark purple */
+    hsl(220, 60%, 12%) 0%,
+    hsl(255, 55%, 16%) 50%,
+    hsl(270, 60%, 14%) 100%
   );
 }
 
+/* Noise/grain texture */
+.bg-sidebar-vision::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+  mix-blend-mode: soft-light;
+  opacity: 0.18;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Blue + purple glows */
+.bg-sidebar-vision::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 45% at 30% 10%,
+      hsla(215, 100%, 58%, 0.22) 0%, transparent 100%),
+    radial-gradient(ellipse 75% 50% at 75% 88%,
+      hsla(270, 80%, 56%, 0.28) 0%, transparent 100%),
+    radial-gradient(ellipse 90% 90% at 50% 50%,
+      transparent 50%, hsla(245, 60%, 3%, 0.5) 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Content upar rahe */
+.bg-sidebar-vision > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Light mode — untouched */
 .light .bg-sidebar-vision {
   background: linear-gradient(180deg,
     hsl(220 30% 96%) 0%,
@@ -177,7 +215,10 @@
     hsl(245 25% 96%) 100%
   );
 }
-
+.light .bg-sidebar-vision::before,
+.light .bg-sidebar-vision::after {
+  display: none;
+}
 /* ── Sidebar active pill ── */
 .sidebar-active {
   background: linear-gradient(90deg, hsl(213 94% 58% / 0.15), hsl(213 94% 58% / 0.05));

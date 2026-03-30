@@ -99,7 +99,7 @@ export default function Assignments() {
               </div>
               <div className="space-y-1.5">
                 <Label className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Transfer Date</Label>
-                <Input type="date" className="input-dark border-border/30 rounded-xl" />
+                <Input type="date" className="border-border/30 rounded-xl" />
               </div>
             </>
           )}
@@ -123,7 +123,7 @@ export default function Assignments() {
               </div>
               <div className="space-y-1.5">
                 <Label className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Return Date</Label>
-                <Input type="date" className="input-dark border-border/30 rounded-xl" />
+                <Input type="date" className="border-border/30 rounded-xl" />
               </div>
             </>
           )}

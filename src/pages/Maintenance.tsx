@@ -62,20 +62,20 @@ export default function Maintenance() {
             </div>
             <div className="space-y-1.5">
               <Label className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Date</Label>
-              <Input type="date" className="input-dark border-border/30 rounded-xl" />
+              <Input type="date" className=" border-border/30 rounded-xl" />
             </div>
             <div className="space-y-1.5">
               <Label className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Cost (PKR)</Label>
-              <Input type="number" placeholder="0" className="input-dark border-border/30 rounded-xl" />
+              <Input type="number" placeholder="0" className=" border-border/30 rounded-xl" />
             </div>
             <div className="space-y-1.5">
               <Label className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Technician</Label>
-              <Input placeholder="Name" className="input-dark border-border/30 rounded-xl" />
+              <Input placeholder="Name" className=" border-border/30 rounded-xl" />
             </div>
           </div>
           <div className="space-y-1.5">
             <Label className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Description</Label>
-            <Textarea placeholder="Describe the work..." className="input-dark border-border/30 rounded-xl min-h-[80px]" />
+            <Textarea placeholder="Describe the work..." className=" border-border/30 rounded-xl min-h-[80px]" />
           </div>
           <Button type="submit" className="bg-gradient-to-r from-primary to-primary/80 font-bold rounded-xl">Save Record</Button>
         </form>

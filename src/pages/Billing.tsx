@@ -103,11 +103,11 @@ export default function Billing() {
             </div>
             <div className="space-y-1.5">
               <Label className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Cost (PKR)</Label>
-              <Input type="number" placeholder="0" className="input-dark border-border/30 rounded-xl" />
+              <Input type="number" placeholder="0" className="border-border/30 rounded-xl" />
             </div>
             <div className="space-y-1.5">
               <Label className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Date</Label>
-              <Input type="date" className="input-dark border-border/30 rounded-xl" />
+              <Input type="date" className="border-border/30 rounded-xl" />
             </div>
           </div>
           <Button type="submit" className="bg-gradient-to-r from-primary to-primary/80 font-bold rounded-xl">Save</Button>

@@ -55,7 +55,7 @@ export default function AddAsset() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="mx-auto space-y-6">
       <h2 className="text-xl font-bold text-foreground">Register New Asset</h2>
 
       <form onSubmit={handleSubmit} className="vision-card p-6 space-y-6 animate-fade-in">
