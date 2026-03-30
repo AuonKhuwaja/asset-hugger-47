@@ -199,22 +199,34 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           })}
         </nav>
 
-        {/* Help Widget */}
-   <div className="p-4">
+{/* Help Widget */}
+<div className="p-4">
   <div className="help-card-gradient flex items-center p-1 rounded-lg w-full max-w-md mx-auto">
     
-    {/* Profile Image on the left */}
-    <div className="w-16 h-16 rounded-full overflow-hidden flex-shrink-0 mr-4">
+    {/* Avatar: image or initials fallback */}
+    <div className="w-16 h-16 rounded-full overflow-hidden flex-shrink-0 mr-4 relative">
       <img 
         src="/path/to/fa0f913e-a95d-4ee4-bdb0-db4f2351a884.png" 
-        alt="Profile" 
+        alt="Profile"
         className="w-full h-full object-cover"
+        onError={(e) => {
+          e.currentTarget.style.display = 'none';
+          e.currentTarget.nextElementSibling?.removeAttribute('style');
+        }}
       />
+     <div
+  style={{ display: 'none' }}
+  className="absolute inset-0 flex items-center justify-center text-white font-bold text-sm icon-glow"
+>
+  {user?.name
+    ? user.name.split(' ').map((n: string) => n[0]).slice(0, 2).join('').toUpperCase()
+    : 'U'}
+</div>
     </div>
-    
+
     {/* Name and Role */}
     <div className="flex flex-col">
-      <p className="text-white font-semibold text-base mb-1">Ahmed Khan</p>
+      <p className="text-white font-semibold text-base mb-1">{user?.name ?? 'Ahmed Khan'}</p>
       <p className="text-white/70 text-sm">Administrator</p>
     </div>
 

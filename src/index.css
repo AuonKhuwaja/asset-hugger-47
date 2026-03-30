@@ -274,7 +274,8 @@
 
 /* ── Help card gradient ── */
 .help-card-gradient {
-  background: linear-gradient(135deg, #868CFF 0%, #4318FF 100%);
+  background: linear-gradient(135deg, hsl(213 80% 57%), hsl(213 80% 42%));
+  box-shadow: 0 4px 12px rgba(66, 153, 225, 0.35);
   border-radius: 16px;
 }
 
