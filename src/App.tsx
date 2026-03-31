@@ -18,6 +18,11 @@ import Profile from "@/pages/Profile";
 import Companies from "@/pages/Companies";
 import Auth from "@/pages/Auth";
 import NotFound from "@/pages/NotFound";
+import SuperAdminLogin from "@/pages/SuperAdminLogin";
+import SuperAdminLayout from "@/components/SuperAdminLayout";
+import SuperAdminCompanies from "@/pages/SuperAdminCompanies";
+import SuperAdminAddCompany from "@/pages/SuperAdminAddCompany";
+import SuperAdminEditCompany from "@/pages/SuperAdminEditCompany";
 
 const queryClient = new QueryClient();
 
@@ -51,6 +56,16 @@ function AppRoutes() {
       <Route path="/settings" element={<ProtectedRoute><AppLayout><Settings /></AppLayout></ProtectedRoute>} />
       <Route path="/profile" element={<ProtectedRoute><AppLayout><Profile /></AppLayout></ProtectedRoute>} />
       <Route path="/companies" element={<ProtectedRoute><AppLayout><Companies /></AppLayout></ProtectedRoute>} />
+
+      {/* Super Admin routes — completely separate */}
+      <Route path="/super-admin" element={<Navigate to="/super-admin/login" replace />} />
+      <Route path="/super-admin/login" element={<SuperAdminLogin />} />
+      <Route path="/super-admin" element={<SuperAdminLayout />}>
+        <Route path="companies" element={<SuperAdminCompanies />} />
+        <Route path="companies/add" element={<SuperAdminAddCompany />} />
+        <Route path="companies/:slug/edit" element={<SuperAdminEditCompany />} />
+      </Route>
+
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
