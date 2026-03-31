@@ -56,6 +56,16 @@ function AppRoutes() {
       <Route path="/settings" element={<ProtectedRoute><AppLayout><Settings /></AppLayout></ProtectedRoute>} />
       <Route path="/profile" element={<ProtectedRoute><AppLayout><Profile /></AppLayout></ProtectedRoute>} />
       <Route path="/companies" element={<ProtectedRoute><AppLayout><Companies /></AppLayout></ProtectedRoute>} />
+
+      {/* Super Admin routes — completely separate */}
+      <Route path="/super-admin" element={<Navigate to="/super-admin/login" replace />} />
+      <Route path="/super-admin/login" element={<SuperAdminLogin />} />
+      <Route path="/super-admin" element={<SuperAdminLayout />}>
+        <Route path="companies" element={<SuperAdminCompanies />} />
+        <Route path="companies/add" element={<SuperAdminAddCompany />} />
+        <Route path="companies/:slug/edit" element={<SuperAdminEditCompany />} />
+      </Route>
+
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
