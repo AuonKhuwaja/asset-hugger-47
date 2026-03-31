@@ -18,6 +18,11 @@ import Profile from "@/pages/Profile";
 import Companies from "@/pages/Companies";
 import Auth from "@/pages/Auth";
 import NotFound from "@/pages/NotFound";
+import SuperAdminLogin from "@/pages/SuperAdminLogin";
+import SuperAdminLayout from "@/components/SuperAdminLayout";
+import SuperAdminCompanies from "@/pages/SuperAdminCompanies";
+import SuperAdminAddCompany from "@/pages/SuperAdminAddCompany";
+import SuperAdminEditCompany from "@/pages/SuperAdminEditCompany";
 
 const queryClient = new QueryClient();
 
