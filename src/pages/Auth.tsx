@@ -18,7 +18,10 @@ const mockCompanies = [
   { slug: "globalassets", name: "Global Assets Inc", initials: "GA", color: "#D97706" },
 ];
 
+const authBgs = [authBg1, authBg2, authBg3, authBg4];
+
 const Auth = () => {
+  const [bgIndex, setBgIndex] = useState(0);
   const [step, setStep] = useState<1 | 2>(1);
   const [companyCode, setCompanyCode] = useState("");
   const [selectedCompany, setSelectedCompany] = useState<typeof mockCompanies[0] | null>(null);
