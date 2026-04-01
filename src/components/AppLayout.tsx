@@ -59,16 +59,17 @@ const getNavItems = (isAdmin: boolean): NavItem[] => [
   ...(isAdmin ? [{
     label: "Employees",
     icon: Users,
-    children: [
-      { to: "/assignments", label: "All Employees", icon: Users },
-      { to: "/assignments?tab=issue", label: "Add Employee", icon: UserPlus },
-      { to: "/assignments?tab=transfer", label: "Bulk Import", icon: Upload },
-    ],
+    to: "/employees",
   }] : []),
   ...(isAdmin ? [{
     label: "Departments",
     icon: Building2,
     to: "/departments",
+  }] : []),
+  ...(isAdmin ? [{
+    label: "Assignments",
+    icon: UserPlus,
+    to: "/assignments",
   }] : []),
   {
     label: "Maintenance",

@@ -9,6 +9,7 @@ import Dashboard from "@/pages/Dashboard";
 import Assets from "@/pages/Assets";
 import AddAsset from "@/pages/AddAsset";
 import Assignments from "@/pages/Assignments";
+import Employees from "@/pages/Employees";
 import Maintenance from "@/pages/Maintenance";
 import Billing from "@/pages/Billing";
 import Reports from "@/pages/Reports";
