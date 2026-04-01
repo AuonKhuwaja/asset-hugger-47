@@ -9,6 +9,7 @@ import Dashboard from "@/pages/Dashboard";
 import Assets from "@/pages/Assets";
 import AddAsset from "@/pages/AddAsset";
 import Assignments from "@/pages/Assignments";
+import Employees from "@/pages/Employees";
 import Maintenance from "@/pages/Maintenance";
 import Billing from "@/pages/Billing";
 import Reports from "@/pages/Reports";
@@ -52,6 +53,7 @@ function AppRoutes() {
       <Route path="/categories" element={<AdminRoute><AppLayout><Categories /></AppLayout></AdminRoute>} />
       <Route path="/departments" element={<AdminRoute><AppLayout><Departments /></AppLayout></AdminRoute>} />
       <Route path="/assignments" element={<AdminRoute><AppLayout><Assignments /></AppLayout></AdminRoute>} />
+      <Route path="/employees" element={<AdminRoute><AppLayout><Employees /></AppLayout></AdminRoute>} />
       <Route path="/maintenance" element={<ProtectedRoute><AppLayout><Maintenance /></AppLayout></ProtectedRoute>} />
       <Route path="/billing" element={<ProtectedRoute><AppLayout><Billing /></AppLayout></ProtectedRoute>} />
       <Route path="/reports" element={<ProtectedRoute><AppLayout><Reports /></AppLayout></ProtectedRoute>} />
