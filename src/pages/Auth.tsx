@@ -22,6 +22,10 @@ const authBgs = [authBg1, authBg2, authBg3, authBg4];
 
 const Auth = () => {
   const [bgIndex, setBgIndex] = useState(0);
+  useEffect(() => {
+    const interval = setInterval(() => setBgIndex(i => (i + 1) % 4), 5000);
+    return () => clearInterval(interval);
+  }, []);
   const [step, setStep] = useState<1 | 2>(1);
   const [companyCode, setCompanyCode] = useState("");
   const [selectedCompany, setSelectedCompany] = useState<typeof mockCompanies[0] | null>(null);
