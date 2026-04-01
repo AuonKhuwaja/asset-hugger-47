@@ -14,6 +14,7 @@ import Billing from "@/pages/Billing";
 import Reports from "@/pages/Reports";
 import Settings from "@/pages/Settings";
 import Categories from "@/pages/Categories";
+import Departments from "@/pages/Departments";
 import Profile from "@/pages/Profile";
 import Companies from "@/pages/Companies";
 import Auth from "@/pages/Auth";
@@ -48,8 +49,9 @@ function AppRoutes() {
       <Route path="/dashboard" element={<ProtectedRoute><AppLayout><Dashboard /></AppLayout></ProtectedRoute>} />
       <Route path="/assets" element={<ProtectedRoute><AppLayout><Assets /></AppLayout></ProtectedRoute>} />
       <Route path="/assets/add" element={<AdminRoute><AppLayout><AddAsset /></AppLayout></AdminRoute>} />
-      <Route path="/categories" element={<ProtectedRoute><AppLayout><Categories /></AppLayout></ProtectedRoute>} />
-      <Route path="/assignments" element={<ProtectedRoute><AppLayout><Assignments /></AppLayout></ProtectedRoute>} />
+      <Route path="/categories" element={<AdminRoute><AppLayout><Categories /></AppLayout></AdminRoute>} />
+      <Route path="/departments" element={<AdminRoute><AppLayout><Departments /></AppLayout></AdminRoute>} />
+      <Route path="/assignments" element={<AdminRoute><AppLayout><Assignments /></AppLayout></AdminRoute>} />
       <Route path="/maintenance" element={<ProtectedRoute><AppLayout><Maintenance /></AppLayout></ProtectedRoute>} />
       <Route path="/billing" element={<ProtectedRoute><AppLayout><Billing /></AppLayout></ProtectedRoute>} />
       <Route path="/reports" element={<ProtectedRoute><AppLayout><Reports /></AppLayout></ProtectedRoute>} />

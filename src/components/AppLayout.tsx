@@ -52,19 +52,24 @@ const getNavItems = (isAdmin: boolean): NavItem[] => [
     icon: Package,
     children: [
       { to: "/assets", label: "All Assets", icon: Package },
-      { to: "/categories", label: "Categories", icon: FolderOpen },
+      ...(isAdmin ? [{ to: "/categories", label: "Categories", icon: FolderOpen }] : []),
       { to: "/companies", label: "Vendors", icon: ShoppingBag },
     ],
   },
-  {
+  ...(isAdmin ? [{
     label: "Employees",
     icon: Users,
     children: [
       { to: "/assignments", label: "All Employees", icon: Users },
-      ...(isAdmin ? [{ to: "/assignments?tab=issue", label: "Add Employee", icon: UserPlus }] : []),
-      ...(isAdmin ? [{ to: "/assignments?tab=transfer", label: "Bulk Import", icon: Upload }] : []),
+      { to: "/assignments?tab=issue", label: "Add Employee", icon: UserPlus },
+      { to: "/assignments?tab=transfer", label: "Bulk Import", icon: Upload },
     ],
-  },
+  }] : []),
+  ...(isAdmin ? [{
+    label: "Departments",
+    icon: Building2,
+    to: "/departments",
+  }] : []),
   {
     label: "Maintenance",
     icon: Wrench,
