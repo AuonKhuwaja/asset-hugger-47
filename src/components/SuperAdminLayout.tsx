@@ -27,7 +27,7 @@ export default function SuperAdminLayout() {
         <div className="flex h-14 items-center justify-between px-6">
           <div className="flex items-center gap-3">
             <Shield className="w-6 h-6 text-destructive" />
-            <span className="font-bold text-lg text-foreground">AssetFlow</span>
+            <span className="font-bold text-lg text-foreground">TrackVault</span>
             <Badge variant="destructive" className="text-xs">Super Admin</Badge>
           </div>
           <div className="flex items-center gap-4">
