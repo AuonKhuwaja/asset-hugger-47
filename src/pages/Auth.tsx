@@ -1,10 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Mail, Lock, Zap, ChevronRight, Building2, ArrowLeft, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
+import authBg1 from "@/assets/auth-bg-1.jpg";
+import authBg2 from "@/assets/auth-bg-2.jpg";
+import authBg3 from "@/assets/auth-bg-3.jpg";
+import authBg4 from "@/assets/auth-bg-4.jpg";
 
 const mockCompanies = [
   { slug: "techcorp", name: "TechCorp Pvt Ltd", initials: "TC", color: "#2563EB" },
