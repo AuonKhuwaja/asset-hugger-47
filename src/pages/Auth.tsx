@@ -98,12 +98,17 @@ const Auth = () => {
     <div className="h-screen flex bg-[hsl(222,47%,7%)] overflow-hidden">
       {/* Left Panel */}
       <div className="hidden lg:flex lg:w-[55%] relative overflow-hidden flex-col justify-between p-10">
-        <div className="absolute inset-0 bg-gradient-to-br from-[hsl(213,80%,20%)] via-[hsl(230,50%,12%)] to-[hsl(250,40%,8%)]" />
-        <div className="absolute inset-0 opacity-20" style={{
-          backgroundImage: `radial-gradient(circle at 20% 50%, hsl(213,80%,50%) 0%, transparent 50%),
-            radial-gradient(circle at 80% 20%, hsl(258,80%,40%) 0%, transparent 40%),
-            radial-gradient(circle at 60% 80%, hsl(200,70%,30%) 0%, transparent 45%)`
-        }} />
+        {/* Rotating background images */}
+        {[authBg1, authBg2, authBg3, authBg4].map((bg, i) => (
+          <img
+            key={i}
+            src={bg}
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000"
+            style={{ opacity: bgIndex === i ? 1 : 0 }}
+          />
+        ))}
+        <div className="absolute inset-0 bg-gradient-to-br from-[hsl(213,80%,10%,0.7)] via-[hsl(230,50%,8%,0.6)] to-[hsl(250,40%,5%,0.8)]" />
 
         {/* Top branding */}
         <div className="relative z-10">
