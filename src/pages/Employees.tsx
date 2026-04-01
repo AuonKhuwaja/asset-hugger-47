@@ -1,0 +1,243 @@
+import { useState } from "react";
+import { employees as initialEmployees, departments } from "@/lib/mock-data";
+import { useAuth } from "@/contexts/AuthContext";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
+import { Plus, Pencil, Trash2, Search, Users, UserCog, X, Mail, Phone } from "lucide-react";
+
+interface Employee {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  department: string;
+  designation: string;
+  status: "active" | "inactive";
+  joinDate: string;
+}
+
+const seedEmployees: Employee[] = initialEmployees.map((name, i) => ({
+  id: `EMP-${String(i + 1).padStart(3, "0")}`,
+  name,
+  email: `${name.toLowerCase().replace(/\s+/g, ".")}@company.com`,
+  phone: `+92 3${Math.floor(Math.random() * 10)}${Math.floor(Math.random() * 10)} ${String(Math.floor(Math.random() * 9000000) + 1000000)}`,
+  department: departments[i % departments.length],
+  designation: ["Software Engineer", "Manager", "Analyst", "Designer", "Team Lead", "Executive", "Coordinator", "Specialist", "Director", "Associate"][i % 10],
+  status: Math.random() > 0.15 ? "active" : "inactive",
+  joinDate: `2024-0${(i % 9) + 1}-${String((i % 28) + 1).padStart(2, "0")}`,
+}));
+
+export default function Employees() {
+  const { isViewer, isAdmin } = useAuth();
+  const { toast } = useToast();
+  const [items, setItems] = useState<Employee[]>(seedEmployees);
+  const [search, setSearch] = useState("");
+  const [showForm, setShowForm] = useState(false);
+  const [editing, setEditing] = useState<Employee | null>(null);
+  const [form, setForm] = useState({ name: "", email: "", phone: "", department: "", designation: "", status: "active" as "active" | "inactive" });
+
+  const filtered = items.filter((e) => {
+    if (!search) return true;
+    const q = search.toLowerCase();
+    return e.name.toLowerCase().includes(q) || e.email.toLowerCase().includes(q) || e.department.toLowerCase().includes(q) || e.designation.toLowerCase().includes(q);
+  });
+
+  const resetForm = () => {
+    setForm({ name: "", email: "", phone: "", department: "", designation: "", status: "active" });
+    setEditing(null);
+    setShowForm(false);
+  };
+
+  const handleEdit = (emp: Employee) => {
+    setEditing(emp);
+    setForm({ name: emp.name, email: emp.email, phone: emp.phone, department: emp.department, designation: emp.designation, status: emp.status });
+    setShowForm(true);
+  };
+
+  const handleDelete = (id: string) => {
+    setItems((prev) => prev.filter((e) => e.id !== id));
+    toast({ title: "Employee deleted", description: "The employee has been removed." });
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!form.name.trim() || !form.email.trim()) {
+      toast({ title: "Validation Error", description: "Name and Email are required.", variant: "destructive" });
+      return;
+    }
+    if (editing) {
+      setItems((prev) => prev.map((emp) => (emp.id === editing.id ? { ...emp, ...form } : emp)));
+      toast({ title: "Employee updated", description: `"${form.name}" has been updated.` });
+    } else {
+      const newEmp: Employee = {
+        id: `EMP-${String(items.length + 1).padStart(3, "0")}`,
+        name: form.name,
+        email: form.email,
+        phone: form.phone,
+        department: form.department,
+        designation: form.designation,
+        status: form.status,
+        joinDate: new Date().toISOString().split("T")[0],
+      };
+      setItems((prev) => [...prev, newEmp]);
+      toast({ title: "Employee created", description: `"${form.name}" has been added.` });
+    }
+    resetForm();
+  };
+
+  const canEdit = isAdmin && !isViewer;
+  const activeCount = items.filter((e) => e.status === "active").length;
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h2 className="text-xl font-bold text-foreground">Employees</h2>
+        {canEdit && (
+          <Button onClick={() => { resetForm(); setShowForm(true); }} className="bg-gradient-to-r from-primary to-primary/80 font-bold rounded-xl">
+            <Plus className="w-4 h-4 mr-2" /> Add Employee
+          </Button>
+        )}
+      </div>
+
+      {/* Stats */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="vision-card p-4 flex items-center gap-3">
+          <div className="p-2 rounded-lg bg-primary/10"><Users className="w-5 h-5 text-primary" /></div>
+          <div>
+            <p className="text-2xl font-bold text-foreground">{items.length}</p>
+            <p className="text-xs text-muted-foreground">Total Employees</p>
+          </div>
+        </div>
+        <div className="vision-card p-4 flex items-center gap-3">
+          <div className="p-2 rounded-lg bg-emerald-500/10"><UserCog className="w-5 h-5 text-emerald-500" /></div>
+          <div>
+            <p className="text-2xl font-bold text-foreground">{activeCount}</p>
+            <p className="text-xs text-muted-foreground">Active</p>
+          </div>
+        </div>
+        <div className="vision-card p-4 flex items-center gap-3">
+          <div className="p-2 rounded-lg bg-red-500/10"><Users className="w-5 h-5 text-red-500" /></div>
+          <div>
+            <p className="text-2xl font-bold text-foreground">{items.length - activeCount}</p>
+            <p className="text-xs text-muted-foreground">Inactive</p>
+          </div>
+        </div>
+        <div className="vision-card p-4 flex items-center gap-3">
+          <div className="p-2 rounded-lg bg-blue-500/10"><Mail className="w-5 h-5 text-blue-500" /></div>
+          <div>
+            <p className="text-2xl font-bold text-foreground">{new Set(items.map((e) => e.department)).size}</p>
+            <p className="text-xs text-muted-foreground">Departments</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Form */}
+      {showForm && (
+        <div className="vision-card p-6 animate-scale-in">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground">
+              {editing ? "Edit Employee" : "New Employee"}
+            </h3>
+            <button onClick={resetForm} className="p-1 rounded-lg hover:bg-muted/30 text-muted-foreground"><X className="w-4 h-4" /></button>
+          </div>
+          <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="space-y-1.5">
+              <Label className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Full Name *</Label>
+              <Input value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))} placeholder="Employee name" className="rounded-xl" />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Email *</Label>
+              <Input type="email" value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} placeholder="email@company.com" className="rounded-xl" />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Phone</Label>
+              <Input value={form.phone} onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))} placeholder="+92 300 1234567" className="rounded-xl" />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Department</Label>
+              <select value={form.department} onChange={(e) => setForm((f) => ({ ...f, department: e.target.value }))} className="select-vision">
+                <option value="">Choose department...</option>
+                {departments.map((d) => <option key={d} value={d}>{d}</option>)}
+              </select>
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Designation</Label>
+              <Input value={form.designation} onChange={(e) => setForm((f) => ({ ...f, designation: e.target.value }))} placeholder="Job title" className="rounded-xl" />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Status</Label>
+              <select value={form.status} onChange={(e) => setForm((f) => ({ ...f, status: e.target.value as "active" | "inactive" }))} className="select-vision">
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+              </select>
+            </div>
+            <div className="md:col-span-3 flex gap-2">
+              <Button type="submit" className="bg-gradient-to-r from-primary to-primary/80 font-bold rounded-xl">
+                {editing ? "Update" : "Create"}
+              </Button>
+              <Button type="button" variant="outline" onClick={resetForm} className="rounded-xl">Cancel</Button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {/* Table */}
+      <div className="vision-card overflow-hidden">
+        <div className="p-5 border-b border-border/10 flex items-center justify-between">
+          <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground">All Employees</h3>
+          <div className="relative w-64">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <input type="text" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)}
+              className="w-full pl-9 pr-3 py-2 rounded-xl bg-muted/20 border border-border/20 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30" />
+          </div>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-border/10">
+                {["ID", "Name", "Email", "Phone", "Department", "Designation", "Status", ...(canEdit ? ["Actions"] : [])].map((h) => (
+                  <th key={h} className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.map((emp) => (
+                <tr key={emp.id} className="border-b border-border/10 hover:bg-muted/10 transition-colors">
+                  <td className="px-4 py-3 font-mono text-xs text-muted-foreground">{emp.id}</td>
+                  <td className="px-4 py-3 font-medium flex items-center gap-2">
+                    <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">
+                      {emp.name.split(" ").map((n) => n[0]).join("")}
+                    </div>
+                    {emp.name}
+                  </td>
+                  <td className="px-4 py-3 text-muted-foreground">{emp.email}</td>
+                  <td className="px-4 py-3 text-muted-foreground">{emp.phone}</td>
+                  <td className="px-4 py-3 text-muted-foreground">{emp.department}</td>
+                  <td className="px-4 py-3 text-muted-foreground">{emp.designation}</td>
+                  <td className="px-4 py-3">
+                    <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${emp.status === "active" ? "bg-emerald-500/10 text-emerald-500" : "bg-red-500/10 text-red-500"}`}>
+                      {emp.status === "active" ? "Active" : "Inactive"}
+                    </span>
+                  </td>
+                  {canEdit && (
+                    <td className="px-4 py-3">
+                      <div className="flex gap-1">
+                        <button onClick={() => handleEdit(emp)} className="p-1.5 rounded-lg hover:bg-primary/10 text-primary transition-colors"><Pencil className="w-4 h-4" /></button>
+                        <button onClick={() => handleDelete(emp.id)} className="p-1.5 rounded-lg hover:bg-destructive/10 text-destructive transition-colors"><Trash2 className="w-4 h-4" /></button>
+                      </div>
+                    </td>
+                  )}
+                </tr>
+              ))}
+              {filtered.length === 0 && (
+                <tr><td colSpan={canEdit ? 8 : 7} className="px-4 py-8 text-center text-muted-foreground">No employees found.</td></tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+}
