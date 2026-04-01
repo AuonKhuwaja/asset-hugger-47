@@ -96,7 +96,8 @@ function getBreadcrumbs(pathname: string) {
   if (pathname === "/dashboard") crumbs.push({ label: "Dashboard", path: "/dashboard" });
   else if (pathname === "/assets") crumbs.push({ label: "Assets", path: "/assets" });
   else if (pathname === "/assets/add") { crumbs.push({ label: "Assets", path: "/assets" }); crumbs.push({ label: "Add Asset", path: "/assets/add" }); }
-  else if (pathname.startsWith("/assignments")) crumbs.push({ label: "Employees", path: "/assignments" });
+  else if (pathname.startsWith("/employees")) crumbs.push({ label: "Employees", path: "/employees" });
+  else if (pathname.startsWith("/assignments")) crumbs.push({ label: "Assignments", path: "/assignments" });
   else if (pathname.startsWith("/maintenance")) crumbs.push({ label: "Maintenance", path: "/maintenance" });
   else if (pathname.startsWith("/billing")) crumbs.push({ label: "Billing", path: "/billing" });
   else if (pathname.startsWith("/reports")) crumbs.push({ label: "Reports", path: "/reports" });

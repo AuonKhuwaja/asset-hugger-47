@@ -53,6 +53,7 @@ function AppRoutes() {
       <Route path="/categories" element={<AdminRoute><AppLayout><Categories /></AppLayout></AdminRoute>} />
       <Route path="/departments" element={<AdminRoute><AppLayout><Departments /></AppLayout></AdminRoute>} />
       <Route path="/assignments" element={<AdminRoute><AppLayout><Assignments /></AppLayout></AdminRoute>} />
+      <Route path="/employees" element={<AdminRoute><AppLayout><Employees /></AppLayout></AdminRoute>} />
       <Route path="/maintenance" element={<ProtectedRoute><AppLayout><Maintenance /></AppLayout></ProtectedRoute>} />
       <Route path="/billing" element={<ProtectedRoute><AppLayout><Billing /></AppLayout></ProtectedRoute>} />
       <Route path="/reports" element={<ProtectedRoute><AppLayout><Reports /></AppLayout></ProtectedRoute>} />
