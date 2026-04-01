@@ -14,6 +14,7 @@ import Billing from "@/pages/Billing";
 import Reports from "@/pages/Reports";
 import Settings from "@/pages/Settings";
 import Categories from "@/pages/Categories";
+import Departments from "@/pages/Departments";
 import Profile from "@/pages/Profile";
 import Companies from "@/pages/Companies";
 import Auth from "@/pages/Auth";
