@@ -1,83 +1,191 @@
 import { useState } from "react";
-import { maintenanceRecords, assets } from "@/lib/mock-data";
+import { maintenanceRecords as initialRecords, assets } from "@/lib/mock-data";
 import { StatusBadge } from "@/components/StatusBadge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Wrench, Search, Plus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { Wrench, Search, Plus, Clock, History, CheckCircle, AlertTriangle, DollarSign, X, Pencil, Trash2 } from "lucide-react";
+import { useSearchParams } from "react-router-dom";
 
 export default function Maintenance() {
   const { toast } = useToast();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeTab = searchParams.get("tab") || "schedule";
+
+  const [records, setRecords] = useState(initialRecords);
   const [showForm, setShowForm] = useState(false);
+  const [editing, setEditing] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState<"all" | "preventive" | "corrective">("all");
+  const [form, setForm] = useState({ assetId: "", type: "preventive" as "preventive" | "corrective", date: "", cost: "", description: "", technician: "" });
 
-  const filtered = maintenanceRecords.filter((m) => {
+  const scheduled = records.filter(m => m.status === "scheduled" || m.status === "in-progress");
+  const completed = records.filter(m => m.status === "completed");
+  const displayRecords = activeTab === "schedule" ? scheduled : completed;
+
+  const filtered = displayRecords.filter((m) => {
     if (typeFilter !== "all" && m.type !== typeFilter) return false;
     if (!search) return true;
     const q = search.toLowerCase();
     return m.assetName.toLowerCase().includes(q) || m.description.toLowerCase().includes(q) || m.technician.toLowerCase().includes(q);
   });
 
+  const resetForm = () => { setForm({ assetId: "", type: "preventive", date: "", cost: "", description: "", technician: "" }); setEditing(null); setShowForm(false); };
+
+  const handleEdit = (id: string) => {
+    const m = records.find(x => x.id === id);
+    if (!m) return;
+    setEditing(m.id);
+    setForm({ assetId: m.assetId, type: m.type, date: m.date, cost: String(m.cost), description: m.description, technician: m.technician });
+    setShowForm(true);
+  };
+
+  const handleDelete = (id: string) => {
+    setRecords(prev => prev.filter(m => m.id !== id));
+    toast({ title: "Record deleted", description: "Maintenance record has been removed." });
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    toast({ title: "Maintenance Scheduled", description: "Record created successfully." });
-    setShowForm(false);
+    if (!form.assetId || !form.date) {
+      toast({ title: "Validation Error", description: "Asset and date are required.", variant: "destructive" });
+      return;
+    }
+    const selectedAsset = assets.find(a => a.id === form.assetId);
+    if (editing) {
+      setRecords(prev => prev.map(m => m.id === editing ? {
+        ...m, assetId: form.assetId, assetName: selectedAsset?.name || m.assetName,
+        type: form.type, date: form.date, cost: Number(form.cost) || 0,
+        description: form.description, technician: form.technician,
+      } : m));
+      toast({ title: "Record updated", description: "Maintenance record has been updated." });
+    } else {
+      const newRecord = {
+        id: `MNT-${String(records.length + 1).padStart(3, "0")}`,
+        assetId: form.assetId,
+        assetName: selectedAsset?.name || "Unknown",
+        type: form.type,
+        date: form.date,
+        cost: Number(form.cost) || 0,
+        description: form.description,
+        technician: form.technician,
+        status: "scheduled" as const,
+      };
+      setRecords(prev => [...prev, newRecord]);
+      toast({ title: "Maintenance Scheduled", description: "Record created successfully." });
+    }
+    resetForm();
   };
+
+  const totalCost = records.reduce((s, m) => s + m.cost, 0);
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-bold text-foreground">Maintenance</h2>
-        <Button onClick={() => setShowForm(!showForm)} className={showForm ? "bg-muted hover:bg-muted/80" : "bg-gradient-to-r from-primary to-primary/80 font-bold rounded-xl"}>
+        <Button onClick={() => { resetForm(); setShowForm(!showForm); }} className={showForm ? "bg-muted hover:bg-muted/80" : "bg-gradient-to-r from-primary to-primary/80 font-bold rounded-xl"}>
           <Plus className="w-4 h-4 mr-2" />
           {showForm ? "Cancel" : "Schedule Maintenance"}
         </Button>
       </div>
 
+      {/* Stats */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {[
+          { label: "Total Records", value: records.length, icon: Wrench, gradient: "linear-gradient(135deg, #1a237e 0%, #0d47a1 50%, #1565c0 100%)" },
+          { label: "Scheduled", value: scheduled.length, icon: Clock, gradient: "linear-gradient(135deg, #e65100 0%, #ef6c00 50%, #f57c00 100%)" },
+          { label: "Completed", value: completed.length, icon: CheckCircle, gradient: "linear-gradient(135deg, #1b5e20 0%, #2e7d32 50%, #388e3c 100%)" },
+          { label: "Total Cost", value: `PKR ${totalCost.toLocaleString()}`, icon: DollarSign, gradient: "linear-gradient(135deg, #4a148c 0%, #6a1b9a 50%, #7b1fa2 100%)" },
+        ].map((s) => (
+          <div key={s.label} className="relative overflow-hidden rounded-[1.25rem] p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl" style={{ background: s.gradient, border: '1.5px solid rgba(255,255,255,0.1)' }}>
+            <div className="absolute -top-8 -right-8 w-28 h-28 rounded-full bg-white/[0.06] pointer-events-none" />
+            <div className="absolute -bottom-5 -left-5 w-20 h-20 rounded-full bg-white/[0.05] pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-br from-white/[0.08] via-transparent to-transparent pointer-events-none" />
+            <div className="relative flex items-center gap-3">
+              <div className="w-12 h-12 flex items-center justify-center rounded-xl bg-white/15 backdrop-blur-sm shadow-lg">
+                <s.icon className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-white">{s.value}</p>
+                <p className="text-xs font-semibold uppercase tracking-wider text-white/60">{s.label}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Tabs */}
+      <div className="flex gap-2">
+        {[
+          { key: "schedule", label: "Schedule", icon: Clock },
+          { key: "history", label: "History", icon: History },
+        ].map(t => (
+          <button
+            key={t.key}
+            onClick={() => setSearchParams(t.key === "schedule" ? {} : { tab: t.key })}
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all ${
+              activeTab === t.key
+                ? "bg-gradient-to-r from-primary/20 to-primary/10 text-primary border border-primary/30"
+                : "text-muted-foreground hover:text-foreground hover:bg-muted/20"
+            }`}
+          >
+            <t.icon className="w-4 h-4" />
+            {t.label}
+            <span className="ml-1 text-xs opacity-60">({t.key === "schedule" ? scheduled.length : completed.length})</span>
+          </button>
+        ))}
+      </div>
+
+      {/* Form */}
       {showForm && (
         <form onSubmit={handleSubmit} className="vision-card p-6 space-y-4 animate-fade-in">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 icon-glow-orange flex items-center justify-center">
-              <Wrench className="w-5 h-5 text-white" />
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-primary/15 flex items-center justify-center">
+                <Wrench className="w-5 h-5 text-primary" />
+              </div>
+              <h3 className="text-base font-bold text-foreground">{editing ? "Edit Record" : "Schedule Maintenance"}</h3>
             </div>
-            <h3 className="text-base font-bold text-foreground">Schedule Maintenance</h3>
+            <button type="button" onClick={resetForm} className="p-1 rounded-lg hover:bg-muted/30 text-muted-foreground"><X className="w-4 h-4" /></button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="space-y-1.5">
-              <Label className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Asset</Label>
-              <select className="select-vision">
+              <Label className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Asset *</Label>
+              <select value={form.assetId} onChange={e => setForm(f => ({ ...f, assetId: e.target.value }))} className="select-vision">
                 <option value="">Select asset...</option>
                 {assets.map((a) => <option key={a.id} value={a.id}>{a.name} ({a.id})</option>)}
               </select>
             </div>
             <div className="space-y-1.5">
               <Label className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Type</Label>
-              <select className="select-vision">
+              <select value={form.type} onChange={e => setForm(f => ({ ...f, type: e.target.value as any }))} className="select-vision">
                 <option value="preventive">Preventive</option>
                 <option value="corrective">Corrective</option>
               </select>
             </div>
             <div className="space-y-1.5">
-              <Label className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Date</Label>
-              <Input type="date" className=" border-border/30 rounded-xl" />
+              <Label className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Date *</Label>
+              <Input type="date" value={form.date} onChange={e => setForm(f => ({ ...f, date: e.target.value }))} className="border-border/30 rounded-xl" />
             </div>
             <div className="space-y-1.5">
               <Label className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Cost (PKR)</Label>
-              <Input type="number" placeholder="0" className=" border-border/30 rounded-xl" />
+              <Input type="number" value={form.cost} onChange={e => setForm(f => ({ ...f, cost: e.target.value }))} placeholder="0" className="border-border/30 rounded-xl" />
             </div>
             <div className="space-y-1.5">
               <Label className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Technician</Label>
-              <Input placeholder="Name" className=" border-border/30 rounded-xl" />
+              <Input value={form.technician} onChange={e => setForm(f => ({ ...f, technician: e.target.value }))} placeholder="Name" className="border-border/30 rounded-xl" />
             </div>
           </div>
           <div className="space-y-1.5">
             <Label className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Description</Label>
-            <Textarea placeholder="Describe the work..." className=" border-border/30 rounded-xl min-h-[80px]" />
+            <Textarea value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} placeholder="Describe the work..." className="border-border/30 rounded-xl min-h-[80px]" />
           </div>
-          <Button type="submit" className="bg-gradient-to-r from-primary to-primary/80 font-bold rounded-xl">Save Record</Button>
+          <div className="flex gap-2">
+            <Button type="submit" className="bg-gradient-to-r from-primary to-primary/80 font-bold rounded-xl">{editing ? "Update Record" : "Save Record"}</Button>
+            <Button type="button" variant="outline" onClick={resetForm} className="rounded-xl">Cancel</Button>
+          </div>
         </form>
       )}
 
@@ -106,7 +214,7 @@ export default function Maintenance() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border/10">
-                {["ID", "Asset", "Type", "Description", "Technician", "Date", "Cost", "Status"].map((h) => (
+                {["ID", "Asset", "Type", "Description", "Technician", "Date", "Cost", "Status", "Actions"].map((h) => (
                   <th key={h} className={`px-4 py-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground ${h === "Cost" ? "text-right" : "text-left"}`}>{h}</th>
                 ))}
               </tr>
@@ -126,8 +234,17 @@ export default function Maintenance() {
                   <td className="px-4 py-3 tabular-data text-muted-foreground">{m.date}</td>
                   <td className="px-4 py-3 text-right tabular-data font-medium text-primary">PKR {m.cost.toLocaleString()}</td>
                   <td className="px-4 py-3"><StatusBadge status={m.status} /></td>
+                  <td className="px-4 py-3">
+                    <div className="flex gap-1">
+                      <button onClick={() => handleEdit(m.id)} className="p-1.5 rounded-lg hover:bg-primary/10 text-primary transition-colors"><Pencil className="w-4 h-4" /></button>
+                      <button onClick={() => handleDelete(m.id)} className="p-1.5 rounded-lg hover:bg-destructive/10 text-destructive transition-colors"><Trash2 className="w-4 h-4" /></button>
+                    </div>
+                  </td>
                 </tr>
               ))}
+              {filtered.length === 0 && (
+                <tr><td colSpan={9} className="px-4 py-8 text-center text-muted-foreground">No records found.</td></tr>
+              )}
             </tbody>
           </table>
         </div>
