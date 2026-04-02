@@ -55,7 +55,7 @@ const getNavItems = (isAdmin: boolean): NavItem[] => [
     ],
   },
   ...(isAdmin ? [{ to: "/categories", label: "Categories", icon: FolderOpen }] : []),
-  { to: "/companies", label: "Vendors", icon: ShoppingBag },
+  { to: "/vendors", label: "Vendors", icon: ShoppingBag },
   ...(isAdmin ? [{
     label: "Employees",
     icon: Users,
@@ -104,6 +104,7 @@ function getBreadcrumbs(pathname: string) {
   else if (pathname.startsWith("/settings")) crumbs.push({ label: "Settings", path: "/settings" });
   else if (pathname.startsWith("/categories")) crumbs.push({ label: "Categories", path: "/categories" });
   else if (pathname.startsWith("/profile")) crumbs.push({ label: "Profile", path: "/profile" });
+  else if (pathname.startsWith("/vendors")) crumbs.push({ label: "Vendors", path: "/vendors" });
   else if (pathname.startsWith("/companies")) crumbs.push({ label: "Companies", path: "/companies" });
   return crumbs;
 }
