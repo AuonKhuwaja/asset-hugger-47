@@ -103,34 +103,27 @@ export default function Employees() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="vision-card p-4 flex items-center gap-3">
-          <div className="p-2 rounded-lg bg-primary/10"><Users className="w-5 h-5 text-primary" /></div>
-          <div>
-            <p className="text-2xl font-bold text-foreground">{items.length}</p>
-            <p className="text-xs text-muted-foreground">Total Employees</p>
+        {[
+          { label: "Total Employees", value: items.length, icon: Users, gradient: "linear-gradient(135deg, #1a237e 0%, #0d47a1 50%, #1565c0 100%)" },
+          { label: "Active", value: activeCount, icon: UserCog, gradient: "linear-gradient(135deg, #1b5e20 0%, #2e7d32 50%, #388e3c 100%)" },
+          { label: "Inactive", value: items.length - activeCount, icon: Users, gradient: "linear-gradient(135deg, #e65100 0%, #ef6c00 50%, #f57c00 100%)" },
+          { label: "Departments", value: new Set(items.map((e) => e.department)).size, icon: Mail, gradient: "linear-gradient(135deg, #4a148c 0%, #6a1b9a 50%, #7b1fa2 100%)" },
+        ].map((s) => (
+          <div key={s.label} className="relative overflow-hidden rounded-[1.25rem] p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl" style={{ background: s.gradient, border: '1.5px solid rgba(255,255,255,0.1)' }}>
+            <div className="absolute -top-8 -right-8 w-28 h-28 rounded-full bg-white/[0.06] pointer-events-none" />
+            <div className="absolute -bottom-5 -left-5 w-20 h-20 rounded-full bg-white/[0.05] pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-br from-white/[0.08] via-transparent to-transparent pointer-events-none" />
+            <div className="relative flex items-center gap-3">
+              <div className="w-12 h-12 flex items-center justify-center rounded-xl bg-white/15 backdrop-blur-sm shadow-lg">
+                <s.icon className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-white">{s.value}</p>
+                <p className="text-xs font-semibold uppercase tracking-wider text-white/60">{s.label}</p>
+              </div>
+            </div>
           </div>
-        </div>
-        <div className="vision-card p-4 flex items-center gap-3">
-          <div className="p-2 rounded-lg bg-emerald-500/10"><UserCog className="w-5 h-5 text-emerald-500" /></div>
-          <div>
-            <p className="text-2xl font-bold text-foreground">{activeCount}</p>
-            <p className="text-xs text-muted-foreground">Active</p>
-          </div>
-        </div>
-        <div className="vision-card p-4 flex items-center gap-3">
-          <div className="p-2 rounded-lg bg-red-500/10"><Users className="w-5 h-5 text-red-500" /></div>
-          <div>
-            <p className="text-2xl font-bold text-foreground">{items.length - activeCount}</p>
-            <p className="text-xs text-muted-foreground">Inactive</p>
-          </div>
-        </div>
-        <div className="vision-card p-4 flex items-center gap-3">
-          <div className="p-2 rounded-lg bg-blue-500/10"><Mail className="w-5 h-5 text-blue-500" /></div>
-          <div>
-            <p className="text-2xl font-bold text-foreground">{new Set(items.map((e) => e.department)).size}</p>
-            <p className="text-xs text-muted-foreground">Departments</p>
-          </div>
-        </div>
+        ))}
       </div>
 
       {/* Form */}
