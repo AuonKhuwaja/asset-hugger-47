@@ -104,6 +104,7 @@ function getBreadcrumbs(pathname: string) {
   else if (pathname.startsWith("/settings")) crumbs.push({ label: "Settings", path: "/settings" });
   else if (pathname.startsWith("/categories")) crumbs.push({ label: "Categories", path: "/categories" });
   else if (pathname.startsWith("/profile")) crumbs.push({ label: "Profile", path: "/profile" });
+  else if (pathname.startsWith("/vendors")) crumbs.push({ label: "Vendors", path: "/vendors" });
   else if (pathname.startsWith("/companies")) crumbs.push({ label: "Companies", path: "/companies" });
   return crumbs;
 }
