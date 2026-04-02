@@ -18,6 +18,7 @@ import Categories from "@/pages/Categories";
 import Departments from "@/pages/Departments";
 import Profile from "@/pages/Profile";
 import Companies from "@/pages/Companies";
+import Vendors from "@/pages/Vendors";
 import Auth from "@/pages/Auth";
 import NotFound from "@/pages/NotFound";
 import SuperAdminLogin from "@/pages/SuperAdminLogin";
