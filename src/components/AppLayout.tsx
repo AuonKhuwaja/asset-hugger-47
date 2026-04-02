@@ -55,7 +55,7 @@ const getNavItems = (isAdmin: boolean): NavItem[] => [
     ],
   },
   ...(isAdmin ? [{ to: "/categories", label: "Categories", icon: FolderOpen }] : []),
-  { to: "/companies", label: "Vendors", icon: ShoppingBag },
+  { to: "/vendors", label: "Vendors", icon: ShoppingBag },
   ...(isAdmin ? [{
     label: "Employees",
     icon: Users,
