@@ -96,10 +96,10 @@ export default function SuperAdminCompanies() {
   };
 
   const statCards = [
-    { label: "Total Companies", value: stats.total, icon: Building2, color: "text-primary" },
-    { label: "Active", value: stats.active, icon: CheckCircle, color: "text-emerald-500" },
-    { label: "Inactive", value: stats.inactive, icon: XCircle, color: "text-destructive" },
-    { label: "Total Employees", value: stats.employees, icon: Users, color: "text-blue-500" },
+    { label: "Total Companies", value: stats.total, icon: Building2, gradient: "linear-gradient(135deg, #1a237e 0%, #0d47a1 50%, #1565c0 100%)" },
+    { label: "Active", value: stats.active, icon: CheckCircle, gradient: "linear-gradient(135deg, #1b5e20 0%, #2e7d32 50%, #388e3c 100%)" },
+    { label: "Inactive", value: stats.inactive, icon: XCircle, gradient: "linear-gradient(135deg, #b71c1c 0%, #c62828 50%, #d32f2f 100%)" },
+    { label: "Total Employees", value: stats.employees, icon: Users, gradient: "linear-gradient(135deg, #4a148c 0%, #6a1b9a 50%, #7b1fa2 100%)" },
   ];
 
   if (loading) {
