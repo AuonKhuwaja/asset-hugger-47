@@ -8,6 +8,7 @@ interface User {
   phone: string;
   department: string;
   assignedCompanies: string[];
+  assignedAssets?: string[];
 }
 
 interface AuthContextType {
@@ -18,6 +19,7 @@ interface AuthContextType {
   isSuperAdmin: boolean;
   isAdmin: boolean;
   isViewer: boolean;
+  isEmployee: boolean;
   getVisibleCompanies: () => Company[];
   updateProfile: (data: Partial<Pick<User, "name" | "phone" | "department">>) => void;
 }
@@ -40,6 +42,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         phone: found.phone,
         department: found.department,
         assignedCompanies: found.assignedCompanies,
+        assignedAssets: found.assignedAssets,
       };
       setUser(u);
       localStorage.setItem("tv_user", JSON.stringify(u));
@@ -63,6 +66,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const isSuperAdmin = user?.role === "super_admin";
   const isAdmin = user?.role === "admin" || isSuperAdmin;
   const isViewer = user?.role === "viewer";
+  const isEmployee = user?.role === "employee";
 
   const getVisibleCompanies = (): Company[] => {
     if (!user) return [];
@@ -73,7 +77,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   return (
     <AuthContext.Provider value={{
       user, login, logout, isAuthenticated: !!user,
-      isSuperAdmin, isAdmin, isViewer,
+      isSuperAdmin, isAdmin, isViewer, isEmployee,
       getVisibleCompanies, updateProfile,
     }}>
       {children}
