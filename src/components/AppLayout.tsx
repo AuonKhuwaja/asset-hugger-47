@@ -132,8 +132,8 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, logout, isAdmin, isSuperAdmin } = useAuth();
-  const navItems = getNavItems(isAdmin);
+  const { user, logout, isAdmin, isSuperAdmin, isEmployee } = useAuth();
+  const navItems = getNavItems(isAdmin, isEmployee);
   const breadcrumbs = getBreadcrumbs(location.pathname);
 
   // Company info from localStorage
