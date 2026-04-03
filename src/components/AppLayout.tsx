@@ -250,6 +250,31 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         {/* Nav */}
         <nav className="flex-1 px-2 space-y-0.5 overflow-y-auto overflow-x-hidden">
           {navItems.map((item) => {
+            // Single-child menus: render as direct link without arrow
+            if (item.children && item.children.length === 1) {
+              const child = item.children[0];
+              return (
+                <RouterNavLink
+                  key={child.to}
+                  to={child.to}
+                  onClick={() => setMobileOpen(false)}
+                  title={collapsed ? item.label : undefined}
+                  className={() =>
+                    `flex items-center gap-2.5 px-3 py-2.5 rounded-md text-sm font-medium transition-all duration-200 ${
+                      isActive(child.to)
+                        ? "bg-primary text-white"
+                        : "text-sidebar-foreground hover:text-foreground hover:bg-sidebar-accent/40"
+                    }`
+                  }
+                >
+                  <item.icon className="w-5 h-5 shrink-0" />
+                  <span className={`whitespace-nowrap transition-all duration-300 ${collapsed ? "opacity-0 w-0 overflow-hidden" : "opacity-100 w-auto"}`}>
+                    {item.label}
+                  </span>
+                </RouterNavLink>
+              );
+            }
+
             if (item.children) {
               const parentActive = isParentActive(item);
               const menuOpen = openMenus[item.label] ?? false;
