@@ -45,51 +45,63 @@ interface NavItem {
   children?: NavChild[];
 }
 
-const getNavItems = (isAdmin: boolean): NavItem[] => [
-  { to: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
-  {
-    label: "Assets",
-    icon: Package,
-    children: [
-      { to: "/assets", label: "All Assets", icon: Package },
-    ],
-  },
-  ...(isAdmin ? [{ to: "/categories", label: "Categories", icon: FolderOpen }] : []),
-  { to: "/vendors", label: "Vendors", icon: ShoppingBag },
-  ...(isAdmin ? [{
-    label: "Employees",
-    icon: Users,
-    to: "/employees",
-  }] : []),
-  ...(isAdmin ? [{
-    label: "Departments",
-    icon: Building2,
-    to: "/departments",
-  }] : []),
-  ...(isAdmin ? [{
-    label: "Assignments",
-    icon: UserPlus,
-    to: "/assignments",
-  }] : []),
-  {
-    label: "Maintenance",
-    icon: Wrench,
-    children: [
-      { to: "/maintenance", label: "Schedule", icon: Clock },
-      { to: "/maintenance?tab=history", label: "History", icon: History },
-    ],
-  },
-  {
-    label: "Cost & Billing",
-    icon: Receipt,
-    children: [
-      { to: "/billing", label: "Cost Entries", icon: DollarSign },
-      { to: "/reports", label: "Reports", icon: FileText },
-    ],
-  },
-  { to: "/profile", icon: UserCog, label: "My Profile" },
-  { to: "/settings", icon: Settings, label: "Settings" },
-];
+const getNavItems = (isAdmin: boolean, isEmployee: boolean): NavItem[] => {
+  if (isEmployee) {
+    return [
+      { to: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
+      { to: "/my-assets", icon: Package, label: "My Assets" },
+      { to: "/asset-requests", icon: Send, label: "Asset Requests" },
+      { to: "/maintenance-requests", icon: AlertTriangle, label: "Maintenance Requests" },
+      { to: "/profile", icon: UserCog, label: "My Profile" },
+    ];
+  }
+
+  return [
+    { to: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
+    {
+      label: "Assets",
+      icon: Package,
+      children: [
+        { to: "/assets", label: "All Assets", icon: Package },
+      ],
+    },
+    ...(isAdmin ? [{ to: "/categories", label: "Categories", icon: FolderOpen }] : []),
+    { to: "/vendors", label: "Vendors", icon: ShoppingBag },
+    ...(isAdmin ? [{
+      label: "Employees",
+      icon: Users,
+      to: "/employees",
+    }] : []),
+    ...(isAdmin ? [{
+      label: "Departments",
+      icon: Building2,
+      to: "/departments",
+    }] : []),
+    ...(isAdmin ? [{
+      label: "Assignments",
+      icon: UserPlus,
+      to: "/assignments",
+    }] : []),
+    {
+      label: "Maintenance",
+      icon: Wrench,
+      children: [
+        { to: "/maintenance", label: "Schedule", icon: Clock },
+        { to: "/maintenance?tab=history", label: "History", icon: History },
+      ],
+    },
+    {
+      label: "Cost & Billing",
+      icon: Receipt,
+      children: [
+        { to: "/billing", label: "Cost Entries", icon: DollarSign },
+        { to: "/reports", label: "Reports", icon: FileText },
+      ],
+    },
+    { to: "/profile", icon: UserCog, label: "My Profile" },
+    { to: "/settings", icon: Settings, label: "Settings" },
+  ];
+};
 
 function getBreadcrumbs(pathname: string) {
   const crumbs = [{ label: "Home", path: "/dashboard" }];
