@@ -26,6 +26,9 @@ import SuperAdminLayout from "@/components/SuperAdminLayout";
 import SuperAdminCompanies from "@/pages/SuperAdminCompanies";
 import SuperAdminAddCompany from "@/pages/SuperAdminAddCompany";
 import SuperAdminEditCompany from "@/pages/SuperAdminEditCompany";
+import MyAssets from "@/pages/MyAssets";
+import AssetRequests from "@/pages/AssetRequests";
+import MaintenanceRequests from "@/pages/MaintenanceRequests";
 
 const queryClient = new QueryClient();
 
@@ -36,9 +39,9 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 }
 
 function AdminRoute({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, isViewer } = useAuth();
+  const { isAuthenticated, isViewer, isEmployee } = useAuth();
   if (!isAuthenticated) return <Navigate to="/" replace />;
-  if (isViewer) return <Navigate to="/dashboard" replace />;
+  if (isViewer || isEmployee) return <Navigate to="/dashboard" replace />;
   return <>{children}</>;
 }
 
@@ -62,6 +65,11 @@ function AppRoutes() {
       <Route path="/profile" element={<ProtectedRoute><AppLayout><Profile /></AppLayout></ProtectedRoute>} />
       <Route path="/companies" element={<ProtectedRoute><AppLayout><Companies /></AppLayout></ProtectedRoute>} />
       <Route path="/vendors" element={<ProtectedRoute><AppLayout><Vendors /></AppLayout></ProtectedRoute>} />
+
+      {/* Employee-specific routes */}
+      <Route path="/my-assets" element={<ProtectedRoute><AppLayout><MyAssets /></AppLayout></ProtectedRoute>} />
+      <Route path="/asset-requests" element={<ProtectedRoute><AppLayout><AssetRequests /></AppLayout></ProtectedRoute>} />
+      <Route path="/maintenance-requests" element={<ProtectedRoute><AppLayout><MaintenanceRequests /></AppLayout></ProtectedRoute>} />
 
       {/* Super Admin routes — completely separate */}
       <Route path="/super-admin" element={<Navigate to="/super-admin/login" replace />} />
