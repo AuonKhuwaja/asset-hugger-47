@@ -27,6 +27,8 @@ import {
   FileText,
   DollarSign,
   ShoppingBag,
+  Send,
+  AlertTriangle,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { ThemeToggle } from "@/components/ThemeToggle";
