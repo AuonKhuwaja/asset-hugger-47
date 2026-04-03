@@ -177,7 +177,7 @@ export default function Employees() {
             <span className="font-semibold text-foreground">Bulk Upload:</span> Upload a CSV file with columns: Name, Email, Phone, Department, Designation
           </p>
         </div>
-      )
+      )}
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
