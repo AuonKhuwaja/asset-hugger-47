@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { employees as initialEmployees, departments } from "@/lib/mock-data";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Pencil, Trash2, Search, Users, UserCog, X, Mail, Phone } from "lucide-react";
+import { Plus, Pencil, Trash2, Search, Users, UserCog, X, Mail, Phone, Upload, FileSpreadsheet } from "lucide-react";
 
 interface Employee {
   id: string;
