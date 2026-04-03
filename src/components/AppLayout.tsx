@@ -27,6 +27,8 @@ import {
   FileText,
   DollarSign,
   ShoppingBag,
+  Send,
+  AlertTriangle,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -45,51 +47,63 @@ interface NavItem {
   children?: NavChild[];
 }
 
-const getNavItems = (isAdmin: boolean): NavItem[] => [
-  { to: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
-  {
-    label: "Assets",
-    icon: Package,
-    children: [
-      { to: "/assets", label: "All Assets", icon: Package },
-    ],
-  },
-  ...(isAdmin ? [{ to: "/categories", label: "Categories", icon: FolderOpen }] : []),
-  { to: "/vendors", label: "Vendors", icon: ShoppingBag },
-  ...(isAdmin ? [{
-    label: "Employees",
-    icon: Users,
-    to: "/employees",
-  }] : []),
-  ...(isAdmin ? [{
-    label: "Departments",
-    icon: Building2,
-    to: "/departments",
-  }] : []),
-  ...(isAdmin ? [{
-    label: "Assignments",
-    icon: UserPlus,
-    to: "/assignments",
-  }] : []),
-  {
-    label: "Maintenance",
-    icon: Wrench,
-    children: [
-      { to: "/maintenance", label: "Schedule", icon: Clock },
-      { to: "/maintenance?tab=history", label: "History", icon: History },
-    ],
-  },
-  {
-    label: "Cost & Billing",
-    icon: Receipt,
-    children: [
-      { to: "/billing", label: "Cost Entries", icon: DollarSign },
-      { to: "/reports", label: "Reports", icon: FileText },
-    ],
-  },
-  { to: "/profile", icon: UserCog, label: "My Profile" },
-  { to: "/settings", icon: Settings, label: "Settings" },
-];
+const getNavItems = (isAdmin: boolean, isEmployee: boolean): NavItem[] => {
+  if (isEmployee) {
+    return [
+      { to: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
+      { to: "/my-assets", icon: Package, label: "My Assets" },
+      { to: "/asset-requests", icon: Send, label: "Asset Requests" },
+      { to: "/maintenance-requests", icon: AlertTriangle, label: "Maintenance Requests" },
+      { to: "/profile", icon: UserCog, label: "My Profile" },
+    ];
+  }
+
+  return [
+    { to: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
+    {
+      label: "Assets",
+      icon: Package,
+      children: [
+        { to: "/assets", label: "All Assets", icon: Package },
+      ],
+    },
+    ...(isAdmin ? [{ to: "/categories", label: "Categories", icon: FolderOpen }] : []),
+    { to: "/vendors", label: "Vendors", icon: ShoppingBag },
+    ...(isAdmin ? [{
+      label: "Employees",
+      icon: Users,
+      to: "/employees",
+    }] : []),
+    ...(isAdmin ? [{
+      label: "Departments",
+      icon: Building2,
+      to: "/departments",
+    }] : []),
+    ...(isAdmin ? [{
+      label: "Assignments",
+      icon: UserPlus,
+      to: "/assignments",
+    }] : []),
+    {
+      label: "Maintenance",
+      icon: Wrench,
+      children: [
+        { to: "/maintenance", label: "Schedule", icon: Clock },
+        { to: "/maintenance?tab=history", label: "History", icon: History },
+      ],
+    },
+    {
+      label: "Cost & Billing",
+      icon: Receipt,
+      children: [
+        { to: "/billing", label: "Cost Entries", icon: DollarSign },
+        { to: "/reports", label: "Reports", icon: FileText },
+      ],
+    },
+    { to: "/profile", icon: UserCog, label: "My Profile" },
+    { to: "/settings", icon: Settings, label: "Settings" },
+  ];
+};
 
 function getBreadcrumbs(pathname: string) {
   const crumbs = [{ label: "Home", path: "/dashboard" }];
@@ -104,6 +118,9 @@ function getBreadcrumbs(pathname: string) {
   else if (pathname.startsWith("/settings")) crumbs.push({ label: "Settings", path: "/settings" });
   else if (pathname.startsWith("/categories")) crumbs.push({ label: "Categories", path: "/categories" });
   else if (pathname.startsWith("/profile")) crumbs.push({ label: "Profile", path: "/profile" });
+  else if (pathname.startsWith("/my-assets")) crumbs.push({ label: "My Assets", path: "/my-assets" });
+  else if (pathname.startsWith("/asset-requests")) crumbs.push({ label: "Asset Requests", path: "/asset-requests" });
+  else if (pathname.startsWith("/maintenance-requests")) crumbs.push({ label: "Maintenance Requests", path: "/maintenance-requests" });
   else if (pathname.startsWith("/vendors")) crumbs.push({ label: "Vendors", path: "/vendors" });
   else if (pathname.startsWith("/companies")) crumbs.push({ label: "Companies", path: "/companies" });
   return crumbs;
@@ -118,8 +135,8 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, logout, isAdmin, isSuperAdmin } = useAuth();
-  const navItems = getNavItems(isAdmin);
+  const { user, logout, isAdmin, isSuperAdmin, isEmployee } = useAuth();
+  const navItems = getNavItems(isAdmin, isEmployee);
   const breadcrumbs = getBreadcrumbs(location.pathname);
 
   // Company info from localStorage
@@ -236,6 +253,31 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         {/* Nav */}
         <nav className="flex-1 px-2 space-y-0.5 overflow-y-auto overflow-x-hidden">
           {navItems.map((item) => {
+            // Single-child menus: render as direct link without arrow
+            if (item.children && item.children.length === 1) {
+              const child = item.children[0];
+              return (
+                <RouterNavLink
+                  key={child.to}
+                  to={child.to}
+                  onClick={() => setMobileOpen(false)}
+                  title={collapsed ? item.label : undefined}
+                  className={() =>
+                    `flex items-center gap-2.5 px-3 py-2.5 rounded-md text-sm font-medium transition-all duration-200 ${
+                      isActive(child.to)
+                        ? "bg-primary text-white"
+                        : "text-sidebar-foreground hover:text-foreground hover:bg-sidebar-accent/40"
+                    }`
+                  }
+                >
+                  <item.icon className="w-5 h-5 shrink-0" />
+                  <span className={`whitespace-nowrap transition-all duration-300 ${collapsed ? "opacity-0 w-0 overflow-hidden" : "opacity-100 w-auto"}`}>
+                    {item.label}
+                  </span>
+                </RouterNavLink>
+              );
+            }
+
             if (item.children) {
               const parentActive = isParentActive(item);
               const menuOpen = openMenus[item.label] ?? false;

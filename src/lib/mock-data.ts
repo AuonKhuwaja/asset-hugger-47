@@ -172,7 +172,7 @@ export const companies: Company[] = [
 ];
 
 // ── Roles ──
-export type UserRole = "super_admin" | "admin" | "viewer";
+export type UserRole = "super_admin" | "admin" | "viewer" | "employee";
 
 export interface AppUser {
   email: string;
@@ -181,14 +181,50 @@ export interface AppUser {
   role: UserRole;
   phone: string;
   department: string;
-  assignedCompanies: string[]; // company IDs
+  assignedCompanies: string[];
   avatar?: string;
+  assignedAssets?: string[]; // asset IDs assigned to this employee
 }
 
 export const appUsers: AppUser[] = [
   { email: "superadmin@trackvault.com", password: "super123", name: "Super Admin", role: "super_admin", phone: "+92 300 1234567", department: "Management", assignedCompanies: ["CMP-001", "CMP-002", "CMP-003", "CMP-004"] },
   { email: "admin@trackvault.com", password: "admin123", name: "Ahmed Khan", role: "admin", phone: "+92 312 9876543", department: "IT", assignedCompanies: ["CMP-001", "CMP-002"] },
   { email: "viewer@trackvault.com", password: "viewer123", name: "Sara Ali", role: "viewer", phone: "+92 321 5556666", department: "Operations", assignedCompanies: ["CMP-001"] },
+  { email: "employee@trackvault.com", password: "emp123", name: "Sarah Chen", role: "employee", phone: "+92 333 7778899", department: "Engineering", assignedCompanies: ["CMP-001"], assignedAssets: ["AST-001", "AST-005"] },
+];
+
+// Asset request types
+export interface AssetRequest {
+  id: string;
+  requestedBy: string;
+  assetCategory: string;
+  reason: string;
+  priority: "low" | "medium" | "high";
+  status: "pending" | "approved" | "rejected";
+  requestDate: string;
+  notes?: string;
+}
+
+export const assetRequests: AssetRequest[] = [
+  { id: "REQ-001", requestedBy: "Sarah Chen", assetCategory: "Laptop", reason: "Current laptop is slow for development", priority: "high", status: "pending", requestDate: "2026-03-28" },
+  { id: "REQ-002", requestedBy: "Sarah Chen", assetCategory: "Monitor", reason: "Need dual monitor setup", priority: "medium", status: "approved", requestDate: "2026-03-20" },
+];
+
+// Maintenance request types
+export interface MaintenanceRequest {
+  id: string;
+  requestedBy: string;
+  assetId: string;
+  assetName: string;
+  issue: string;
+  priority: "low" | "medium" | "high";
+  status: "pending" | "in-progress" | "resolved";
+  requestDate: string;
+  notes?: string;
+}
+
+export const maintenanceRequests: MaintenanceRequest[] = [
+  { id: "MREQ-001", requestedBy: "Sarah Chen", assetId: "AST-001", assetName: "MacBook Pro 16\"", issue: "Battery draining fast", priority: "medium", status: "pending", requestDate: "2026-03-30" },
 ];
 
 export const depreciationData = assets.map(a => ({
