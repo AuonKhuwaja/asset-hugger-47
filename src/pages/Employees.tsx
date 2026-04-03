@@ -89,17 +89,95 @@ export default function Employees() {
 
   const canEdit = isAdmin && !isViewer;
   const activeCount = items.filter((e) => e.status === "active").length;
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const parseCSV = (text: string): Employee[] => {
+    const lines = text.trim().split("\n");
+    if (lines.length < 2) return [];
+    const headers = lines[0].split(",").map(h => h.trim().toLowerCase());
+    const nameIdx = headers.findIndex(h => h.includes("name"));
+    const emailIdx = headers.findIndex(h => h.includes("email"));
+    const phoneIdx = headers.findIndex(h => h.includes("phone"));
+    const deptIdx = headers.findIndex(h => h.includes("department") || h.includes("dept"));
+    const desigIdx = headers.findIndex(h => h.includes("designation") || h.includes("title") || h.includes("role"));
+
+    if (nameIdx === -1 || emailIdx === -1) {
+      toast({ title: "Invalid file", description: "CSV must have 'Name' and 'Email' columns", variant: "destructive" });
+      return [];
+    }
+
+    const newEmployees: Employee[] = [];
+    for (let i = 1; i < lines.length; i++) {
+      const cols = lines[i].split(",").map(c => c.trim().replace(/^"|"$/g, ""));
+      if (!cols[nameIdx] || !cols[emailIdx]) continue;
+      newEmployees.push({
+        id: `EMP-${String(items.length + newEmployees.length + 1).padStart(3, "0")}`,
+        name: cols[nameIdx],
+        email: cols[emailIdx],
+        phone: phoneIdx >= 0 ? cols[phoneIdx] || "" : "",
+        department: deptIdx >= 0 ? cols[deptIdx] || "" : "",
+        designation: desigIdx >= 0 ? cols[desigIdx] || "" : "",
+        status: "active",
+        joinDate: new Date().toISOString().split("T")[0],
+      });
+    }
+    return newEmployees;
+  };
+
+  const handleBulkUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const ext = file.name.split(".").pop()?.toLowerCase();
+    if (ext !== "csv" && ext !== "xlsx" && ext !== "xls") {
+      toast({ title: "Unsupported format", description: "Please upload a CSV or Excel (.xlsx/.xls) file", variant: "destructive" });
+      return;
+    }
+
+    if (ext === "csv") {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const text = ev.target?.result as string;
+        const newEmps = parseCSV(text);
+        if (newEmps.length > 0) {
+          setItems(prev => [...prev, ...newEmps]);
+          toast({ title: "Bulk upload complete", description: `${newEmps.length} employee(s) imported successfully.` });
+        }
+      };
+      reader.readAsText(file);
+    } else {
+      // For Excel files, parse as CSV-like using basic binary read
+      toast({ title: "Excel support", description: "For Excel files, please save as CSV first and re-upload.", variant: "destructive" });
+    }
+
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-2">
         <h2 className="text-xl font-bold text-foreground">Employees</h2>
         {canEdit && (
-          <Button onClick={() => { resetForm(); setShowForm(true); }} className="bg-gradient-to-r from-primary to-primary/80 font-bold rounded-xl">
-            <Plus className="w-4 h-4 mr-2" /> Add Employee
-          </Button>
+          <div className="flex items-center gap-2">
+            <input ref={fileInputRef} type="file" accept=".csv,.xlsx,.xls" className="hidden" onChange={handleBulkUpload} />
+            <Button onClick={() => fileInputRef.current?.click()} variant="outline" className="rounded-xl">
+              <Upload className="w-4 h-4 mr-2" /> Bulk Upload
+            </Button>
+            <Button onClick={() => { resetForm(); setShowForm(true); }} className="bg-gradient-to-r from-primary to-primary/80 font-bold rounded-xl">
+              <Plus className="w-4 h-4 mr-2" /> Add Employee
+            </Button>
+          </div>
         )}
       </div>
+
+      {/* Bulk upload hint */}
+      {canEdit && (
+        <div className="p-3 rounded-xl border border-primary/20 bg-primary/5 flex items-center gap-3">
+          <FileSpreadsheet className="w-5 h-5 text-primary shrink-0" />
+          <p className="text-xs text-muted-foreground">
+            <span className="font-semibold text-foreground">Bulk Upload:</span> Upload a CSV file with columns: Name, Email, Phone, Department, Designation
+          </p>
+        </div>
+      )
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
