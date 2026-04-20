@@ -15,7 +15,7 @@ import { AssetTrackerCanvas } from "@/components/AssetTrackerCanvas";
 import { assets, departmentCosts, monthlyData, recentActivity } from "@/lib/mock-data";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
-  PieChart, Pie, Cell,
+  PieChart, Pie, Cell, AreaChart, Area,
 } from "recharts";
 
 const totalValue = assets.reduce((s, a) => s + a.currentValue, 0);
@@ -24,6 +24,16 @@ const maintenanceCount = assets.filter((a) => a.status === "maintenance").length
 const damagedCount = assets.filter((a) => a.status === "damaged").length;
 
 const pieData = departmentCosts.map((d) => ({ name: d.department, value: d.assetCount }));
+
+// Asset value trend (purchase value depreciating month over month)
+const totalPurchaseAll = assets.reduce((s, a) => s + a.purchaseCost, 0);
+const valueTrend = (() => {
+  let running = totalPurchaseAll;
+  return monthlyData.map((m) => {
+    running -= m.depreciation;
+    return { month: m.month, value: running, depreciation: m.depreciation };
+  });
+})();
 const PIE_COLORS = [
   "hsl(213, 80%, 57%)", "hsl(258, 100%, 67%)", "hsl(142, 76%, 36%)",
   "hsl(38, 92%, 50%)", "hsl(0, 84%, 60%)", "hsl(280, 67%, 55%)",
@@ -127,6 +137,37 @@ export default function Dashboard() {
               ))}
             </tbody>
           </table>
+        </div>
+      </div>
+
+      {/* Asset Value Trend */}
+      <div className="vision-card p-6">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground">Asset Value Trend</h3>
+          <span className="text-xs text-muted-foreground">Depreciation impact over time</span>
+        </div>
+        <div className="h-72">
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={valueTrend}>
+              <defs>
+                <linearGradient id="dashValGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="hsl(213, 80%, 57%)" stopOpacity={0.6} />
+                  <stop offset="100%" stopColor="hsl(213, 80%, 57%)" stopOpacity={0} />
+                </linearGradient>
+                <linearGradient id="dashDepGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="hsl(258, 100%, 67%)" stopOpacity={0.5} />
+                  <stop offset="100%" stopColor="hsl(258, 100%, 67%)" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(226,232,240,0.06)" />
+              <XAxis dataKey="month" stroke="#718096" fontSize={12} />
+              <YAxis stroke="#718096" fontSize={12} tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} />
+              <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [`PKR ${v.toLocaleString()}`, undefined]} />
+              <Legend wrapperStyle={{ fontSize: 12 }} />
+              <Area type="monotone" dataKey="value" name="Asset Value" stroke="hsl(213, 80%, 57%)" strokeWidth={2} fill="url(#dashValGrad)" />
+              <Area type="monotone" dataKey="depreciation" name="Monthly Depreciation" stroke="hsl(258, 100%, 67%)" strokeWidth={2} fill="url(#dashDepGrad)" />
+            </AreaChart>
+          </ResponsiveContainer>
         </div>
       </div>
 
