@@ -17,12 +17,12 @@ export default function Maintenance() {
   const [searchParams, setSearchParams] = useSearchParams();
   const activeTab = searchParams.get("tab") || "schedule";
 
-  const [records, setRecords] = useState(initialRecords);
+  const [records, setRecords] = useState<any[]>(initialRecords);
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState<"all" | "preventive" | "corrective">("all");
-  const [form, setForm] = useState({ assetId: "", type: "preventive" as "preventive" | "corrective", date: "", cost: "", description: "", technician: "" });
+  const [form, setForm] = useState({ assetId: "", type: "preventive" as "preventive" | "corrective", date: "", cost: "", description: "", technician: "", recurrence: "none" as Recurrence, notifyEmail: "" });
 
   const scheduled = records.filter(m => m.status === "scheduled" || m.status === "in-progress");
   const completed = records.filter(m => m.status === "completed");
