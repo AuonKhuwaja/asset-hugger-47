@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Pencil, Trash2, Search, ShoppingBag, X, Phone, Mail, Globe, MapPin } from "lucide-react";
+import { ExportButtons } from "@/components/ExportButtons";
 
 interface Vendor {
   id: string;
