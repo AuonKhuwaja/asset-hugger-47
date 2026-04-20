@@ -6,20 +6,23 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Wrench, Search, Plus, Clock, History, CheckCircle, AlertTriangle, DollarSign, X, Pencil, Trash2 } from "lucide-react";
+import { Wrench, Search, Plus, Clock, History, CheckCircle, AlertTriangle, DollarSign, X, Pencil, Trash2, Mail, Repeat } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
+import { ExportButtons } from "@/components/ExportButtons";
+
+type Recurrence = "none" | "daily" | "weekly" | "monthly";
 
 export default function Maintenance() {
   const { toast } = useToast();
   const [searchParams, setSearchParams] = useSearchParams();
   const activeTab = searchParams.get("tab") || "schedule";
 
-  const [records, setRecords] = useState(initialRecords);
+  const [records, setRecords] = useState<any[]>(initialRecords);
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState<"all" | "preventive" | "corrective">("all");
-  const [form, setForm] = useState({ assetId: "", type: "preventive" as "preventive" | "corrective", date: "", cost: "", description: "", technician: "" });
+  const [form, setForm] = useState({ assetId: "", type: "preventive" as "preventive" | "corrective", date: "", cost: "", description: "", technician: "", recurrence: "none" as Recurrence, notifyEmail: "" });
 
   const scheduled = records.filter(m => m.status === "scheduled" || m.status === "in-progress");
   const completed = records.filter(m => m.status === "completed");
@@ -32,13 +35,13 @@ export default function Maintenance() {
     return m.assetName.toLowerCase().includes(q) || m.description.toLowerCase().includes(q) || m.technician.toLowerCase().includes(q);
   });
 
-  const resetForm = () => { setForm({ assetId: "", type: "preventive", date: "", cost: "", description: "", technician: "" }); setEditing(null); setShowForm(false); };
+  const resetForm = () => { setForm({ assetId: "", type: "preventive", date: "", cost: "", description: "", technician: "", recurrence: "none", notifyEmail: "" }); setEditing(null); setShowForm(false); };
 
   const handleEdit = (id: string) => {
     const m = records.find(x => x.id === id);
     if (!m) return;
     setEditing(m.id);
-    setForm({ assetId: m.assetId, type: m.type, date: m.date, cost: String(m.cost), description: m.description, technician: m.technician });
+    setForm({ assetId: m.assetId, type: m.type, date: m.date, cost: String(m.cost), description: m.description, technician: m.technician, recurrence: (m.recurrence as Recurrence) || "none", notifyEmail: m.notifyEmail || "" });
     setShowForm(true);
   };
 
@@ -53,28 +56,29 @@ export default function Maintenance() {
       toast({ title: "Validation Error", description: "Asset and date are required.", variant: "destructive" });
       return;
     }
+    if (form.notifyEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.notifyEmail)) {
+      toast({ title: "Invalid email", description: "Enter a valid notification email.", variant: "destructive" });
+      return;
+    }
     const selectedAsset = assets.find(a => a.id === form.assetId);
+    const payload = {
+      assetId: form.assetId, assetName: selectedAsset?.name || "Unknown",
+      type: form.type, date: form.date, cost: Number(form.cost) || 0,
+      description: form.description, technician: form.technician,
+      recurrence: form.recurrence, notifyEmail: form.notifyEmail,
+    };
     if (editing) {
-      setRecords(prev => prev.map(m => m.id === editing ? {
-        ...m, assetId: form.assetId, assetName: selectedAsset?.name || m.assetName,
-        type: form.type, date: form.date, cost: Number(form.cost) || 0,
-        description: form.description, technician: form.technician,
-      } : m));
+      setRecords(prev => prev.map(m => m.id === editing ? { ...m, ...payload } : m));
       toast({ title: "Record updated", description: "Maintenance record has been updated." });
     } else {
-      const newRecord = {
-        id: `MNT-${String(records.length + 1).padStart(3, "0")}`,
-        assetId: form.assetId,
-        assetName: selectedAsset?.name || "Unknown",
-        type: form.type,
-        date: form.date,
-        cost: Number(form.cost) || 0,
-        description: form.description,
-        technician: form.technician,
-        status: "scheduled" as const,
-      };
+      const newRecord = { id: `MNT-${String(records.length + 1).padStart(3, "0")}`, ...payload, status: "scheduled" as const };
       setRecords(prev => [...prev, newRecord]);
-      toast({ title: "Maintenance Scheduled", description: "Record created successfully." });
+      toast({
+        title: "Maintenance Scheduled",
+        description: form.notifyEmail
+          ? `Record saved. Email alert will be sent to ${form.notifyEmail}${form.recurrence !== "none" ? ` (recurs ${form.recurrence})` : ""}.`
+          : `Record created${form.recurrence !== "none" ? ` (recurs ${form.recurrence})` : ""}.`,
+      });
     }
     resetForm();
   };
@@ -177,6 +181,19 @@ export default function Maintenance() {
               <Label className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Technician</Label>
               <Input value={form.technician} onChange={e => setForm(f => ({ ...f, technician: e.target.value }))} placeholder="Name" className="border-border/30 rounded-xl" />
             </div>
+            <div className="space-y-1.5">
+              <Label className="text-muted-foreground text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5"><Repeat className="w-3.5 h-3.5" /> Recurrence</Label>
+              <select value={form.recurrence} onChange={e => setForm(f => ({ ...f, recurrence: e.target.value as Recurrence }))} className="select-vision">
+                <option value="none">One-time</option>
+                <option value="daily">Daily</option>
+                <option value="weekly">Weekly</option>
+                <option value="monthly">Monthly</option>
+              </select>
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-muted-foreground text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5"><Mail className="w-3.5 h-3.5" /> Notify Email</Label>
+              <Input type="email" value={form.notifyEmail} onChange={e => setForm(f => ({ ...f, notifyEmail: e.target.value }))} placeholder="alerts@company.com" className="border-border/30 rounded-xl" />
+            </div>
           </div>
           <div className="space-y-1.5">
             <Label className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Description</Label>
@@ -205,16 +222,35 @@ export default function Maintenance() {
               </button>
             ))}
           </div>
-          <div className="relative w-64">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <input type="text" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} className="w-full pl-9 pr-3 py-2 rounded-xl bg-muted/20 border border-border/20 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30" />
+          <div className="flex items-center gap-3">
+            <ExportButtons
+              filename="maintenance-records"
+              title="Maintenance Records"
+              columns={[
+                { header: "ID", accessor: (m: any) => m.id },
+                { header: "Asset", accessor: (m: any) => m.assetName },
+                { header: "Type", accessor: (m: any) => m.type },
+                { header: "Description", accessor: (m: any) => m.description },
+                { header: "Technician", accessor: (m: any) => m.technician },
+                { header: "Date", accessor: (m: any) => m.date },
+                { header: "Recurrence", accessor: (m: any) => m.recurrence || "none" },
+                { header: "Notify Email", accessor: (m: any) => m.notifyEmail || "" },
+                { header: "Cost (PKR)", accessor: (m: any) => m.cost },
+                { header: "Status", accessor: (m: any) => m.status },
+              ]}
+              rows={filtered}
+            />
+            <div className="relative w-64">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <input type="text" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} className="w-full pl-9 pr-3 py-2 rounded-xl bg-muted/20 border border-border/20 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30" />
+            </div>
           </div>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border/10">
-                {["ID", "Asset", "Type", "Description", "Technician", "Date", "Cost", "Status", "Actions"].map((h) => (
+                {["ID", "Asset", "Type", "Description", "Technician", "Date", "Recurrence", "Cost", "Status", "Actions"].map((h) => (
                   <th key={h} className={`px-4 py-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground ${h === "Cost" ? "text-right" : "text-left"}`}>{h}</th>
                 ))}
               </tr>
@@ -232,6 +268,15 @@ export default function Maintenance() {
                   <td className="px-4 py-3 text-muted-foreground max-w-[200px] truncate">{m.description}</td>
                   <td className="px-4 py-3 text-muted-foreground">{m.technician}</td>
                   <td className="px-4 py-3 tabular-data text-muted-foreground">{m.date}</td>
+                  <td className="px-4 py-3">
+                    {m.recurrence && m.recurrence !== "none" ? (
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[11px] font-semibold bg-secondary/20 text-secondary-foreground border border-border/30">
+                        <Repeat className="w-3 h-3" /> {m.recurrence}
+                      </span>
+                    ) : (
+                      <span className="text-xs text-muted-foreground">—</span>
+                    )}
+                  </td>
                   <td className="px-4 py-3 text-right tabular-data font-medium text-primary">PKR {m.cost.toLocaleString()}</td>
                   <td className="px-4 py-3"><StatusBadge status={m.status} /></td>
                   <td className="px-4 py-3">
@@ -243,7 +288,7 @@ export default function Maintenance() {
                 </tr>
               ))}
               {filtered.length === 0 && (
-                <tr><td colSpan={9} className="px-4 py-8 text-center text-muted-foreground">No records found.</td></tr>
+                <tr><td colSpan={10} className="px-4 py-8 text-center text-muted-foreground">No records found.</td></tr>
               )}
             </tbody>
           </table>
