@@ -250,7 +250,7 @@ export default function Maintenance() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border/10">
-                {["ID", "Asset", "Type", "Description", "Technician", "Date", "Cost", "Status", "Actions"].map((h) => (
+                {["ID", "Asset", "Type", "Description", "Technician", "Date", "Recurrence", "Cost", "Status", "Actions"].map((h) => (
                   <th key={h} className={`px-4 py-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground ${h === "Cost" ? "text-right" : "text-left"}`}>{h}</th>
                 ))}
               </tr>
@@ -268,6 +268,15 @@ export default function Maintenance() {
                   <td className="px-4 py-3 text-muted-foreground max-w-[200px] truncate">{m.description}</td>
                   <td className="px-4 py-3 text-muted-foreground">{m.technician}</td>
                   <td className="px-4 py-3 tabular-data text-muted-foreground">{m.date}</td>
+                  <td className="px-4 py-3">
+                    {m.recurrence && m.recurrence !== "none" ? (
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[11px] font-semibold bg-secondary/20 text-secondary-foreground border border-border/30">
+                        <Repeat className="w-3 h-3" /> {m.recurrence}
+                      </span>
+                    ) : (
+                      <span className="text-xs text-muted-foreground">—</span>
+                    )}
+                  </td>
                   <td className="px-4 py-3 text-right tabular-data font-medium text-primary">PKR {m.cost.toLocaleString()}</td>
                   <td className="px-4 py-3"><StatusBadge status={m.status} /></td>
                   <td className="px-4 py-3">
