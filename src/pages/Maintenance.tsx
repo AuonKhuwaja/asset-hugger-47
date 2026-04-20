@@ -6,8 +6,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Wrench, Search, Plus, Clock, History, CheckCircle, AlertTriangle, DollarSign, X, Pencil, Trash2 } from "lucide-react";
+import { Wrench, Search, Plus, Clock, History, CheckCircle, AlertTriangle, DollarSign, X, Pencil, Trash2, Mail, Repeat } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
+import { ExportButtons } from "@/components/ExportButtons";
+
+type Recurrence = "none" | "daily" | "weekly" | "monthly";
 
 export default function Maintenance() {
   const { toast } = useToast();
