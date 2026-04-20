@@ -35,13 +35,13 @@ export default function Maintenance() {
     return m.assetName.toLowerCase().includes(q) || m.description.toLowerCase().includes(q) || m.technician.toLowerCase().includes(q);
   });
 
-  const resetForm = () => { setForm({ assetId: "", type: "preventive", date: "", cost: "", description: "", technician: "" }); setEditing(null); setShowForm(false); };
+  const resetForm = () => { setForm({ assetId: "", type: "preventive", date: "", cost: "", description: "", technician: "", recurrence: "none", notifyEmail: "" }); setEditing(null); setShowForm(false); };
 
   const handleEdit = (id: string) => {
     const m = records.find(x => x.id === id);
     if (!m) return;
     setEditing(m.id);
-    setForm({ assetId: m.assetId, type: m.type, date: m.date, cost: String(m.cost), description: m.description, technician: m.technician });
+    setForm({ assetId: m.assetId, type: m.type, date: m.date, cost: String(m.cost), description: m.description, technician: m.technician, recurrence: (m.recurrence as Recurrence) || "none", notifyEmail: m.notifyEmail || "" });
     setShowForm(true);
   };
 
@@ -56,28 +56,29 @@ export default function Maintenance() {
       toast({ title: "Validation Error", description: "Asset and date are required.", variant: "destructive" });
       return;
     }
+    if (form.notifyEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.notifyEmail)) {
+      toast({ title: "Invalid email", description: "Enter a valid notification email.", variant: "destructive" });
+      return;
+    }
     const selectedAsset = assets.find(a => a.id === form.assetId);
+    const payload = {
+      assetId: form.assetId, assetName: selectedAsset?.name || "Unknown",
+      type: form.type, date: form.date, cost: Number(form.cost) || 0,
+      description: form.description, technician: form.technician,
+      recurrence: form.recurrence, notifyEmail: form.notifyEmail,
+    };
     if (editing) {
-      setRecords(prev => prev.map(m => m.id === editing ? {
-        ...m, assetId: form.assetId, assetName: selectedAsset?.name || m.assetName,
-        type: form.type, date: form.date, cost: Number(form.cost) || 0,
-        description: form.description, technician: form.technician,
-      } : m));
+      setRecords(prev => prev.map(m => m.id === editing ? { ...m, ...payload } : m));
       toast({ title: "Record updated", description: "Maintenance record has been updated." });
     } else {
-      const newRecord = {
-        id: `MNT-${String(records.length + 1).padStart(3, "0")}`,
-        assetId: form.assetId,
-        assetName: selectedAsset?.name || "Unknown",
-        type: form.type,
-        date: form.date,
-        cost: Number(form.cost) || 0,
-        description: form.description,
-        technician: form.technician,
-        status: "scheduled" as const,
-      };
+      const newRecord = { id: `MNT-${String(records.length + 1).padStart(3, "0")}`, ...payload, status: "scheduled" as const };
       setRecords(prev => [...prev, newRecord]);
-      toast({ title: "Maintenance Scheduled", description: "Record created successfully." });
+      toast({
+        title: "Maintenance Scheduled",
+        description: form.notifyEmail
+          ? `Record saved. Email alert will be sent to ${form.notifyEmail}${form.recurrence !== "none" ? ` (recurs ${form.recurrence})` : ""}.`
+          : `Record created${form.recurrence !== "none" ? ` (recurs ${form.recurrence})` : ""}.`,
+      });
     }
     resetForm();
   };
