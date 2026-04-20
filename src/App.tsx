@@ -29,6 +29,10 @@ import SuperAdminEditCompany from "@/pages/SuperAdminEditCompany";
 import MyAssets from "@/pages/MyAssets";
 import AssetRequests from "@/pages/AssetRequests";
 import MaintenanceRequests from "@/pages/MaintenanceRequests";
+import DepreciationTracking from "@/pages/DepreciationTracking";
+import DepreciationRun from "@/pages/DepreciationRun";
+import DepreciationRunHistory from "@/pages/DepreciationRunHistory";
+import MonthlyAssetValueReport from "@/pages/MonthlyAssetValueReport";
 
 const queryClient = new QueryClient();
 
@@ -60,6 +64,10 @@ function AppRoutes() {
       <Route path="/employees" element={<AdminRoute><AppLayout><Employees /></AppLayout></AdminRoute>} />
       <Route path="/maintenance" element={<ProtectedRoute><AppLayout><Maintenance /></AppLayout></ProtectedRoute>} />
       <Route path="/billing" element={<ProtectedRoute><AppLayout><Billing /></AppLayout></ProtectedRoute>} />
+      <Route path="/billing/depreciation" element={<ProtectedRoute><AppLayout><DepreciationTracking /></AppLayout></ProtectedRoute>} />
+      <Route path="/billing/depreciation-run" element={<AdminRoute><AppLayout><DepreciationRun /></AppLayout></AdminRoute>} />
+      <Route path="/billing/run-history" element={<ProtectedRoute><AppLayout><DepreciationRunHistory /></AppLayout></ProtectedRoute>} />
+      <Route path="/billing/monthly-report" element={<ProtectedRoute><AppLayout><MonthlyAssetValueReport /></AppLayout></ProtectedRoute>} />
       <Route path="/reports" element={<ProtectedRoute><AppLayout><Reports /></AppLayout></ProtectedRoute>} />
       <Route path="/settings" element={<ProtectedRoute><AppLayout><Settings /></AppLayout></ProtectedRoute>} />
       <Route path="/profile" element={<ProtectedRoute><AppLayout><Profile /></AppLayout></ProtectedRoute>} />

@@ -29,6 +29,9 @@ import {
   ShoppingBag,
   Send,
   AlertTriangle,
+  TrendingDown,
+  Play,
+  CalendarRange,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -97,7 +100,11 @@ const getNavItems = (isAdmin: boolean, isEmployee: boolean): NavItem[] => {
       icon: Receipt,
       children: [
         { to: "/billing", label: "Cost Entries", icon: DollarSign },
+        { to: "/billing/depreciation", label: "Depreciation Tracking", icon: TrendingDown },
+        ...(isAdmin ? [{ to: "/billing/depreciation-run", label: "Depreciation Run", icon: Play }] : []),
+        { to: "/billing/monthly-report", label: "Monthly Asset Value", icon: CalendarRange },
         { to: "/reports", label: "Reports", icon: FileText },
+        { to: "/billing/run-history", label: "Run History", icon: History },
       ],
     },
     { to: "/profile", icon: UserCog, label: "My Profile" },
