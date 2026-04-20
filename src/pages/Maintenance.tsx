@@ -181,6 +181,19 @@ export default function Maintenance() {
               <Label className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Technician</Label>
               <Input value={form.technician} onChange={e => setForm(f => ({ ...f, technician: e.target.value }))} placeholder="Name" className="border-border/30 rounded-xl" />
             </div>
+            <div className="space-y-1.5">
+              <Label className="text-muted-foreground text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5"><Repeat className="w-3.5 h-3.5" /> Recurrence</Label>
+              <select value={form.recurrence} onChange={e => setForm(f => ({ ...f, recurrence: e.target.value as Recurrence }))} className="select-vision">
+                <option value="none">One-time</option>
+                <option value="daily">Daily</option>
+                <option value="weekly">Weekly</option>
+                <option value="monthly">Monthly</option>
+              </select>
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-muted-foreground text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5"><Mail className="w-3.5 h-3.5" /> Notify Email</Label>
+              <Input type="email" value={form.notifyEmail} onChange={e => setForm(f => ({ ...f, notifyEmail: e.target.value }))} placeholder="alerts@company.com" className="border-border/30 rounded-xl" />
+            </div>
           </div>
           <div className="space-y-1.5">
             <Label className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Description</Label>
@@ -209,9 +222,28 @@ export default function Maintenance() {
               </button>
             ))}
           </div>
-          <div className="relative w-64">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <input type="text" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} className="w-full pl-9 pr-3 py-2 rounded-xl bg-muted/20 border border-border/20 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30" />
+          <div className="flex items-center gap-3">
+            <ExportButtons
+              filename="maintenance-records"
+              title="Maintenance Records"
+              columns={[
+                { header: "ID", accessor: (m: any) => m.id },
+                { header: "Asset", accessor: (m: any) => m.assetName },
+                { header: "Type", accessor: (m: any) => m.type },
+                { header: "Description", accessor: (m: any) => m.description },
+                { header: "Technician", accessor: (m: any) => m.technician },
+                { header: "Date", accessor: (m: any) => m.date },
+                { header: "Recurrence", accessor: (m: any) => m.recurrence || "none" },
+                { header: "Notify Email", accessor: (m: any) => m.notifyEmail || "" },
+                { header: "Cost (PKR)", accessor: (m: any) => m.cost },
+                { header: "Status", accessor: (m: any) => m.status },
+              ]}
+              rows={filtered}
+            />
+            <div className="relative w-64">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <input type="text" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} className="w-full pl-9 pr-3 py-2 rounded-xl bg-muted/20 border border-border/20 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30" />
+            </div>
           </div>
         </div>
         <div className="overflow-x-auto">
