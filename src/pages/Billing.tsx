@@ -150,7 +150,7 @@ export default function Billing() {
                 { header: "Repair (PKR)", accessor: (d: any) => d.repairCost },
                 { header: "Total Cost (PKR)", accessor: (d: any) => d.totalCost },
               ]}
-              rows={filtered}
+              rows={filteredDepts}
             />
             <div className="relative w-64">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
