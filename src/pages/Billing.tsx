@@ -135,11 +135,27 @@ export default function Billing() {
 
       {/* Department Cost Table */}
       <div className="vision-card overflow-hidden">
-        <div className="p-5 border-b border-border/10 flex items-center justify-between">
+        <div className="p-5 border-b border-border/10 flex items-center justify-between gap-3">
           <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground">Department Cost Allocation</h3>
-          <div className="relative w-64">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <input type="text" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} className="w-full pl-9 pr-3 py-2 rounded-xl bg-muted/20 border border-border/20 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30" />
+          <div className="flex items-center gap-3">
+            <ExportButtons
+              filename="department-costs"
+              title="Department Cost Allocation"
+              columns={[
+                { header: "Department", accessor: (d: any) => d.department },
+                { header: "Asset Count", accessor: (d: any) => d.assetCount },
+                { header: "Total Value (PKR)", accessor: (d: any) => d.totalValue },
+                { header: "Maintenance (PKR)", accessor: (d: any) => d.maintenanceCost },
+                { header: "Depreciation (PKR)", accessor: (d: any) => d.depreciationCost },
+                { header: "Repair (PKR)", accessor: (d: any) => d.repairCost },
+                { header: "Total Cost (PKR)", accessor: (d: any) => d.totalCost },
+              ]}
+              rows={filtered}
+            />
+            <div className="relative w-64">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <input type="text" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} className="w-full pl-9 pr-3 py-2 rounded-xl bg-muted/20 border border-border/20 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30" />
+            </div>
           </div>
         </div>
         <div className="overflow-x-auto">
