@@ -61,22 +61,17 @@ const getNavItems = (isAdmin: boolean, isEmployee: boolean): NavItem[] => {
     ];
   }
 
-  const masterDataChildren: NavChild[] = [
-    ...(isAdmin ? [{ to: "/categories", label: "Categories", icon: FolderOpen }] : []),
-    { to: "/vendors", label: "Vendors", icon: ShoppingBag },
-    ...(isAdmin ? [{ to: "/departments", label: "Departments", icon: Building2 }] : []),
-    ...(isAdmin ? [{ to: "/employees", label: "Employees", icon: Users }] : []),
-  ];
+ const masterDataChildren: NavChild[] = [
+  ...(isAdmin ? [{ to: "/categories", label: "Categories", icon: FolderOpen }] : []),
+  ...(isAdmin ? [{ to: "/assets", label: "Assets", icon: Package }] : []),
+  ...(isAdmin ? [{ to: "/vendors", label: "Vendors", icon: ShoppingBag }]: []),
+  ...(isAdmin ? [{ to: "/departments", label: "Departments", icon: Building2 }] : []),
+  ...(isAdmin ? [{ to: "/employees", label: "Employees", icon: Users }] : []),
+];
 
   return [
     { to: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
-    {
-      label: "Assets",
-      icon: Package,
-      children: [
-        { to: "/assets", label: "All Assets", icon: Package },
-      ],
-    },
+    
     {
       label: "Master Data",
       icon: FolderOpen,

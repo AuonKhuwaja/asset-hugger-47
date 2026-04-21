@@ -1,6 +1,15 @@
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
+import "jspdf-autotable"; // ← sirf import, no named import
+
+// Extend jsPDF type to include autoTable
+import type { UserOptions } from "jspdf-autotable";
+
+declare module "jspdf" {
+  interface jsPDF {
+    autoTable: (options: UserOptions) => jsPDF;
+  }
+}
 
 export type ExportColumn<T> = { header: string; accessor: (row: T) => string | number };
 
@@ -22,7 +31,8 @@ export function exportToPdf<T>(filename: string, title: string, columns: ExportC
   doc.text(title, 14, 14);
   doc.setFontSize(9);
   doc.text(`Generated: ${new Date().toLocaleString()}`, 14, 20);
-  autoTable(doc, {
+
+  doc.autoTable({          // ← autoTable as method on doc instance
     startY: 26,
     head: [columns.map((c) => c.header)],
     body: rows.map((r) => columns.map((c) => String(c.accessor(r) ?? ""))),
@@ -30,5 +40,6 @@ export function exportToPdf<T>(filename: string, title: string, columns: ExportC
     headStyles: { fillColor: [37, 99, 235], textColor: 255 },
     alternateRowStyles: { fillColor: [245, 247, 250] },
   });
+
   doc.save(`${filename}.pdf`);
 }
