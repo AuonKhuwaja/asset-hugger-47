@@ -65,36 +65,43 @@ const Auth = () => {
     setTimeout(() => {
       setLoading(false);
       const userName = email.split("@")[0];
-      // Save to localStorage
-      if (selectedCompany) {
+      if (selectedCompany && !isSuperAdminMode) {
         localStorage.setItem("selectedCompany", selectedCompany.slug);
         localStorage.setItem("companyName", selectedCompany.name);
         localStorage.setItem("companyInitials", selectedCompany.initials);
         localStorage.setItem("companyColor", selectedCompany.color);
       }
-      localStorage.setItem("userRole", "admin");
       localStorage.setItem("userName", userName);
 
-      // Try auth context login first, fallback to demo
       const success = login(email, password);
       if (success) {
+        const stored = JSON.parse(localStorage.getItem("tv_user") || "{}");
         toast.success("Signed in successfully!");
-        navigate("/dashboard");
+        if (stored.role === "super_admin") {
+          localStorage.setItem("role", "superadmin");
+          navigate("/super-admin/companies");
+        } else {
+          navigate("/dashboard");
+        }
       } else {
-        // Demo mode — any creds work
+        // Demo fallback — Super Admin mode forces super_admin role
+        const role = isSuperAdminMode ? "super_admin" : "admin";
         const demoUser = {
-          email,
-          name: userName,
-          role: "admin" as const,
-          phone: "",
-          department: "General",
+          email, name: userName, role: role as any,
+          phone: "", department: "General",
           assignedCompanies: ["comp1", "comp2", "comp3"],
         };
         localStorage.setItem("tv_user", JSON.stringify(demoUser));
+        localStorage.setItem("userRole", role);
         toast.success("Signed in successfully!");
-        window.location.href = "/dashboard";
+        if (isSuperAdminMode) {
+          localStorage.setItem("role", "superadmin");
+          window.location.href = "/super-admin/companies";
+        } else {
+          window.location.href = "/dashboard";
+        }
       }
-    }, 1000);
+    }, 800);
   };
 
   const goBackToStep1 = () => {
