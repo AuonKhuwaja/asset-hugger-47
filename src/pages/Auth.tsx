@@ -26,6 +26,7 @@ const Auth = () => {
     const interval = setInterval(() => setBgIndex(i => (i + 1) % 4), 5000);
     return () => clearInterval(interval);
   }, []);
+  const [isSuperAdminMode, setIsSuperAdminMode] = useState(false);
   const [step, setStep] = useState<1 | 2>(1);
   const [companyCode, setCompanyCode] = useState("");
   const [selectedCompany, setSelectedCompany] = useState<typeof mockCompanies[0] | null>(null);
@@ -64,36 +65,43 @@ const Auth = () => {
     setTimeout(() => {
       setLoading(false);
       const userName = email.split("@")[0];
-      // Save to localStorage
-      if (selectedCompany) {
+      if (selectedCompany && !isSuperAdminMode) {
         localStorage.setItem("selectedCompany", selectedCompany.slug);
         localStorage.setItem("companyName", selectedCompany.name);
         localStorage.setItem("companyInitials", selectedCompany.initials);
         localStorage.setItem("companyColor", selectedCompany.color);
       }
-      localStorage.setItem("userRole", "admin");
       localStorage.setItem("userName", userName);
 
-      // Try auth context login first, fallback to demo
       const success = login(email, password);
       if (success) {
+        const stored = JSON.parse(localStorage.getItem("tv_user") || "{}");
         toast.success("Signed in successfully!");
-        navigate("/dashboard");
+        if (stored.role === "super_admin") {
+          localStorage.setItem("role", "superadmin");
+          navigate("/super-admin/companies");
+        } else {
+          navigate("/dashboard");
+        }
       } else {
-        // Demo mode — any creds work
+        // Demo fallback — Super Admin mode forces super_admin role
+        const role = isSuperAdminMode ? "super_admin" : "admin";
         const demoUser = {
-          email,
-          name: userName,
-          role: "admin" as const,
-          phone: "",
-          department: "General",
+          email, name: userName, role: role as any,
+          phone: "", department: "General",
           assignedCompanies: ["comp1", "comp2", "comp3"],
         };
         localStorage.setItem("tv_user", JSON.stringify(demoUser));
+        localStorage.setItem("userRole", role);
         toast.success("Signed in successfully!");
-        window.location.href = "/dashboard";
+        if (isSuperAdminMode) {
+          localStorage.setItem("role", "superadmin");
+          window.location.href = "/super-admin/companies";
+        } else {
+          window.location.href = "/dashboard";
+        }
       }
-    }, 1000);
+    }, 800);
   };
 
   const goBackToStep1 = () => {
@@ -184,7 +192,7 @@ const Auth = () => {
               transform: animating ? "translateY(12px)" : "translateY(0)",
             }}
           >
-            {step === 1 ? (
+            {step === 1 && !isSuperAdminMode ? (
               /* STEP 1 — Company Code */
               <div>
                 <div className="text-center mb-8">
@@ -230,10 +238,79 @@ const Auth = () => {
                   </button>
                 </form>
 
-                {/* Test codes hint */}
+                <div className="mt-5 text-center">
+                  <button
+                    type="button"
+                    onClick={() => { setIsSuperAdminMode(true); setCompanyError(""); }}
+                    className="text-xs font-medium text-[hsl(215,90%,70%)] hover:text-white underline-offset-4 hover:underline transition-colors"
+                  >
+                    Are you a Super Admin?
+                  </button>
+                </div>
+
                 <div className="mt-6 p-3 rounded-xl border border-[hsl(215,90%,60%,0.2)] bg-[hsl(215,90%,60%,0.06)]">
                   <p className="text-xs text-[hsl(215,90%,70%)] font-medium">
                     Test codes: techcorp · retailplus · assetflow · nexatech · globalassets
+                  </p>
+                </div>
+              </div>
+            ) : isSuperAdminMode ? (
+              /* SUPER ADMIN — Login (no company PIN) */
+              <div>
+                <div className="text-center mb-6">
+                  <div className="w-16 h-16 rounded-2xl mx-auto mb-3 flex items-center justify-center bg-gradient-to-br from-red-600 to-red-800 shadow-[0_0_20px_hsl(0,80%,50%,0.4)]">
+                    <Lock className="w-7 h-7 text-white" />
+                  </div>
+                  <span className="inline-block px-3 py-1 rounded-full bg-red-600/20 border border-red-600/30 text-xs font-bold text-red-400 mb-2">
+                    Super Admin
+                  </span>
+                  <h2 className="text-lg font-bold text-white">Sign in to manage all companies</h2>
+                  <button
+                    onClick={() => setIsSuperAdminMode(false)}
+                    type="button"
+                    className="inline-flex items-center gap-1 mt-2 text-xs text-[hsl(215,90%,70%)] hover:text-white transition-colors"
+                  >
+                    <ArrowLeft className="w-3 h-3" />
+                    Back to standard sign in
+                  </button>
+                </div>
+
+                <form onSubmit={handleLogin} className="space-y-5">
+                  <div className="space-y-2">
+                    <Label className="text-xs font-semibold uppercase text-[hsl(215,20%,45%)]">Email</Label>
+                    <div className="relative">
+                      <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[hsl(215,20%,40%)]" />
+                      <Input type="email" placeholder="superadmin@trackvault.com" value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="pl-11 h-12 bg-[hsl(223,37%,13%)] border-[hsl(222,20%,20%)] text-white rounded-xl" />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-xs font-semibold uppercase text-[hsl(215,20%,45%)]">Password</Label>
+                    <div className="relative">
+                      <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[hsl(215,20%,40%)]" />
+                      <Input type={showPassword ? "text" : "password"} placeholder="••••••••" value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className="pl-11 pr-11 h-12 bg-[hsl(223,37%,13%)] border-[hsl(222,20%,20%)] text-white rounded-xl" />
+                      <button type="button" onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[hsl(215,20%,40%)] hover:text-white">
+                        {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
+                    </div>
+                  </div>
+                  <button type="submit" disabled={loading}
+                    className="relative w-full h-12 rounded-xl overflow-hidden text-sm font-semibold text-white bg-gradient-to-r from-red-600 to-red-800 shadow-lg shadow-red-600/25 transition-all duration-300 group disabled:opacity-70">
+                    <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+                    <span className="relative z-10 flex items-center justify-center gap-2">
+                      {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                      {loading ? "Signing in..." : "Sign In as Super Admin"}
+                    </span>
+                  </button>
+                </form>
+
+                <div className="mt-6 p-3 rounded-xl border border-red-600/20 bg-red-600/10">
+                  <p className="text-xs text-red-300/80 font-medium">
+                    Test: superadmin@trackvault.com / super123
                   </p>
                 </div>
               </div>
