@@ -9,7 +9,7 @@ export default function SuperAdminLayout() {
 
   useEffect(() => {
     if (localStorage.getItem("role") !== "superadmin") {
-      navigate("/super-admin/login", { replace: true });
+      navigate("/", { replace: true });
     }
   }, [navigate]);
 
@@ -18,7 +18,8 @@ export default function SuperAdminLayout() {
   const handleLogout = () => {
     localStorage.removeItem("role");
     localStorage.removeItem("userName");
-    navigate("/super-admin/login", { replace: true });
+    localStorage.removeItem("tv_user");
+    navigate("/", { replace: true });
   };
 
   return (

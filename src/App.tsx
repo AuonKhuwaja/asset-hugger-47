@@ -21,11 +21,11 @@ import Companies from "@/pages/Companies";
 import Vendors from "@/pages/Vendors";
 import Auth from "@/pages/Auth";
 import NotFound from "@/pages/NotFound";
-import SuperAdminLogin from "@/pages/SuperAdminLogin";
 import SuperAdminLayout from "@/components/SuperAdminLayout";
 import SuperAdminCompanies from "@/pages/SuperAdminCompanies";
 import SuperAdminAddCompany from "@/pages/SuperAdminAddCompany";
 import SuperAdminEditCompany from "@/pages/SuperAdminEditCompany";
+import SuperAdminCompanyDetails from "@/pages/SuperAdminCompanyDetails";
 import MyAssets from "@/pages/MyAssets";
 import AssetRequests from "@/pages/AssetRequests";
 import MaintenanceRequests from "@/pages/MaintenanceRequests";
@@ -79,12 +79,13 @@ function AppRoutes() {
       <Route path="/asset-requests" element={<ProtectedRoute><AppLayout><AssetRequests /></AppLayout></ProtectedRoute>} />
       <Route path="/maintenance-requests" element={<ProtectedRoute><AppLayout><MaintenanceRequests /></AppLayout></ProtectedRoute>} />
 
-      {/* Super Admin routes — completely separate */}
-      <Route path="/super-admin" element={<Navigate to="/super-admin/login" replace />} />
-      <Route path="/super-admin/login" element={<SuperAdminLogin />} />
+      {/* Super Admin routes — uses unified login at "/" */}
+      <Route path="/super-admin/login" element={<Navigate to="/" replace />} />
       <Route path="/super-admin" element={<SuperAdminLayout />}>
+        <Route index element={<Navigate to="companies" replace />} />
         <Route path="companies" element={<SuperAdminCompanies />} />
         <Route path="companies/add" element={<SuperAdminAddCompany />} />
+        <Route path="companies/:slug" element={<SuperAdminCompanyDetails />} />
         <Route path="companies/:slug/edit" element={<SuperAdminEditCompany />} />
       </Route>
 
