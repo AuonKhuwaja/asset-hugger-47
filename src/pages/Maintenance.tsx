@@ -10,10 +10,13 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   Wrench, Search, Plus, Clock, History, CheckCircle, AlertTriangle, DollarSign,
-  X, Pencil, Trash2, Mail, Repeat, Send, Users, CalendarDays, ShieldCheck,
+  X, Pencil, Trash2, Mail, Repeat, Send, Users, CalendarDays, ShieldCheck, ChevronDown, Check,
 } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
 import { ExportButtons } from "@/components/ExportButtons";
+import {
+  Popover, PopoverContent, PopoverTrigger,
+} from "@/components/ui/popover";
 
 type Recurrence = "none" | "daily" | "weekly" | "monthly";
 type TypeFilter = "all" | "preventive" | "corrective";
