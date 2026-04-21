@@ -41,6 +41,9 @@ export default function Maintenance() {
   // Notifier state
   const [selectedEmployees, setSelectedEmployees] = useState<string[]>([]);
   const [notifyMessage, setNotifyMessage] = useState("");
+  const [employeePickerOpen, setEmployeePickerOpen] = useState(false);
+  const [dateFrom, setDateFrom] = useState("");
+  const [dateTo, setDateTo] = useState("");
 
   const scheduled = records.filter(m => m.status === "scheduled" || m.status === "in-progress");
   const completed = records.filter(m => m.status === "completed");
@@ -48,6 +51,8 @@ export default function Maintenance() {
 
   const filtered = displayRecords.filter((m) => {
     if (typeFilter !== "all" && m.type !== typeFilter) return false;
+    if (dateFrom && m.date < dateFrom) return false;
+    if (dateTo && m.date > dateTo) return false;
     if (!search) return true;
     const q = search.toLowerCase();
     return m.assetName.toLowerCase().includes(q)
