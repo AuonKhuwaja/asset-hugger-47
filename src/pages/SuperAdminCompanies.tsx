@@ -185,7 +185,11 @@ export default function SuperAdminCompanies() {
             </TableHeader>
             <TableBody>
               {filtered.map((c, i) => (
-                <TableRow key={c.id}>
+                <TableRow
+                  key={c.id}
+                  className="cursor-pointer hover:bg-muted/30"
+                  onClick={() => navigate(`/super-admin/companies/${c.slug}`)}
+                >
                   <TableCell className="text-muted-foreground">{i + 1}</TableCell>
                   <TableCell>
                     <div
@@ -206,9 +210,11 @@ export default function SuperAdminCompanies() {
                       {c.status}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-right">
+                  <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
                     <div className="flex items-center justify-end gap-1">
-                      <Button variant="ghost" size="icon" className="h-8 w-8"><Eye className="w-4 h-4" /></Button>
+                      <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => navigate(`/super-admin/companies/${c.slug}`)}>
+                        <Eye className="w-4 h-4" />
+                      </Button>
                       <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => navigate(`/super-admin/companies/${c.slug}/edit`)}>
                         <Pencil className="w-4 h-4" />
                       </Button>
