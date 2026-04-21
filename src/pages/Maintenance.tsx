@@ -10,10 +10,13 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   Wrench, Search, Plus, Clock, History, CheckCircle, AlertTriangle, DollarSign,
-  X, Pencil, Trash2, Mail, Repeat, Send, Users, CalendarDays, ShieldCheck,
+  X, Pencil, Trash2, Mail, Repeat, Send, Users, CalendarDays, ShieldCheck, ChevronDown, Check,
 } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
 import { ExportButtons } from "@/components/ExportButtons";
+import {
+  Popover, PopoverContent, PopoverTrigger,
+} from "@/components/ui/popover";
 
 type Recurrence = "none" | "daily" | "weekly" | "monthly";
 type TypeFilter = "all" | "preventive" | "corrective";
@@ -38,6 +41,9 @@ export default function Maintenance() {
   // Notifier state
   const [selectedEmployees, setSelectedEmployees] = useState<string[]>([]);
   const [notifyMessage, setNotifyMessage] = useState("");
+  const [employeePickerOpen, setEmployeePickerOpen] = useState(false);
+  const [dateFrom, setDateFrom] = useState("");
+  const [dateTo, setDateTo] = useState("");
 
   const scheduled = records.filter(m => m.status === "scheduled" || m.status === "in-progress");
   const completed = records.filter(m => m.status === "completed");
@@ -45,6 +51,8 @@ export default function Maintenance() {
 
   const filtered = displayRecords.filter((m) => {
     if (typeFilter !== "all" && m.type !== typeFilter) return false;
+    if (dateFrom && m.date < dateFrom) return false;
+    if (dateTo && m.date > dateTo) return false;
     if (!search) return true;
     const q = search.toLowerCase();
     return m.assetName.toLowerCase().includes(q)
@@ -285,14 +293,55 @@ export default function Maintenance() {
                 <p className="text-xs text-muted-foreground">Select employees and email them an alert</p>
               </div>
             </div>
-            <Button
-              onClick={sendNotification}
-              disabled={selectedEmployees.length === 0}
-              className="bg-gradient-to-r from-primary to-primary/80 rounded-xl font-bold disabled:opacity-50"
-            >
-              <Send className="w-4 h-4 mr-2" />
-              Notify {selectedEmployees.length > 0 ? `(${selectedEmployees.length})` : ""}
-            </Button>
+            <div className="flex items-center gap-2 flex-wrap">
+              <Popover open={employeePickerOpen} onOpenChange={setEmployeePickerOpen}>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" className="rounded-xl gap-2 min-w-[200px] justify-between">
+                    <span className="flex items-center gap-2 truncate">
+                      <Users className="w-4 h-4" />
+                      {selectedEmployees.length === 0
+                        ? "Select employees..."
+                        : `${selectedEmployees.length} selected`}
+                    </span>
+                    <ChevronDown className="w-4 h-4 opacity-60" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-72 p-0 bg-popover" align="end">
+                  <div className="p-2 border-b border-border/30 flex items-center justify-between">
+                    <span className="text-xs font-semibold uppercase text-muted-foreground">Employees</span>
+                    {selectedEmployees.length > 0 && (
+                      <button onClick={() => setSelectedEmployees([])} className="text-xs text-primary hover:underline">Clear</button>
+                    )}
+                  </div>
+                  <div className="max-h-64 overflow-y-auto py-1">
+                    {employees.map((name) => {
+                      const checked = selectedEmployees.includes(name);
+                      return (
+                        <button
+                          key={name}
+                          type="button"
+                          onClick={() => toggleEmployee(name)}
+                          className="w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-muted/50 text-left"
+                        >
+                          <div className={`w-4 h-4 rounded border flex items-center justify-center ${checked ? "bg-primary border-primary" : "border-border"}`}>
+                            {checked && <Check className="w-3 h-3 text-primary-foreground" />}
+                          </div>
+                          <span className="flex-1 truncate text-foreground">{name}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </PopoverContent>
+              </Popover>
+              <Button
+                onClick={sendNotification}
+                disabled={selectedEmployees.length === 0}
+                className="bg-gradient-to-r from-primary to-primary/80 rounded-xl font-bold disabled:opacity-50"
+              >
+                <Send className="w-4 h-4 mr-2" />
+                Send Email {selectedEmployees.length > 0 ? `(${selectedEmployees.length})` : ""}
+              </Button>
+            </div>
           </div>
 
           {dueSoon.length === 0 ? (
@@ -383,6 +432,15 @@ export default function Maintenance() {
                 ]}
                 rows={filtered}
               />
+              <div className="flex items-center gap-1.5">
+                <CalendarDays className="w-4 h-4 text-muted-foreground" />
+                <Input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} className="h-9 w-[140px] rounded-xl text-xs" title="From" />
+                <span className="text-xs text-muted-foreground">→</span>
+                <Input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} className="h-9 w-[140px] rounded-xl text-xs" title="To" />
+                {(dateFrom || dateTo) && (
+                  <button onClick={() => { setDateFrom(""); setDateTo(""); }} className="p-1 rounded hover:bg-muted/30 text-muted-foreground" title="Clear date filter"><X className="w-3.5 h-3.5" /></button>
+                )}
+              </div>
               <div className="relative w-64">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <input type="text" placeholder="Search history..." value={search} onChange={(e) => setSearch(e.target.value)} className="w-full pl-9 pr-3 py-2 rounded-xl bg-muted/20 border border-border/20 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30" />
@@ -467,6 +525,15 @@ export default function Maintenance() {
                 ]}
                 rows={filtered}
               />
+              <div className="flex items-center gap-1.5">
+                <CalendarDays className="w-4 h-4 text-muted-foreground" />
+                <Input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} className="h-9 w-[140px] rounded-xl text-xs" title="From" />
+                <span className="text-xs text-muted-foreground">→</span>
+                <Input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} className="h-9 w-[140px] rounded-xl text-xs" title="To" />
+                {(dateFrom || dateTo) && (
+                  <button onClick={() => { setDateFrom(""); setDateTo(""); }} className="p-1 rounded hover:bg-muted/30 text-muted-foreground" title="Clear date filter"><X className="w-3.5 h-3.5" /></button>
+                )}
+              </div>
               <div className="relative w-64">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <input type="text" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} className="w-full pl-9 pr-3 py-2 rounded-xl bg-muted/20 border border-border/20 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30" />
