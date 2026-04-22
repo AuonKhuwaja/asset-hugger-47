@@ -103,9 +103,11 @@ export default function Maintenance() {
       return;
     }
     const cc = user?.email || "you@company.com";
+    const companyName = localStorage.getItem("companyName") || "Company";
+    const companyAdmin = `admin@${(localStorage.getItem("selectedCompany") || "company").toLowerCase()}.com`;
     toast({
       title: "📧 Email sent",
-      description: `Maintenance notice delivered to ${selectedEmployees.length} employee(s). CC: ${cc}`,
+      description: `Maintenance notice sent to ${selectedEmployees.join(", ")}. CC: ${cc}, ${companyAdmin} (${companyName} Admin)`,
     });
     setSelectedEmployees([]);
     setNotifyMessage("");
