@@ -10,13 +10,17 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   Wrench, Search, Plus, Clock, History, CheckCircle, AlertTriangle, DollarSign,
-  X, Pencil, Trash2, Mail, Repeat, Send, Users, CalendarDays, ShieldCheck, ChevronDown, Check,
+  X, Pencil, Trash2, Mail, Repeat, Send, Users, CalendarDays, ShieldCheck, ChevronDown, Check, CalendarRange,
 } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
 import { ExportButtons } from "@/components/ExportButtons";
 import {
   Popover, PopoverContent, PopoverTrigger,
 } from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
+import type { DateRange } from "react-day-picker";
 
 type Recurrence = "none" | "daily" | "weekly" | "monthly";
 type TypeFilter = "all" | "preventive" | "corrective";
