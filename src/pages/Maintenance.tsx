@@ -10,13 +10,17 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   Wrench, Search, Plus, Clock, History, CheckCircle, AlertTriangle, DollarSign,
-  X, Pencil, Trash2, Mail, Repeat, Send, Users, CalendarDays, ShieldCheck, ChevronDown, Check,
+  X, Pencil, Trash2, Mail, Repeat, Send, Users, CalendarDays, ShieldCheck, ChevronDown, Check, CalendarRange,
 } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
 import { ExportButtons } from "@/components/ExportButtons";
 import {
   Popover, PopoverContent, PopoverTrigger,
 } from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
+import type { DateRange } from "react-day-picker";
 
 type Recurrence = "none" | "daily" | "weekly" | "monthly";
 type TypeFilter = "all" | "preventive" | "corrective";
@@ -42,8 +46,9 @@ export default function Maintenance() {
   const [selectedEmployees, setSelectedEmployees] = useState<string[]>([]);
   const [notifyMessage, setNotifyMessage] = useState("");
   const [employeePickerOpen, setEmployeePickerOpen] = useState(false);
-  const [dateFrom, setDateFrom] = useState("");
-  const [dateTo, setDateTo] = useState("");
+  const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
+  const dateFrom = dateRange?.from ? format(dateRange.from, "yyyy-MM-dd") : "";
+  const dateTo = dateRange?.to ? format(dateRange.to, "yyyy-MM-dd") : "";
 
   const scheduled = records.filter(m => m.status === "scheduled" || m.status === "in-progress");
   const completed = records.filter(m => m.status === "completed");
@@ -72,8 +77,22 @@ export default function Maintenance() {
         return { id: m.id, assignee, assetName: m.assetName, date: m.date, type: m.type, daysUntil: days };
       })
       .filter(x => x.assignee)
+      .filter(x => {
+        if (dateFrom && x.date < dateFrom) return false;
+        if (dateTo && x.date > dateTo) return false;
+        return true;
+      })
       .sort((a, b) => a.daysUntil - b.daysUntil);
-  }, [scheduled]);
+  }, [scheduled, dateFrom, dateTo]);
+
+  // Unique employees with maintenance in the selected range (only when range chosen)
+  const filteredEmployees = useMemo(() => {
+    const set = new Set<string>();
+    dueSoon.forEach(d => { if (d.assignee) set.add(d.assignee); });
+    return Array.from(set);
+  }, [dueSoon]);
+
+  const rangeActive = !!(dateFrom || dateTo);
 
   const toggleEmployee = (name: string) =>
     setSelectedEmployees(prev => prev.includes(name) ? prev.filter(n => n !== name) : [...prev, name]);
@@ -84,9 +103,11 @@ export default function Maintenance() {
       return;
     }
     const cc = user?.email || "you@company.com";
+    const companyName = localStorage.getItem("companyName") || "Company";
+    const companyAdmin = `admin@${(localStorage.getItem("selectedCompany") || "company").toLowerCase()}.com`;
     toast({
       title: "📧 Email sent",
-      description: `Maintenance notice delivered to ${selectedEmployees.length} employee(s). CC: ${cc}`,
+      description: `Maintenance notice sent to ${selectedEmployees.join(", ")}. CC: ${cc}, ${companyAdmin} (${companyName} Admin)`,
     });
     setSelectedEmployees([]);
     setNotifyMessage("");
@@ -294,27 +315,67 @@ export default function Maintenance() {
               </div>
             </div>
             <div className="flex items-center gap-2 flex-wrap">
+              {/* Single date-range calendar */}
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" className={cn("rounded-xl gap-2 min-w-[240px] justify-start font-normal", !dateRange && "text-muted-foreground")}>
+                    <CalendarRange className="w-4 h-4" />
+                    {dateRange?.from ? (
+                      dateRange.to
+                        ? `${format(dateRange.from, "MMM d")} – ${format(dateRange.to, "MMM d, yyyy")}`
+                        : format(dateRange.from, "MMM d, yyyy")
+                    ) : "Filter by date range"}
+                    {dateRange && (
+                      <X
+                        className="w-3.5 h-3.5 ml-auto opacity-60 hover:opacity-100"
+                        onClick={(e) => { e.stopPropagation(); setDateRange(undefined); setSelectedEmployees([]); }}
+                      />
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0 bg-popover" align="end">
+                  <Calendar
+                    mode="range"
+                    selected={dateRange}
+                    onSelect={(r) => { setDateRange(r); setSelectedEmployees([]); }}
+                    numberOfMonths={2}
+                    initialFocus
+                    className={cn("p-3 pointer-events-auto")}
+                  />
+                </PopoverContent>
+              </Popover>
+
               <Popover open={employeePickerOpen} onOpenChange={setEmployeePickerOpen}>
                 <PopoverTrigger asChild>
-                  <Button variant="outline" className="rounded-xl gap-2 min-w-[200px] justify-between">
+                  <Button
+                    variant="outline"
+                    disabled={!rangeActive || filteredEmployees.length === 0}
+                    className="rounded-xl gap-2 min-w-[200px] justify-between disabled:opacity-50"
+                  >
                     <span className="flex items-center gap-2 truncate">
                       <Users className="w-4 h-4" />
-                      {selectedEmployees.length === 0
-                        ? "Select employees..."
-                        : `${selectedEmployees.length} selected`}
+                      {!rangeActive
+                        ? "Select date range first"
+                        : filteredEmployees.length === 0
+                          ? "No employees in range"
+                          : selectedEmployees.length === 0
+                            ? `Select from ${filteredEmployees.length} employee(s)`
+                            : `${selectedEmployees.length} selected`}
                     </span>
                     <ChevronDown className="w-4 h-4 opacity-60" />
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-72 p-0 bg-popover" align="end">
                   <div className="p-2 border-b border-border/30 flex items-center justify-between">
-                    <span className="text-xs font-semibold uppercase text-muted-foreground">Employees</span>
+                    <span className="text-xs font-semibold uppercase text-muted-foreground">Due in range</span>
                     {selectedEmployees.length > 0 && (
                       <button onClick={() => setSelectedEmployees([])} className="text-xs text-primary hover:underline">Clear</button>
                     )}
                   </div>
                   <div className="max-h-64 overflow-y-auto py-1">
-                    {employees.map((name) => {
+                    {filteredEmployees.length === 0 ? (
+                      <div className="px-3 py-4 text-center text-xs text-muted-foreground">No employees with maintenance in this range.</div>
+                    ) : filteredEmployees.map((name) => {
                       const checked = selectedEmployees.includes(name);
                       return (
                         <button
@@ -432,15 +493,24 @@ export default function Maintenance() {
                 ]}
                 rows={filtered}
               />
-              <div className="flex items-center gap-1.5">
-                <CalendarDays className="w-4 h-4 text-muted-foreground" />
-                <Input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} className="h-9 w-[140px] rounded-xl text-xs" title="From" />
-                <span className="text-xs text-muted-foreground">→</span>
-                <Input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} className="h-9 w-[140px] rounded-xl text-xs" title="To" />
-                {(dateFrom || dateTo) && (
-                  <button onClick={() => { setDateFrom(""); setDateTo(""); }} className="p-1 rounded hover:bg-muted/30 text-muted-foreground" title="Clear date filter"><X className="w-3.5 h-3.5" /></button>
-                )}
-              </div>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" className={cn("h-9 rounded-xl gap-2 text-xs justify-start font-normal", !dateRange && "text-muted-foreground")}>
+                    <CalendarRange className="w-3.5 h-3.5" />
+                    {dateRange?.from ? (
+                      dateRange.to
+                        ? `${format(dateRange.from, "MMM d")} – ${format(dateRange.to, "MMM d, yyyy")}`
+                        : format(dateRange.from, "MMM d, yyyy")
+                    ) : "Date range"}
+                    {dateRange && (
+                      <X className="w-3 h-3 ml-1 opacity-60 hover:opacity-100" onClick={(e) => { e.stopPropagation(); setDateRange(undefined); }} />
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0 bg-popover" align="end">
+                  <Calendar mode="range" selected={dateRange} onSelect={setDateRange} numberOfMonths={2} initialFocus className={cn("p-3 pointer-events-auto")} />
+                </PopoverContent>
+              </Popover>
               <div className="relative w-64">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <input type="text" placeholder="Search history..." value={search} onChange={(e) => setSearch(e.target.value)} className="w-full pl-9 pr-3 py-2 rounded-xl bg-muted/20 border border-border/20 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30" />
@@ -525,15 +595,24 @@ export default function Maintenance() {
                 ]}
                 rows={filtered}
               />
-              <div className="flex items-center gap-1.5">
-                <CalendarDays className="w-4 h-4 text-muted-foreground" />
-                <Input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} className="h-9 w-[140px] rounded-xl text-xs" title="From" />
-                <span className="text-xs text-muted-foreground">→</span>
-                <Input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} className="h-9 w-[140px] rounded-xl text-xs" title="To" />
-                {(dateFrom || dateTo) && (
-                  <button onClick={() => { setDateFrom(""); setDateTo(""); }} className="p-1 rounded hover:bg-muted/30 text-muted-foreground" title="Clear date filter"><X className="w-3.5 h-3.5" /></button>
-                )}
-              </div>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" className={cn("h-9 rounded-xl gap-2 text-xs justify-start font-normal", !dateRange && "text-muted-foreground")}>
+                    <CalendarRange className="w-3.5 h-3.5" />
+                    {dateRange?.from ? (
+                      dateRange.to
+                        ? `${format(dateRange.from, "MMM d")} – ${format(dateRange.to, "MMM d, yyyy")}`
+                        : format(dateRange.from, "MMM d, yyyy")
+                    ) : "Date range"}
+                    {dateRange && (
+                      <X className="w-3 h-3 ml-1 opacity-60 hover:opacity-100" onClick={(e) => { e.stopPropagation(); setDateRange(undefined); }} />
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0 bg-popover" align="end">
+                  <Calendar mode="range" selected={dateRange} onSelect={setDateRange} numberOfMonths={2} initialFocus className={cn("p-3 pointer-events-auto")} />
+                </PopoverContent>
+              </Popover>
               <div className="relative w-64">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <input type="text" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} className="w-full pl-9 pr-3 py-2 rounded-xl bg-muted/20 border border-border/20 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30" />
