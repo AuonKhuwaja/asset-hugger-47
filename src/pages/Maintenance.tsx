@@ -77,8 +77,22 @@ export default function Maintenance() {
         return { id: m.id, assignee, assetName: m.assetName, date: m.date, type: m.type, daysUntil: days };
       })
       .filter(x => x.assignee)
+      .filter(x => {
+        if (dateFrom && x.date < dateFrom) return false;
+        if (dateTo && x.date > dateTo) return false;
+        return true;
+      })
       .sort((a, b) => a.daysUntil - b.daysUntil);
-  }, [scheduled]);
+  }, [scheduled, dateFrom, dateTo]);
+
+  // Unique employees with maintenance in the selected range (only when range chosen)
+  const filteredEmployees = useMemo(() => {
+    const set = new Set<string>();
+    dueSoon.forEach(d => { if (d.assignee) set.add(d.assignee); });
+    return Array.from(set);
+  }, [dueSoon]);
+
+  const rangeActive = !!(dateFrom || dateTo);
 
   const toggleEmployee = (name: string) =>
     setSelectedEmployees(prev => prev.includes(name) ? prev.filter(n => n !== name) : [...prev, name]);
