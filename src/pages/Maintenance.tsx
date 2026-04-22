@@ -315,27 +315,67 @@ export default function Maintenance() {
               </div>
             </div>
             <div className="flex items-center gap-2 flex-wrap">
+              {/* Single date-range calendar */}
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" className={cn("rounded-xl gap-2 min-w-[240px] justify-start font-normal", !dateRange && "text-muted-foreground")}>
+                    <CalendarRange className="w-4 h-4" />
+                    {dateRange?.from ? (
+                      dateRange.to
+                        ? `${format(dateRange.from, "MMM d")} – ${format(dateRange.to, "MMM d, yyyy")}`
+                        : format(dateRange.from, "MMM d, yyyy")
+                    ) : "Filter by date range"}
+                    {dateRange && (
+                      <X
+                        className="w-3.5 h-3.5 ml-auto opacity-60 hover:opacity-100"
+                        onClick={(e) => { e.stopPropagation(); setDateRange(undefined); setSelectedEmployees([]); }}
+                      />
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0 bg-popover" align="end">
+                  <Calendar
+                    mode="range"
+                    selected={dateRange}
+                    onSelect={(r) => { setDateRange(r); setSelectedEmployees([]); }}
+                    numberOfMonths={2}
+                    initialFocus
+                    className={cn("p-3 pointer-events-auto")}
+                  />
+                </PopoverContent>
+              </Popover>
+
               <Popover open={employeePickerOpen} onOpenChange={setEmployeePickerOpen}>
                 <PopoverTrigger asChild>
-                  <Button variant="outline" className="rounded-xl gap-2 min-w-[200px] justify-between">
+                  <Button
+                    variant="outline"
+                    disabled={!rangeActive || filteredEmployees.length === 0}
+                    className="rounded-xl gap-2 min-w-[200px] justify-between disabled:opacity-50"
+                  >
                     <span className="flex items-center gap-2 truncate">
                       <Users className="w-4 h-4" />
-                      {selectedEmployees.length === 0
-                        ? "Select employees..."
-                        : `${selectedEmployees.length} selected`}
+                      {!rangeActive
+                        ? "Select date range first"
+                        : filteredEmployees.length === 0
+                          ? "No employees in range"
+                          : selectedEmployees.length === 0
+                            ? `Select from ${filteredEmployees.length} employee(s)`
+                            : `${selectedEmployees.length} selected`}
                     </span>
                     <ChevronDown className="w-4 h-4 opacity-60" />
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-72 p-0 bg-popover" align="end">
                   <div className="p-2 border-b border-border/30 flex items-center justify-between">
-                    <span className="text-xs font-semibold uppercase text-muted-foreground">Employees</span>
+                    <span className="text-xs font-semibold uppercase text-muted-foreground">Due in range</span>
                     {selectedEmployees.length > 0 && (
                       <button onClick={() => setSelectedEmployees([])} className="text-xs text-primary hover:underline">Clear</button>
                     )}
                   </div>
                   <div className="max-h-64 overflow-y-auto py-1">
-                    {employees.map((name) => {
+                    {filteredEmployees.length === 0 ? (
+                      <div className="px-3 py-4 text-center text-xs text-muted-foreground">No employees with maintenance in this range.</div>
+                    ) : filteredEmployees.map((name) => {
                       const checked = selectedEmployees.includes(name);
                       return (
                         <button
