@@ -46,8 +46,9 @@ export default function Maintenance() {
   const [selectedEmployees, setSelectedEmployees] = useState<string[]>([]);
   const [notifyMessage, setNotifyMessage] = useState("");
   const [employeePickerOpen, setEmployeePickerOpen] = useState(false);
-  const [dateFrom, setDateFrom] = useState("");
-  const [dateTo, setDateTo] = useState("");
+  const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
+  const dateFrom = dateRange?.from ? format(dateRange.from, "yyyy-MM-dd") : "";
+  const dateTo = dateRange?.to ? format(dateRange.to, "yyyy-MM-dd") : "";
 
   const scheduled = records.filter(m => m.status === "scheduled" || m.status === "in-progress");
   const completed = records.filter(m => m.status === "completed");
