@@ -493,15 +493,24 @@ export default function Maintenance() {
                 ]}
                 rows={filtered}
               />
-              <div className="flex items-center gap-1.5">
-                <CalendarDays className="w-4 h-4 text-muted-foreground" />
-                <Input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} className="h-9 w-[140px] rounded-xl text-xs" title="From" />
-                <span className="text-xs text-muted-foreground">→</span>
-                <Input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} className="h-9 w-[140px] rounded-xl text-xs" title="To" />
-                {(dateFrom || dateTo) && (
-                  <button onClick={() => { setDateFrom(""); setDateTo(""); }} className="p-1 rounded hover:bg-muted/30 text-muted-foreground" title="Clear date filter"><X className="w-3.5 h-3.5" /></button>
-                )}
-              </div>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" className={cn("h-9 rounded-xl gap-2 text-xs justify-start font-normal", !dateRange && "text-muted-foreground")}>
+                    <CalendarRange className="w-3.5 h-3.5" />
+                    {dateRange?.from ? (
+                      dateRange.to
+                        ? `${format(dateRange.from, "MMM d")} – ${format(dateRange.to, "MMM d, yyyy")}`
+                        : format(dateRange.from, "MMM d, yyyy")
+                    ) : "Date range"}
+                    {dateRange && (
+                      <X className="w-3 h-3 ml-1 opacity-60 hover:opacity-100" onClick={(e) => { e.stopPropagation(); setDateRange(undefined); }} />
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0 bg-popover" align="end">
+                  <Calendar mode="range" selected={dateRange} onSelect={setDateRange} numberOfMonths={2} initialFocus className={cn("p-3 pointer-events-auto")} />
+                </PopoverContent>
+              </Popover>
               <div className="relative w-64">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <input type="text" placeholder="Search history..." value={search} onChange={(e) => setSearch(e.target.value)} className="w-full pl-9 pr-3 py-2 rounded-xl bg-muted/20 border border-border/20 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30" />
