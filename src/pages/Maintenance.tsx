@@ -760,6 +760,101 @@ export default function Maintenance() {
           </div>
         </div>
       )}
+
+      {/* Email Preview Modal */}
+      <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
+        <DialogContent className="max-w-2xl bg-background border-border/40 max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2"><Mail className="w-5 h-5 text-primary" /> Email Preview</DialogTitle>
+            <DialogDescription>Review recipients and content before sending.</DialogDescription>
+          </DialogHeader>
+
+          {/* Recipients */}
+          <div className="space-y-2">
+            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Recipients ({recipientList.length})</p>
+            <div className="rounded-xl border border-border/30 bg-muted/10 p-3 space-y-1 max-h-32 overflow-y-auto">
+              {recipientList.map((r) => (
+                <div key={r} className="text-sm text-foreground flex items-center gap-2">
+                  <Mail className="w-3.5 h-3.5 text-muted-foreground" /> {r}
+                </div>
+              ))}
+            </div>
+            <p className="text-xs text-muted-foreground flex items-center gap-1.5">
+              <ShieldCheck className="w-3.5 h-3.5 text-primary" /> CC: {ccUser}
+            </p>
+          </div>
+
+          {/* Technician email preview */}
+          {sendToTechnicians && selectedRecords.length > 0 && (
+            <div className="space-y-2">
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Technician Email (sample for {selectedRecords[0].assignee})</p>
+              <div className="rounded-xl border border-border/30 bg-muted/10 p-4 space-y-2 text-sm">
+                <p className="font-bold text-foreground">
+                  Subject: Maintenance Due — {selectedRecords[0].assetName} | {selectedRecords[0].daysUntil < 0 ? `${Math.abs(selectedRecords[0].daysUntil)} Days Overdue` : `${selectedRecords[0].daysUntil} Days Left`}
+                </p>
+                <div className="text-muted-foreground space-y-1 text-xs">
+                  <p><span className="text-foreground font-semibold">Asset:</span> {selectedRecords[0].assetName}</p>
+                  <p><span className="text-foreground font-semibold">Task:</span> {records.find(r => r.id === selectedRecords[0].id)?.description || "—"}</p>
+                  <p><span className="text-foreground font-semibold">Due Date:</span> {selectedRecords[0].date}</p>
+                  <p><span className="text-foreground font-semibold">Priority:</span> {selectedRecords[0].type === "corrective" ? "High" : "Medium"}</p>
+                  <p><span className="text-foreground font-semibold">Location:</span> {assets.find(a => a.id === selectedRecords[0].id?.replace(/^MNT-/, ""))?.department || assets.find(a => a.id === records.find(r => r.id === selectedRecords[0].id)?.assetId)?.department || "—"}</p>
+                </div>
+                {notifyMessage && (
+                  <div className="pt-2 border-t border-border/20 text-xs text-foreground italic">"{notifyMessage}"</div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Manager email preview */}
+          {sendToManager && (
+            <div className="space-y-2">
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Manager Email</p>
+              <div className="rounded-xl border border-border/30 bg-muted/10 p-4 space-y-2 text-sm">
+                {(() => {
+                  const overdueTasks = selectedRecords.filter(r => r.daysUntil < 0);
+                  const upcomingTasks = selectedRecords.filter(r => r.daysUntil >= 0);
+                  const completedTasks = records.filter(r => r.status === "completed");
+                  const fromLabel = dateFrom || "—";
+                  const toLabel = dateTo || "—";
+                  return (
+                    <>
+                      <p className="font-bold text-foreground">Subject: Maintenance Summary — {fromLabel} to {toLabel}</p>
+                      <div className="grid grid-cols-3 gap-2 text-xs">
+                        <div className="rounded-lg bg-destructive/10 border border-destructive/30 p-2 text-center">
+                          <p className="text-lg font-bold text-destructive">{overdueTasks.length}</p>
+                          <p className="text-muted-foreground">Overdue</p>
+                        </div>
+                        <div className="rounded-lg bg-primary/10 border border-primary/30 p-2 text-center">
+                          <p className="text-lg font-bold text-primary">{upcomingTasks.length}</p>
+                          <p className="text-muted-foreground">Upcoming</p>
+                        </div>
+                        <div className="rounded-lg bg-emerald-500/10 border border-emerald-500/30 p-2 text-center">
+                          <p className="text-lg font-bold text-emerald-400">{completedTasks.length}</p>
+                          <p className="text-muted-foreground">Completed</p>
+                        </div>
+                      </div>
+                      <div className="text-xs text-muted-foreground">
+                        <p className="text-foreground font-semibold mt-2">Overdue:</p>
+                        {overdueTasks.length === 0 ? <p>— None</p> : overdueTasks.map(t => <p key={t.id}>• {t.assetName} ({t.assignee}) — {Math.abs(t.daysUntil)}d overdue</p>)}
+                        <p className="text-foreground font-semibold mt-2">Upcoming:</p>
+                        {upcomingTasks.length === 0 ? <p>— None</p> : upcomingTasks.map(t => <p key={t.id}>• {t.assetName} ({t.assignee}) — in {t.daysUntil}d</p>)}
+                      </div>
+                    </>
+                  );
+                })()}
+              </div>
+            </div>
+          )}
+
+          <DialogFooter>
+            <Button variant="outline" className="rounded-xl" onClick={() => setPreviewOpen(false)}>Cancel</Button>
+            <Button className="bg-gradient-to-r from-primary to-primary/80 font-bold rounded-xl" onClick={confirmSend}>
+              <Send className="w-4 h-4 mr-2" /> Confirm & Send
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
