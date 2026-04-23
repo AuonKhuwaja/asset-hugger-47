@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { maintenanceRecords as initialRecords, assets, employees } from "@/lib/mock-data";
 import { StatusBadge } from "@/components/StatusBadge";
 import { Button } from "@/components/ui/button";
@@ -10,7 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   Wrench, Search, Plus, Clock, History, CheckCircle, AlertTriangle, DollarSign,
-  X, Pencil, Trash2, Mail, Repeat, Send, Users, CalendarDays, ShieldCheck, ChevronDown, Check, CalendarRange,
+  X, Pencil, Trash2, Mail, Repeat, Send, Users, CalendarDays, ShieldCheck, ChevronDown, Check, CalendarRange, MailCheck, MailX, MailWarning,
 } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
 import { ExportButtons } from "@/components/ExportButtons";
@@ -18,9 +18,22 @@ import {
   Popover, PopoverContent, PopoverTrigger,
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
+import {
+  Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
+} from "@/components/ui/dialog";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import type { DateRange } from "react-day-picker";
+
+const EMAIL_LOG_KEY = "tv_maintenance_email_log";
+type EmailLog = Record<string, string>; // recordId -> ISO timestamp
+function loadEmailLog(): EmailLog {
+  try { return JSON.parse(localStorage.getItem(EMAIL_LOG_KEY) || "{}"); } catch { return {}; }
+}
+function saveEmailLog(log: EmailLog) {
+  localStorage.setItem(EMAIL_LOG_KEY, JSON.stringify(log));
+}
+
 
 type Recurrence = "none" | "daily" | "weekly" | "monthly";
 type TypeFilter = "all" | "preventive" | "corrective";
