@@ -118,10 +118,44 @@ export default function AddAsset() {
           </div>
 
           <div className="space-y-1.5">
+            <Label htmlFor="salvage" className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Salvage / Residual Value (PKR)</Label>
+            <Input id="salvage" type="number" placeholder="e.g. 25000" value={form.salvageValue} onChange={(e) => update("salvageValue", e.target.value)} className="border-border/30 rounded-xl" />
+            {errors.salvageValue && <p className="text-xs text-destructive">{errors.salvageValue}</p>}
+          </div>
+
+          <div className="space-y-1.5">
+            <Label htmlFor="useful" className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Useful Life (Years)</Label>
+            <Input id="useful" type="number" placeholder="e.g. 5" value={form.usefulLife} onChange={(e) => update("usefulLife", e.target.value)} className="border-border/30 rounded-xl" />
+            {errors.usefulLife && <p className="text-xs text-destructive">{errors.usefulLife}</p>}
+          </div>
+
+          <div className="space-y-1.5">
+            <Label className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Depreciation Method</Label>
+            <select value={form.depreciationMethod} onChange={(e) => update("depreciationMethod", e.target.value)} className="select-vision">
+              {depreciationMethods.map((m) => <option key={m} value={m}>{m}</option>)}
+            </select>
+          </div>
+
+          <div className="space-y-1.5">
+            <Label htmlFor="bookValue" className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Current Book Value (PKR)</Label>
+            <Input
+              id="bookValue"
+              type="number"
+              value={currentBookValue || ""}
+              readOnly
+              tabIndex={-1}
+              placeholder="Auto-calculated"
+              className="border-border/20 rounded-xl bg-muted/20 text-primary font-semibold cursor-not-allowed"
+            />
+            <p className="text-[10px] text-muted-foreground">Auto = Purchase Cost − Accumulated Depreciation</p>
+          </div>
+
+          <div className="space-y-1.5">
             <Label htmlFor="vendor" className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Vendor Name <span className="text-destructive">*</span></Label>
             <Input id="vendor" placeholder="e.g. Apple Inc." value={form.vendor} onChange={(e) => update("vendor", e.target.value)} className=" border-border/30 rounded-xl" />
             {errors.vendor && <p className="text-xs text-destructive">{errors.vendor}</p>}
           </div>
+
 
           <div className="space-y-1.5">
             <Label className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Condition</Label>
