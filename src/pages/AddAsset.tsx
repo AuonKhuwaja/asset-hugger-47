@@ -55,7 +55,7 @@ export default function AddAsset() {
       return;
     }
     toast({ title: "Asset Registered!", description: `${form.name} registered with tag ${qrCode}` });
-    setForm({ name: "", category: "Laptop", model: "", serialNumber: "", purchaseDate: "", purchaseCost: "", vendor: "", condition: "New", department: "", description: "" });
+    setForm({ name: "", category: "Laptop", model: "", serialNumber: "", purchaseDate: "", purchaseCost: "", salvageValue: "", usefulLife: "", depreciationMethod: "Straight Line", vendor: "", condition: "New", department: "", description: "" });
     setErrors({});
   };
 
