@@ -449,8 +449,8 @@ export default function Maintenance() {
                 </PopoverContent>
               </Popover>
               <Button
-                onClick={sendNotification}
-                disabled={selectedEmployees.length === 0}
+                onClick={openEmailPreview}
+                disabled={selectedEmployees.length === 0 || (!sendToTechnicians && !sendToManager)}
                 className="bg-gradient-to-r from-primary to-primary/80 rounded-xl font-bold disabled:opacity-50"
               >
                 <Send className="w-4 h-4 mr-2" />
@@ -467,6 +467,9 @@ export default function Maintenance() {
                 {dueSoon.map((d) => {
                   const checked = selectedEmployees.includes(d.assignee!);
                   const overdue = d.daysUntil < 0;
+                  const lastSent = emailLog[d.id];
+                  // Email status: Overdue if maintenance overdue & no email, Sent if log exists, Not Sent otherwise
+                  const status = lastSent ? "sent" : overdue ? "overdue" : "not-sent";
                   return (
                     <label
                       key={d.id}
@@ -476,20 +479,42 @@ export default function Maintenance() {
                     >
                       <Checkbox checked={checked} onCheckedChange={() => toggleEmployee(d.assignee!)} />
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 flex-wrap">
                           <Users className="w-3.5 h-3.5 text-muted-foreground" />
                           <span className="text-sm font-semibold text-foreground truncate">{d.assignee}</span>
                           <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${
                             d.type === "preventive" ? "bg-primary/15 text-primary" : "bg-destructive/15 text-destructive"
                           }`}>{d.type}</span>
+                          {/* Email status badge */}
+                          {status === "sent" && (
+                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-500/15 text-emerald-400">
+                              <MailCheck className="w-3 h-3" /> Sent
+                            </span>
+                          )}
+                          {status === "overdue" && (
+                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-destructive/15 text-destructive">
+                              <MailWarning className="w-3 h-3" /> Overdue
+                            </span>
+                          )}
+                          {status === "not-sent" && (
+                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-muted/40 text-muted-foreground">
+                              <MailX className="w-3 h-3" /> Not Sent
+                            </span>
+                          )}
                         </div>
-                        <div className="flex items-center gap-2 mt-0.5 text-xs text-muted-foreground">
+                        <div className="flex items-center gap-2 mt-0.5 text-xs text-muted-foreground flex-wrap">
                           <span className="truncate">{d.assetName}</span>
                           <span>·</span>
                           <CalendarDays className="w-3 h-3" />
                           <span className={overdue ? "text-destructive font-semibold" : ""}>
                             {overdue ? `${Math.abs(d.daysUntil)}d overdue` : `in ${d.daysUntil}d`}
                           </span>
+                          {lastSent && (
+                            <>
+                              <span>·</span>
+                              <span className="text-emerald-400/80">Sent {new Date(lastSent).toLocaleString()}</span>
+                            </>
+                          )}
                         </div>
                       </div>
                     </label>
