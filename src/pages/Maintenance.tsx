@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { maintenanceRecords as initialRecords, assets, employees } from "@/lib/mock-data";
 import { StatusBadge } from "@/components/StatusBadge";
 import { Button } from "@/components/ui/button";
@@ -10,7 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   Wrench, Search, Plus, Clock, History, CheckCircle, AlertTriangle, DollarSign,
-  X, Pencil, Trash2, Mail, Repeat, Send, Users, CalendarDays, ShieldCheck, ChevronDown, Check, CalendarRange,
+  X, Pencil, Trash2, Mail, Repeat, Send, Users, CalendarDays, ShieldCheck, ChevronDown, Check, CalendarRange, MailCheck, MailX, MailWarning,
 } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
 import { ExportButtons } from "@/components/ExportButtons";
@@ -18,9 +18,22 @@ import {
   Popover, PopoverContent, PopoverTrigger,
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
+import {
+  Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
+} from "@/components/ui/dialog";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import type { DateRange } from "react-day-picker";
+
+const EMAIL_LOG_KEY = "tv_maintenance_email_log";
+type EmailLog = Record<string, string>; // recordId -> ISO timestamp
+function loadEmailLog(): EmailLog {
+  try { return JSON.parse(localStorage.getItem(EMAIL_LOG_KEY) || "{}"); } catch { return {}; }
+}
+function saveEmailLog(log: EmailLog) {
+  localStorage.setItem(EMAIL_LOG_KEY, JSON.stringify(log));
+}
+
 
 type Recurrence = "none" | "daily" | "weekly" | "monthly";
 type TypeFilter = "all" | "preventive" | "corrective";
@@ -47,8 +60,14 @@ export default function Maintenance() {
   const [notifyMessage, setNotifyMessage] = useState("");
   const [employeePickerOpen, setEmployeePickerOpen] = useState(false);
   const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
+  const [sendToTechnicians, setSendToTechnicians] = useState(true);
+  const [sendToManager, setSendToManager] = useState(true);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [emailLog, setEmailLog] = useState<EmailLog>(loadEmailLog());
   const dateFrom = dateRange?.from ? format(dateRange.from, "yyyy-MM-dd") : "";
   const dateTo = dateRange?.to ? format(dateRange.to, "yyyy-MM-dd") : "";
+
+  useEffect(() => { saveEmailLog(emailLog); }, [emailLog]);
 
   const scheduled = records.filter(m => m.status === "scheduled" || m.status === "in-progress");
   const completed = records.filter(m => m.status === "completed");
@@ -97,21 +116,56 @@ export default function Maintenance() {
   const toggleEmployee = (name: string) =>
     setSelectedEmployees(prev => prev.includes(name) ? prev.filter(n => n !== name) : [...prev, name]);
 
-  const sendNotification = () => {
+  // Selected due-soon rows for the chosen employees
+  const selectedRecords = useMemo(
+    () => dueSoon.filter(d => d.assignee && selectedEmployees.includes(d.assignee)),
+    [dueSoon, selectedEmployees]
+  );
+
+  const ccUser = user?.email || "you@company.com";
+  const companyName = localStorage.getItem("companyName") || "Company";
+  const companyAdmin = `admin@${(localStorage.getItem("selectedCompany") || "company").toLowerCase()}.com`;
+
+  const recipientList = useMemo(() => {
+    const list: string[] = [];
+    if (sendToTechnicians) selectedEmployees.forEach(n => list.push(n));
+    if (sendToManager) list.push(`${companyAdmin} (Manager/${companyName} Admin)`);
+    return list;
+  }, [sendToTechnicians, sendToManager, selectedEmployees, companyAdmin, companyName]);
+
+  const openEmailPreview = () => {
     if (selectedEmployees.length === 0) {
       toast({ title: "No recipients", description: "Select at least one employee.", variant: "destructive" });
       return;
     }
-    const cc = user?.email || "you@company.com";
-    const companyName = localStorage.getItem("companyName") || "Company";
-    const companyAdmin = `admin@${(localStorage.getItem("selectedCompany") || "company").toLowerCase()}.com`;
+    if (!sendToTechnicians && !sendToManager) {
+      toast({ title: "No recipient group", description: "Pick Technicians and/or Manager.", variant: "destructive" });
+      return;
+    }
+    setPreviewOpen(true);
+  };
+
+  const confirmSend = () => {
+    // Mock send — fail randomly ~5%
+    const success = Math.random() > 0.05;
+    if (!success) {
+      toast({ title: "Email failed", description: "Mock send failure. Please retry.", variant: "destructive" });
+      setPreviewOpen(false);
+      return;
+    }
+    const now = new Date().toISOString();
+    const updates: EmailLog = { ...emailLog };
+    selectedRecords.forEach(r => { updates[r.id] = now; });
+    setEmailLog(updates);
     toast({
       title: "📧 Email sent",
-      description: `Maintenance notice sent to ${selectedEmployees.join(", ")}. CC: ${cc}, ${companyAdmin} (${companyName} Admin)`,
+      description: `Sent to ${recipientList.length} recipient(s). CC: ${ccUser}`,
     });
     setSelectedEmployees([]);
     setNotifyMessage("");
+    setPreviewOpen(false);
   };
+
 
   const resetForm = () => {
     setForm({ assetId: "", type: "preventive", date: "", cost: "", description: "", technician: "", recurrence: "none", notifyEmail: "" });
@@ -395,8 +449,8 @@ export default function Maintenance() {
                 </PopoverContent>
               </Popover>
               <Button
-                onClick={sendNotification}
-                disabled={selectedEmployees.length === 0}
+                onClick={openEmailPreview}
+                disabled={selectedEmployees.length === 0 || (!sendToTechnicians && !sendToManager)}
                 className="bg-gradient-to-r from-primary to-primary/80 rounded-xl font-bold disabled:opacity-50"
               >
                 <Send className="w-4 h-4 mr-2" />
@@ -413,6 +467,9 @@ export default function Maintenance() {
                 {dueSoon.map((d) => {
                   const checked = selectedEmployees.includes(d.assignee!);
                   const overdue = d.daysUntil < 0;
+                  const lastSent = emailLog[d.id];
+                  // Email status: Overdue if maintenance overdue & no email, Sent if log exists, Not Sent otherwise
+                  const status = lastSent ? "sent" : overdue ? "overdue" : "not-sent";
                   return (
                     <label
                       key={d.id}
@@ -422,20 +479,42 @@ export default function Maintenance() {
                     >
                       <Checkbox checked={checked} onCheckedChange={() => toggleEmployee(d.assignee!)} />
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 flex-wrap">
                           <Users className="w-3.5 h-3.5 text-muted-foreground" />
                           <span className="text-sm font-semibold text-foreground truncate">{d.assignee}</span>
                           <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${
                             d.type === "preventive" ? "bg-primary/15 text-primary" : "bg-destructive/15 text-destructive"
                           }`}>{d.type}</span>
+                          {/* Email status badge */}
+                          {status === "sent" && (
+                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-500/15 text-emerald-400">
+                              <MailCheck className="w-3 h-3" /> Sent
+                            </span>
+                          )}
+                          {status === "overdue" && (
+                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-destructive/15 text-destructive">
+                              <MailWarning className="w-3 h-3" /> Overdue
+                            </span>
+                          )}
+                          {status === "not-sent" && (
+                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-muted/40 text-muted-foreground">
+                              <MailX className="w-3 h-3" /> Not Sent
+                            </span>
+                          )}
                         </div>
-                        <div className="flex items-center gap-2 mt-0.5 text-xs text-muted-foreground">
+                        <div className="flex items-center gap-2 mt-0.5 text-xs text-muted-foreground flex-wrap">
                           <span className="truncate">{d.assetName}</span>
                           <span>·</span>
                           <CalendarDays className="w-3 h-3" />
                           <span className={overdue ? "text-destructive font-semibold" : ""}>
                             {overdue ? `${Math.abs(d.daysUntil)}d overdue` : `in ${d.daysUntil}d`}
                           </span>
+                          {lastSent && (
+                            <>
+                              <span>·</span>
+                              <span className="text-emerald-400/80">Sent {new Date(lastSent).toLocaleString()}</span>
+                            </>
+                          )}
                         </div>
                       </div>
                     </label>
@@ -443,14 +522,27 @@ export default function Maintenance() {
                 })}
               </div>
 
-              <div className="space-y-2 pt-2 border-t border-border/10">
-                <Label className="text-xs font-semibold uppercase text-muted-foreground tracking-wider">Optional message</Label>
-                <Textarea
-                  value={notifyMessage}
-                  onChange={(e) => setNotifyMessage(e.target.value)}
-                  placeholder="Add a note for the recipients..."
-                  className="border-border/30 rounded-xl min-h-[60px]"
-                />
+              <div className="space-y-3 pt-2 border-t border-border/10">
+                <div className="flex flex-wrap items-center gap-4">
+                  <span className="text-xs font-semibold uppercase text-muted-foreground tracking-wider">Send to:</span>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <Checkbox checked={sendToTechnicians} onCheckedChange={(v) => setSendToTechnicians(!!v)} />
+                    <span className="text-sm text-foreground">Assigned Technicians</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <Checkbox checked={sendToManager} onCheckedChange={(v) => setSendToManager(!!v)} />
+                    <span className="text-sm text-foreground">Manager / Admin</span>
+                  </label>
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-semibold uppercase text-muted-foreground tracking-wider">Optional message</Label>
+                  <Textarea
+                    value={notifyMessage}
+                    onChange={(e) => setNotifyMessage(e.target.value)}
+                    placeholder="Add a note for the recipients..."
+                    className="border-border/30 rounded-xl min-h-[60px]"
+                  />
+                </div>
                 <p className="text-xs text-muted-foreground flex items-center gap-1.5">
                   <ShieldCheck className="w-3.5 h-3.5 text-primary" />
                   You ({user?.email || "current user"}) will be added on CC automatically.
@@ -668,6 +760,101 @@ export default function Maintenance() {
           </div>
         </div>
       )}
+
+      {/* Email Preview Modal */}
+      <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
+        <DialogContent className="max-w-2xl bg-background border-border/40 max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2"><Mail className="w-5 h-5 text-primary" /> Email Preview</DialogTitle>
+            <DialogDescription>Review recipients and content before sending.</DialogDescription>
+          </DialogHeader>
+
+          {/* Recipients */}
+          <div className="space-y-2">
+            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Recipients ({recipientList.length})</p>
+            <div className="rounded-xl border border-border/30 bg-muted/10 p-3 space-y-1 max-h-32 overflow-y-auto">
+              {recipientList.map((r) => (
+                <div key={r} className="text-sm text-foreground flex items-center gap-2">
+                  <Mail className="w-3.5 h-3.5 text-muted-foreground" /> {r}
+                </div>
+              ))}
+            </div>
+            <p className="text-xs text-muted-foreground flex items-center gap-1.5">
+              <ShieldCheck className="w-3.5 h-3.5 text-primary" /> CC: {ccUser}
+            </p>
+          </div>
+
+          {/* Technician email preview */}
+          {sendToTechnicians && selectedRecords.length > 0 && (
+            <div className="space-y-2">
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Technician Email (sample for {selectedRecords[0].assignee})</p>
+              <div className="rounded-xl border border-border/30 bg-muted/10 p-4 space-y-2 text-sm">
+                <p className="font-bold text-foreground">
+                  Subject: Maintenance Due — {selectedRecords[0].assetName} | {selectedRecords[0].daysUntil < 0 ? `${Math.abs(selectedRecords[0].daysUntil)} Days Overdue` : `${selectedRecords[0].daysUntil} Days Left`}
+                </p>
+                <div className="text-muted-foreground space-y-1 text-xs">
+                  <p><span className="text-foreground font-semibold">Asset:</span> {selectedRecords[0].assetName}</p>
+                  <p><span className="text-foreground font-semibold">Task:</span> {records.find(r => r.id === selectedRecords[0].id)?.description || "—"}</p>
+                  <p><span className="text-foreground font-semibold">Due Date:</span> {selectedRecords[0].date}</p>
+                  <p><span className="text-foreground font-semibold">Priority:</span> {selectedRecords[0].type === "corrective" ? "High" : "Medium"}</p>
+                  <p><span className="text-foreground font-semibold">Location:</span> {assets.find(a => a.id === selectedRecords[0].id?.replace(/^MNT-/, ""))?.department || assets.find(a => a.id === records.find(r => r.id === selectedRecords[0].id)?.assetId)?.department || "—"}</p>
+                </div>
+                {notifyMessage && (
+                  <div className="pt-2 border-t border-border/20 text-xs text-foreground italic">"{notifyMessage}"</div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Manager email preview */}
+          {sendToManager && (
+            <div className="space-y-2">
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Manager Email</p>
+              <div className="rounded-xl border border-border/30 bg-muted/10 p-4 space-y-2 text-sm">
+                {(() => {
+                  const overdueTasks = selectedRecords.filter(r => r.daysUntil < 0);
+                  const upcomingTasks = selectedRecords.filter(r => r.daysUntil >= 0);
+                  const completedTasks = records.filter(r => r.status === "completed");
+                  const fromLabel = dateFrom || "—";
+                  const toLabel = dateTo || "—";
+                  return (
+                    <>
+                      <p className="font-bold text-foreground">Subject: Maintenance Summary — {fromLabel} to {toLabel}</p>
+                      <div className="grid grid-cols-3 gap-2 text-xs">
+                        <div className="rounded-lg bg-destructive/10 border border-destructive/30 p-2 text-center">
+                          <p className="text-lg font-bold text-destructive">{overdueTasks.length}</p>
+                          <p className="text-muted-foreground">Overdue</p>
+                        </div>
+                        <div className="rounded-lg bg-primary/10 border border-primary/30 p-2 text-center">
+                          <p className="text-lg font-bold text-primary">{upcomingTasks.length}</p>
+                          <p className="text-muted-foreground">Upcoming</p>
+                        </div>
+                        <div className="rounded-lg bg-emerald-500/10 border border-emerald-500/30 p-2 text-center">
+                          <p className="text-lg font-bold text-emerald-400">{completedTasks.length}</p>
+                          <p className="text-muted-foreground">Completed</p>
+                        </div>
+                      </div>
+                      <div className="text-xs text-muted-foreground">
+                        <p className="text-foreground font-semibold mt-2">Overdue:</p>
+                        {overdueTasks.length === 0 ? <p>— None</p> : overdueTasks.map(t => <p key={t.id}>• {t.assetName} ({t.assignee}) — {Math.abs(t.daysUntil)}d overdue</p>)}
+                        <p className="text-foreground font-semibold mt-2">Upcoming:</p>
+                        {upcomingTasks.length === 0 ? <p>— None</p> : upcomingTasks.map(t => <p key={t.id}>• {t.assetName} ({t.assignee}) — in {t.daysUntil}d</p>)}
+                      </div>
+                    </>
+                  );
+                })()}
+              </div>
+            </div>
+          )}
+
+          <DialogFooter>
+            <Button variant="outline" className="rounded-xl" onClick={() => setPreviewOpen(false)}>Cancel</Button>
+            <Button className="bg-gradient-to-r from-primary to-primary/80 font-bold rounded-xl" onClick={confirmSend}>
+              <Send className="w-4 h-4 mr-2" /> Confirm & Send
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

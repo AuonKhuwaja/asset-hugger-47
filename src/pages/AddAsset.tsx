@@ -10,6 +10,7 @@ import { z } from "zod";
 
 const categories: AssetCategory[] = ["Laptop", "Printer", "Projector", "Mobile", "Monitor", "Server", "Tablet", "Network Equipment", "Other"];
 const conditions = ["New", "Good", "Fair", "Poor"];
+const depreciationMethods = ["Straight Line", "Declining Balance"] as const;
 
 const assetSchema = z.object({
   name: z.string().trim().min(1, "Asset name is required").max(100),
@@ -18,6 +19,9 @@ const assetSchema = z.object({
   serialNumber: z.string().trim().min(1, "Serial number is required").max(50),
   purchaseDate: z.string().min(1, "Purchase date is required"),
   purchaseCost: z.string().refine((v) => Number(v) > 0, "Valid cost is required"),
+  salvageValue: z.string().refine((v) => v === "" || Number(v) >= 0, "Salvage value must be ≥ 0"),
+  usefulLife: z.string().refine((v) => v === "" || Number(v) > 0, "Useful life must be > 0"),
+  depreciationMethod: z.string().min(1),
   vendor: z.string().trim().min(1, "Vendor name is required").max(100),
   condition: z.string().min(1),
   department: z.string().optional(),
@@ -28,9 +32,15 @@ export default function AddAsset() {
   const { toast } = useToast();
   const [form, setForm] = useState({
     name: "", category: "Laptop", model: "", serialNumber: "",
-    purchaseDate: "", purchaseCost: "", vendor: "", condition: "New",
+    purchaseDate: "", purchaseCost: "",
+    salvageValue: "", usefulLife: "", depreciationMethod: "Straight Line",
+    vendor: "", condition: "New",
     department: "", description: "",
   });
+
+  // Auto-calculated Current Book Value = Purchase Cost - Accumulated Depreciation
+  // On creation (no run yet), accumulated = 0, so Book Value = Purchase Cost.
+  const currentBookValue = Number(form.purchaseCost) || 0;
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const qrCode = useMemo(() => `QR-${Date.now().toString(36).toUpperCase()}`, []);
@@ -45,7 +55,7 @@ export default function AddAsset() {
       return;
     }
     toast({ title: "Asset Registered!", description: `${form.name} registered with tag ${qrCode}` });
-    setForm({ name: "", category: "Laptop", model: "", serialNumber: "", purchaseDate: "", purchaseCost: "", vendor: "", condition: "New", department: "", description: "" });
+    setForm({ name: "", category: "Laptop", model: "", serialNumber: "", purchaseDate: "", purchaseCost: "", salvageValue: "", usefulLife: "", depreciationMethod: "Straight Line", vendor: "", condition: "New", department: "", description: "" });
     setErrors({});
   };
 
@@ -108,10 +118,44 @@ export default function AddAsset() {
           </div>
 
           <div className="space-y-1.5">
+            <Label htmlFor="salvage" className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Salvage / Residual Value (PKR)</Label>
+            <Input id="salvage" type="number" placeholder="e.g. 25000" value={form.salvageValue} onChange={(e) => update("salvageValue", e.target.value)} className="border-border/30 rounded-xl" />
+            {errors.salvageValue && <p className="text-xs text-destructive">{errors.salvageValue}</p>}
+          </div>
+
+          <div className="space-y-1.5">
+            <Label htmlFor="useful" className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Useful Life (Years)</Label>
+            <Input id="useful" type="number" placeholder="e.g. 5" value={form.usefulLife} onChange={(e) => update("usefulLife", e.target.value)} className="border-border/30 rounded-xl" />
+            {errors.usefulLife && <p className="text-xs text-destructive">{errors.usefulLife}</p>}
+          </div>
+
+          <div className="space-y-1.5">
+            <Label className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Depreciation Method</Label>
+            <select value={form.depreciationMethod} onChange={(e) => update("depreciationMethod", e.target.value)} className="select-vision">
+              {depreciationMethods.map((m) => <option key={m} value={m}>{m}</option>)}
+            </select>
+          </div>
+
+          <div className="space-y-1.5">
+            <Label htmlFor="bookValue" className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Current Book Value (PKR)</Label>
+            <Input
+              id="bookValue"
+              type="number"
+              value={currentBookValue || ""}
+              readOnly
+              tabIndex={-1}
+              placeholder="Auto-calculated"
+              className="border-border/20 rounded-xl bg-muted/20 text-primary font-semibold cursor-not-allowed"
+            />
+            <p className="text-[10px] text-muted-foreground">Auto = Purchase Cost − Accumulated Depreciation</p>
+          </div>
+
+          <div className="space-y-1.5">
             <Label htmlFor="vendor" className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Vendor Name <span className="text-destructive">*</span></Label>
             <Input id="vendor" placeholder="e.g. Apple Inc." value={form.vendor} onChange={(e) => update("vendor", e.target.value)} className=" border-border/30 rounded-xl" />
             {errors.vendor && <p className="text-xs text-destructive">{errors.vendor}</p>}
           </div>
+
 
           <div className="space-y-1.5">
             <Label className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Condition</Label>

@@ -33,6 +33,7 @@ import DepreciationTracking from "@/pages/DepreciationTracking";
 import DepreciationRun from "@/pages/DepreciationRun";
 import DepreciationRunHistory from "@/pages/DepreciationRunHistory";
 import MonthlyAssetValueReport from "@/pages/MonthlyAssetValueReport";
+import Depreciation from "@/pages/Depreciation";
 
 const queryClient = new QueryClient();
 
@@ -66,6 +67,7 @@ function AppRoutes() {
       <Route path="/billing" element={<ProtectedRoute><AppLayout><Billing /></AppLayout></ProtectedRoute>} />
       <Route path="/billing/depreciation" element={<ProtectedRoute><AppLayout><DepreciationTracking /></AppLayout></ProtectedRoute>} />
       <Route path="/billing/depreciation-run" element={<AdminRoute><AppLayout><DepreciationRun /></AppLayout></AdminRoute>} />
+      <Route path="/billing/depreciation-engine" element={<AdminRoute><AppLayout><Depreciation /></AppLayout></AdminRoute>} />
       <Route path="/billing/run-history" element={<ProtectedRoute><AppLayout><DepreciationRunHistory /></AppLayout></ProtectedRoute>} />
       <Route path="/billing/monthly-report" element={<ProtectedRoute><AppLayout><MonthlyAssetValueReport /></AppLayout></ProtectedRoute>} />
       <Route path="/reports" element={<ProtectedRoute><AppLayout><Reports /></AppLayout></ProtectedRoute>} />
