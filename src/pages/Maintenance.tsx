@@ -60,8 +60,14 @@ export default function Maintenance() {
   const [notifyMessage, setNotifyMessage] = useState("");
   const [employeePickerOpen, setEmployeePickerOpen] = useState(false);
   const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
+  const [sendToTechnicians, setSendToTechnicians] = useState(true);
+  const [sendToManager, setSendToManager] = useState(true);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [emailLog, setEmailLog] = useState<EmailLog>(loadEmailLog());
   const dateFrom = dateRange?.from ? format(dateRange.from, "yyyy-MM-dd") : "";
   const dateTo = dateRange?.to ? format(dateRange.to, "yyyy-MM-dd") : "";
+
+  useEffect(() => { saveEmailLog(emailLog); }, [emailLog]);
 
   const scheduled = records.filter(m => m.status === "scheduled" || m.status === "in-progress");
   const completed = records.filter(m => m.status === "completed");
