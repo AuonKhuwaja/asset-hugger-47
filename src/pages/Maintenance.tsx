@@ -116,21 +116,56 @@ export default function Maintenance() {
   const toggleEmployee = (name: string) =>
     setSelectedEmployees(prev => prev.includes(name) ? prev.filter(n => n !== name) : [...prev, name]);
 
-  const sendNotification = () => {
+  // Selected due-soon rows for the chosen employees
+  const selectedRecords = useMemo(
+    () => dueSoon.filter(d => d.assignee && selectedEmployees.includes(d.assignee)),
+    [dueSoon, selectedEmployees]
+  );
+
+  const ccUser = user?.email || "you@company.com";
+  const companyName = localStorage.getItem("companyName") || "Company";
+  const companyAdmin = `admin@${(localStorage.getItem("selectedCompany") || "company").toLowerCase()}.com`;
+
+  const recipientList = useMemo(() => {
+    const list: string[] = [];
+    if (sendToTechnicians) selectedEmployees.forEach(n => list.push(n));
+    if (sendToManager) list.push(`${companyAdmin} (Manager/${companyName} Admin)`);
+    return list;
+  }, [sendToTechnicians, sendToManager, selectedEmployees, companyAdmin, companyName]);
+
+  const openEmailPreview = () => {
     if (selectedEmployees.length === 0) {
       toast({ title: "No recipients", description: "Select at least one employee.", variant: "destructive" });
       return;
     }
-    const cc = user?.email || "you@company.com";
-    const companyName = localStorage.getItem("companyName") || "Company";
-    const companyAdmin = `admin@${(localStorage.getItem("selectedCompany") || "company").toLowerCase()}.com`;
+    if (!sendToTechnicians && !sendToManager) {
+      toast({ title: "No recipient group", description: "Pick Technicians and/or Manager.", variant: "destructive" });
+      return;
+    }
+    setPreviewOpen(true);
+  };
+
+  const confirmSend = () => {
+    // Mock send — fail randomly ~5%
+    const success = Math.random() > 0.05;
+    if (!success) {
+      toast({ title: "Email failed", description: "Mock send failure. Please retry.", variant: "destructive" });
+      setPreviewOpen(false);
+      return;
+    }
+    const now = new Date().toISOString();
+    const updates: EmailLog = { ...emailLog };
+    selectedRecords.forEach(r => { updates[r.id] = now; });
+    setEmailLog(updates);
     toast({
       title: "📧 Email sent",
-      description: `Maintenance notice sent to ${selectedEmployees.join(", ")}. CC: ${cc}, ${companyAdmin} (${companyName} Admin)`,
+      description: `Sent to ${recipientList.length} recipient(s). CC: ${ccUser}`,
     });
     setSelectedEmployees([]);
     setNotifyMessage("");
+    setPreviewOpen(false);
   };
+
 
   const resetForm = () => {
     setForm({ assetId: "", type: "preventive", date: "", cost: "", description: "", technician: "", recurrence: "none", notifyEmail: "" });
