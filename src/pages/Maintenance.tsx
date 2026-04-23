@@ -522,14 +522,27 @@ export default function Maintenance() {
                 })}
               </div>
 
-              <div className="space-y-2 pt-2 border-t border-border/10">
-                <Label className="text-xs font-semibold uppercase text-muted-foreground tracking-wider">Optional message</Label>
-                <Textarea
-                  value={notifyMessage}
-                  onChange={(e) => setNotifyMessage(e.target.value)}
-                  placeholder="Add a note for the recipients..."
-                  className="border-border/30 rounded-xl min-h-[60px]"
-                />
+              <div className="space-y-3 pt-2 border-t border-border/10">
+                <div className="flex flex-wrap items-center gap-4">
+                  <span className="text-xs font-semibold uppercase text-muted-foreground tracking-wider">Send to:</span>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <Checkbox checked={sendToTechnicians} onCheckedChange={(v) => setSendToTechnicians(!!v)} />
+                    <span className="text-sm text-foreground">Assigned Technicians</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <Checkbox checked={sendToManager} onCheckedChange={(v) => setSendToManager(!!v)} />
+                    <span className="text-sm text-foreground">Manager / Admin</span>
+                  </label>
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-semibold uppercase text-muted-foreground tracking-wider">Optional message</Label>
+                  <Textarea
+                    value={notifyMessage}
+                    onChange={(e) => setNotifyMessage(e.target.value)}
+                    placeholder="Add a note for the recipients..."
+                    className="border-border/30 rounded-xl min-h-[60px]"
+                  />
+                </div>
                 <p className="text-xs text-muted-foreground flex items-center gap-1.5">
                   <ShieldCheck className="w-3.5 h-3.5 text-primary" />
                   You ({user?.email || "current user"}) will be added on CC automatically.
