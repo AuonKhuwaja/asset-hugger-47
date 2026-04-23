@@ -10,6 +10,7 @@ import { z } from "zod";
 
 const categories: AssetCategory[] = ["Laptop", "Printer", "Projector", "Mobile", "Monitor", "Server", "Tablet", "Network Equipment", "Other"];
 const conditions = ["New", "Good", "Fair", "Poor"];
+const depreciationMethods = ["Straight Line", "Declining Balance"] as const;
 
 const assetSchema = z.object({
   name: z.string().trim().min(1, "Asset name is required").max(100),
@@ -18,6 +19,9 @@ const assetSchema = z.object({
   serialNumber: z.string().trim().min(1, "Serial number is required").max(50),
   purchaseDate: z.string().min(1, "Purchase date is required"),
   purchaseCost: z.string().refine((v) => Number(v) > 0, "Valid cost is required"),
+  salvageValue: z.string().refine((v) => v === "" || Number(v) >= 0, "Salvage value must be ≥ 0"),
+  usefulLife: z.string().refine((v) => v === "" || Number(v) > 0, "Useful life must be > 0"),
+  depreciationMethod: z.string().min(1),
   vendor: z.string().trim().min(1, "Vendor name is required").max(100),
   condition: z.string().min(1),
   department: z.string().optional(),
@@ -28,9 +32,15 @@ export default function AddAsset() {
   const { toast } = useToast();
   const [form, setForm] = useState({
     name: "", category: "Laptop", model: "", serialNumber: "",
-    purchaseDate: "", purchaseCost: "", vendor: "", condition: "New",
+    purchaseDate: "", purchaseCost: "",
+    salvageValue: "", usefulLife: "", depreciationMethod: "Straight Line",
+    vendor: "", condition: "New",
     department: "", description: "",
   });
+
+  // Auto-calculated Current Book Value = Purchase Cost - Accumulated Depreciation
+  // On creation (no run yet), accumulated = 0, so Book Value = Purchase Cost.
+  const currentBookValue = Number(form.purchaseCost) || 0;
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const qrCode = useMemo(() => `QR-${Date.now().toString(36).toUpperCase()}`, []);
