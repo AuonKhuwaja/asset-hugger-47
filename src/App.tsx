@@ -34,7 +34,6 @@ import DepreciationRun from "@/pages/DepreciationRun";
 import DepreciationRunHistory from "@/pages/DepreciationRunHistory";
 import MonthlyAssetValueReport from "@/pages/MonthlyAssetValueReport";
 import Depreciation from "@/pages/Depreciation";
-import UserManagement from "@/pages/UserManagement";
 
 const queryClient = new QueryClient();
 
@@ -76,7 +75,6 @@ function AppRoutes() {
       <Route path="/profile" element={<ProtectedRoute><AppLayout><Profile /></AppLayout></ProtectedRoute>} />
       <Route path="/companies" element={<ProtectedRoute><AppLayout><Companies /></AppLayout></ProtectedRoute>} />
       <Route path="/vendors" element={<ProtectedRoute><AppLayout><Vendors /></AppLayout></ProtectedRoute>} />
-      <Route path="/users" element={<AdminRoute><AppLayout><UserManagement /></AppLayout></AdminRoute>} />
 
       {/* Employee-specific routes */}
       <Route path="/my-assets" element={<ProtectedRoute><AppLayout><MyAssets /></AppLayout></ProtectedRoute>} />
