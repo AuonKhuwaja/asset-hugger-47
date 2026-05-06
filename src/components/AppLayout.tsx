@@ -83,6 +83,11 @@ const getNavItems = (isAdmin: boolean, isEmployee: boolean): NavItem[] => {
       icon: UserPlus,
       to: "/assignments",
     }] : []),
+    ...(isAdmin ? [{
+      label: "User Management",
+      icon: UserCog,
+      to: "/users",
+    }] : []),
     {
       label: "Maintenance",
       icon: Wrench,
