@@ -130,22 +130,22 @@ export default function Reports() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-border/10">
+              <tr className="border-b-2 border-dashed border-border bg-muted/40">
                 {["Department", "Assets", "Value", "Maintenance", "Repairs", "Depreciation", "Total"].map((h) => (
-                  <th key={h} className={`px-4 py-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground ${h !== "Department" ? "text-right" : "text-left"}`}>{h}</th>
+                  <th key={h} className={`px-4 py-3 text-xs font-bold uppercase tracking-wider text-foreground ${h !== "Department" ? "text-right" : "text-left"} border-r border-dashed border-border/60 last:border-r-0`}>{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {departmentCosts.map((d) => (
-                <tr key={d.department} className="border-b border-border/10 hover:bg-muted/10 transition-colors">
-                  <td className="px-4 py-3 font-medium">{d.department}</td>
-                  <td className="px-4 py-3 text-right tabular-data">{d.assetCount}</td>
-                  <td className="px-4 py-3 text-right tabular-data">PKR {d.totalValue.toLocaleString()}</td>
-                  <td className="px-4 py-3 text-right tabular-data">PKR {d.maintenanceCost.toLocaleString()}</td>
-                  <td className="px-4 py-3 text-right tabular-data">PKR {d.repairCost.toLocaleString()}</td>
-                  <td className="px-4 py-3 text-right tabular-data">PKR {d.depreciationCost.toLocaleString()}</td>
-                  <td className="px-4 py-3 text-right tabular-data font-bold text-primary">PKR {d.totalCost.toLocaleString()}</td>
+                <tr key={d.department} className="border-b border-dashed border-border/70 transition-colors hover:bg-muted/50">
+                  <td className="px-4 py-3 font-medium border-r border-dashed border-border/40 last:border-r-0">{d.department}</td>
+                  <td className="px-4 py-3 text-right tabular-data border-r border-dashed border-border/40 last:border-r-0">{d.assetCount}</td>
+                  <td className="px-4 py-3 text-right tabular-data border-r border-dashed border-border/40 last:border-r-0">PKR {d.totalValue.toLocaleString()}</td>
+                  <td className="px-4 py-3 text-right tabular-data border-r border-dashed border-border/40 last:border-r-0">PKR {d.maintenanceCost.toLocaleString()}</td>
+                  <td className="px-4 py-3 text-right tabular-data border-r border-dashed border-border/40 last:border-r-0">PKR {d.repairCost.toLocaleString()}</td>
+                  <td className="px-4 py-3 text-right tabular-data border-r border-dashed border-border/40 last:border-r-0">PKR {d.depreciationCost.toLocaleString()}</td>
+                  <td className="px-4 py-3 text-right tabular-data font-bold text-primary border-r border-dashed border-border/40 last:border-r-0">PKR {d.totalCost.toLocaleString()}</td>
                 </tr>
               ))}
             </tbody>
