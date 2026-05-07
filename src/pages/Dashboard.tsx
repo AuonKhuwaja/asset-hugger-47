@@ -1,21 +1,14 @@
 import {
-  Package,
-  DollarSign,
-  AlertTriangle,
-  Activity,
-  Wrench,
-  ArrowLeftRight,
-  PackagePlus,
-  ArrowRight,
-  Users,
+  Package, DollarSign, AlertTriangle, Activity, Wrench, ArrowLeftRight,
+  PackagePlus, ArrowRight, Users,
 } from "lucide-react";
 import { KpiCard } from "@/components/KpiCard";
-import { StatusBadge } from "@/components/StatusBadge";
 import { AssetTrackerCanvas } from "@/components/AssetTrackerCanvas";
 import { assets, departmentCosts, monthlyData, recentActivity } from "@/lib/mock-data";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
-  PieChart, Pie, Cell, AreaChart, Area,
+  PieChart, Pie, Cell, AreaChart, Area, LineChart, Line, RadarChart, Radar,
+  PolarGrid, PolarAngleAxis, PolarRadiusAxis, ComposedChart,
 } from "recharts";
 
 const totalValue = assets.reduce((s, a) => s + a.currentValue, 0);
@@ -103,40 +96,61 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Department Table */}
+      {/* Assets by Department — Composed Chart (replaces grid table) */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="vision-card p-6">
+          <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground mb-4">Assets by Department</h3>
+          <div className="h-72">
+            <ResponsiveContainer width="100%" height="100%">
+              <ComposedChart data={departmentCosts}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(226,232,240,0.06)" />
+                <XAxis dataKey="department" stroke="#718096" fontSize={11} />
+                <YAxis yAxisId="left" stroke="#718096" fontSize={11} />
+                <YAxis yAxisId="right" orientation="right" stroke="#718096" fontSize={11} tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} />
+                <Tooltip contentStyle={tooltipStyle} />
+                <Legend wrapperStyle={{ fontSize: 12 }} />
+                <Bar yAxisId="left" dataKey="assetCount" name="Assets" fill="hsl(213, 80%, 57%)" radius={[6, 6, 0, 0]} />
+                <Line yAxisId="right" type="monotone" dataKey="totalValue" name="Total Value (PKR)" stroke="hsl(258, 100%, 67%)" strokeWidth={2.5} dot={{ r: 3 }} />
+              </ComposedChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* Maintenance vs Repairs Trend */}
+        <div className="vision-card p-6">
+          <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground mb-4">Maintenance vs Repairs Trend</h3>
+          <div className="h-72">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={monthlyData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(226,232,240,0.06)" />
+                <XAxis dataKey="month" stroke="#718096" fontSize={12} />
+                <YAxis stroke="#718096" fontSize={12} tickFormatter={(v) => `${v/1000}k`} />
+                <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [`PKR ${v.toLocaleString()}`, undefined]} />
+                <Legend wrapperStyle={{ fontSize: 12 }} />
+                <Line type="monotone" dataKey="maintenance" name="Maintenance" stroke="hsl(213, 80%, 57%)" strokeWidth={2.5} dot={{ r: 3 }} />
+                <Line type="monotone" dataKey="repairs" name="Repairs" stroke="hsl(38, 92%, 50%)" strokeWidth={2.5} dot={{ r: 3 }} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      </div>
+
+      {/* Department Cost Radar */}
       <div className="vision-card p-6">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground mb-4">Assets by Department</h3>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-border/20">
-                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">Department</th>
-                <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-muted-foreground">Assets</th>
-                <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-muted-foreground">Value</th>
-                <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-muted-foreground">Utilization %</th>
-              </tr>
-            </thead>
-            <tbody>
-              {departmentCosts.map((d) => (
-                <tr key={d.department} className="border-b border-border/10 hover:bg-muted/10 transition-colors">
-                  <td className="px-4 py-3 font-medium">{d.department}</td>
-                  <td className="px-4 py-3 text-right tabular-data">{d.assetCount}</td>
-                  <td className="px-4 py-3 text-right tabular-data">PKR {d.totalValue.toLocaleString()}</td>
-                  <td className="px-4 py-3 text-right">
-                    <div className="flex items-center justify-end gap-2">
-                      <div className="w-16 h-1.5 bg-muted rounded-full overflow-hidden">
-                        <div
-                          className="h-full bg-gradient-to-r from-primary to-primary/60 rounded-full"
-                          style={{ width: `${Math.min(95, 50 + Math.random() * 40)}%` }}
-                        />
-                      </div>
-                      <span className="tabular-data text-xs font-medium">{Math.round(50 + Math.random() * 40)}%</span>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground mb-4">Department Cost Radar</h3>
+        <div className="h-80">
+          <ResponsiveContainer width="100%" height="100%">
+            <RadarChart data={departmentCosts}>
+              <PolarGrid stroke="rgba(226,232,240,0.12)" />
+              <PolarAngleAxis dataKey="department" stroke="#718096" fontSize={11} />
+              <PolarRadiusAxis stroke="#718096" fontSize={10} tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} />
+              <Tooltip contentStyle={tooltipStyle} />
+              <Legend wrapperStyle={{ fontSize: 12 }} />
+              <Radar name="Maintenance" dataKey="maintenanceCost" stroke="hsl(213, 80%, 57%)" fill="hsl(213, 80%, 57%)" fillOpacity={0.35} />
+              <Radar name="Depreciation" dataKey="depreciationCost" stroke="hsl(258, 100%, 67%)" fill="hsl(258, 100%, 67%)" fillOpacity={0.3} />
+              <Radar name="Repairs" dataKey="repairCost" stroke="hsl(38, 92%, 50%)" fill="hsl(38, 92%, 50%)" fillOpacity={0.3} />
+            </RadarChart>
+          </ResponsiveContainer>
         </div>
       </div>
 
