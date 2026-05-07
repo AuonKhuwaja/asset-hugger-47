@@ -714,7 +714,7 @@ export default function Maintenance() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-border/10">
+                <tr className="border-b-2 border-dashed border-border bg-muted/40">
                   {["ID", "Asset", "Type", "Description", "Technician", "Date", "Recurrence", "Cost", "Status", "Actions"].map((h) => (
                     <th key={h} className={`px-4 py-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground ${h === "Cost" ? "text-right" : "text-left"}`}>{h}</th>
                   ))}
@@ -723,17 +723,17 @@ export default function Maintenance() {
               <tbody>
                 {filtered.map((m) => (
                   <tr key={m.id} className="border-b border-border/10 hover:bg-muted/10 transition-colors">
-                    <td className="px-4 py-3 font-mono text-xs text-muted-foreground">{m.id}</td>
-                    <td className="px-4 py-3 font-medium">{m.assetName}</td>
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-3 font-mono text-xs text-muted-foreground border-r border-dashed border-border/40 last:border-r-0">{m.id}</td>
+                    <td className="px-4 py-3 font-medium border-r border-dashed border-border/40 last:border-r-0">{m.assetName}</td>
+                    <td className="px-4 py-3 border-r border-dashed border-border/40 last:border-r-0">
                       <span className={`px-2 py-0.5 rounded-lg text-[11px] font-semibold ${m.type === "preventive" ? "bg-primary/15 text-primary" : "bg-destructive/15 text-destructive"}`}>
                         {m.type}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-muted-foreground max-w-[200px] truncate">{m.description}</td>
-                    <td className="px-4 py-3 text-muted-foreground">{m.technician}</td>
-                    <td className="px-4 py-3 tabular-data text-muted-foreground">{m.date}</td>
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-3 text-muted-foreground max-w-[200px] truncate border-r border-dashed border-border/40 last:border-r-0">{m.description}</td>
+                    <td className="px-4 py-3 text-muted-foreground border-r border-dashed border-border/40 last:border-r-0">{m.technician}</td>
+                    <td className="px-4 py-3 tabular-data text-muted-foreground border-r border-dashed border-border/40 last:border-r-0">{m.date}</td>
+                    <td className="px-4 py-3 border-r border-dashed border-border/40 last:border-r-0">
                       {m.recurrence && m.recurrence !== "none" ? (
                         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[11px] font-semibold bg-secondary/20 text-secondary-foreground border border-border/30">
                           <Repeat className="w-3 h-3" /> {m.recurrence}
@@ -742,9 +742,9 @@ export default function Maintenance() {
                         <span className="text-xs text-muted-foreground">—</span>
                       )}
                     </td>
-                    <td className="px-4 py-3 text-right tabular-data font-medium text-primary">PKR {m.cost.toLocaleString()}</td>
-                    <td className="px-4 py-3"><StatusBadge status={m.status} /></td>
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-3 text-right tabular-data font-medium text-primary border-r border-dashed border-border/40 last:border-r-0">PKR {m.cost.toLocaleString()}</td>
+                    <td className="px-4 py-3 border-r border-dashed border-border/40 last:border-r-0"><StatusBadge status={m.status} /></td>
+                    <td className="px-4 py-3 border-r border-dashed border-border/40 last:border-r-0">
                       <div className="flex gap-1">
                         <button onClick={() => handleEdit(m.id)} className="p-1.5 rounded-lg hover:bg-primary/10 text-primary transition-colors"><Pencil className="w-4 h-4" /></button>
                         <button onClick={() => handleDelete(m.id)} className="p-1.5 rounded-lg hover:bg-destructive/10 text-destructive transition-colors"><Trash2 className="w-4 h-4" /></button>

@@ -171,7 +171,7 @@ export default function Departments() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-border/10">
+              <tr className="border-b-2 border-dashed border-border bg-muted/40">
                 {["ID", "Name", "Description", "Employees", "Created", ...(canEdit ? ["Actions"] : [])].map(h => (
                   <th key={h} className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">{h}</th>
                 ))}
@@ -180,15 +180,15 @@ export default function Departments() {
             <tbody>
               {filtered.map(dept => (
                 <tr key={dept.id} className="border-b border-border/10 hover:bg-muted/10 transition-colors">
-                  <td className="px-4 py-3 font-mono text-xs text-muted-foreground">{dept.id}</td>
-                  <td className="px-4 py-3 font-medium flex items-center gap-2">
+                  <td className="px-4 py-3 font-mono text-xs text-muted-foreground border-r border-dashed border-border/40 last:border-r-0">{dept.id}</td>
+                  <td className="px-4 py-3 font-medium flex items-center gap-2 border-r border-dashed border-border/40 last:border-r-0">
                     <Building2 className="w-4 h-4 text-primary" /> {dept.name}
                   </td>
-                  <td className="px-4 py-3 text-muted-foreground">{dept.description}</td>
-                  <td className="px-4 py-3 tabular-data">{dept.employeeCount}</td>
-                  <td className="px-4 py-3 tabular-data text-muted-foreground">{dept.createdAt}</td>
+                  <td className="px-4 py-3 text-muted-foreground border-r border-dashed border-border/40 last:border-r-0">{dept.description}</td>
+                  <td className="px-4 py-3 tabular-data border-r border-dashed border-border/40 last:border-r-0">{dept.employeeCount}</td>
+                  <td className="px-4 py-3 tabular-data text-muted-foreground border-r border-dashed border-border/40 last:border-r-0">{dept.createdAt}</td>
                   {canEdit && (
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-3 border-r border-dashed border-border/40 last:border-r-0">
                       <div className="flex gap-1">
                         <button onClick={() => handleEdit(dept)} className="p-1.5 rounded-lg hover:bg-primary/10 text-primary transition-colors"><Pencil className="w-4 h-4" /></button>
                         <button onClick={() => handleDelete(dept.id)} className="p-1.5 rounded-lg hover:bg-destructive/10 text-destructive transition-colors"><Trash2 className="w-4 h-4" /></button>

@@ -29,7 +29,7 @@ export default function DepreciationRunHistory() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-border/10">
+              <tr className="border-b-2 border-dashed border-border bg-muted/40">
                 {["Run ID", "Date & Time", "Assets", "Value Reduced", "Trigger", "Status"].map((h, i) => (
                   <th key={h} className={`px-4 py-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground ${i === 0 || i === 1 ? "text-left" : i === 5 ? "text-center" : "text-right"}`}>{h}</th>
                 ))}
@@ -41,12 +41,12 @@ export default function DepreciationRunHistory() {
               )}
               {runs.map((r) => (
                 <tr key={r.id} className="border-b border-border/10 hover:bg-muted/10">
-                  <td className="px-4 py-3 font-mono text-xs">{r.id}</td>
-                  <td className="px-4 py-3">{new Date(r.runAt).toLocaleString()}</td>
-                  <td className="px-4 py-3 text-right tabular-data">{r.assetsProcessed}</td>
-                  <td className="px-4 py-3 text-right tabular-data">PKR {r.totalReduced.toLocaleString()}</td>
-                  <td className="px-4 py-3 text-right capitalize text-muted-foreground">{r.triggeredBy}</td>
-                  <td className="px-4 py-3 text-center">
+                  <td className="px-4 py-3 font-mono text-xs border-r border-dashed border-border/40 last:border-r-0">{r.id}</td>
+                  <td className="px-4 py-3 border-r border-dashed border-border/40 last:border-r-0">{new Date(r.runAt).toLocaleString()}</td>
+                  <td className="px-4 py-3 text-right tabular-data border-r border-dashed border-border/40 last:border-r-0">{r.assetsProcessed}</td>
+                  <td className="px-4 py-3 text-right tabular-data border-r border-dashed border-border/40 last:border-r-0">PKR {r.totalReduced.toLocaleString()}</td>
+                  <td className="px-4 py-3 text-right capitalize text-muted-foreground border-r border-dashed border-border/40 last:border-r-0">{r.triggeredBy}</td>
+                  <td className="px-4 py-3 text-center border-r border-dashed border-border/40 last:border-r-0">
                     {r.status === "success" ? (
                       <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-success/15 text-success text-xs font-semibold">
                         <CheckCircle2 className="w-3 h-3" /> Success

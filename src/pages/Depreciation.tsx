@@ -198,7 +198,7 @@ export default function Depreciation() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-border/10">
+              <tr className="border-b-2 border-dashed border-border bg-muted/40">
                 {["Asset", "Cost", "Book Value", "Depreciation Amount", "New Book Value"].map((h, i) => (
                   <th key={h} className={`px-4 py-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground ${i === 0 ? "text-left" : "text-right"}`}>{h}</th>
                 ))}
@@ -209,11 +209,11 @@ export default function Depreciation() {
                 <tr><td colSpan={5} className="px-4 py-12 text-center text-muted-foreground">No assets in selection.</td></tr>
               ) : previewRows.map((r) => (
                 <tr key={r.id} className="border-b border-border/10 hover:bg-muted/10">
-                  <td className="px-4 py-3"><span className="font-medium text-foreground">{r.name}</span> <span className="text-xs text-muted-foreground font-mono ml-1">{r.id}</span></td>
-                  <td className="px-4 py-3 text-right tabular-data">PKR {r.cost.toLocaleString()}</td>
-                  <td className="px-4 py-3 text-right tabular-data">PKR {r.bookValue.toLocaleString()}</td>
-                  <td className="px-4 py-3 text-right tabular-data text-destructive font-semibold">− PKR {r.depreciationAmount.toLocaleString()}</td>
-                  <td className="px-4 py-3 text-right tabular-data text-primary font-bold">PKR {r.newBookValue.toLocaleString()}</td>
+                  <td className="px-4 py-3 border-r border-dashed border-border/40 last:border-r-0"><span className="font-medium text-foreground">{r.name}</span> <span className="text-xs text-muted-foreground font-mono ml-1">{r.id}</span></td>
+                  <td className="px-4 py-3 text-right tabular-data border-r border-dashed border-border/40 last:border-r-0">PKR {r.cost.toLocaleString()}</td>
+                  <td className="px-4 py-3 text-right tabular-data border-r border-dashed border-border/40 last:border-r-0">PKR {r.bookValue.toLocaleString()}</td>
+                  <td className="px-4 py-3 text-right tabular-data text-destructive font-semibold border-r border-dashed border-border/40 last:border-r-0">− PKR {r.depreciationAmount.toLocaleString()}</td>
+                  <td className="px-4 py-3 text-right tabular-data text-primary font-bold border-r border-dashed border-border/40 last:border-r-0">PKR {r.newBookValue.toLocaleString()}</td>
                 </tr>
               ))}
             </tbody>
@@ -244,7 +244,7 @@ export default function Depreciation() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-border/10">
+              <tr className="border-b-2 border-dashed border-border bg-muted/40">
                 {["Date", "Asset", "Method", "Amount", "New Book Value"].map((h, i) => (
                   <th key={h} className={`px-4 py-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground ${i <= 2 ? "text-left" : "text-right"}`}>{h}</th>
                 ))}
@@ -255,11 +255,11 @@ export default function Depreciation() {
                 <tr><td colSpan={5} className="px-4 py-12 text-center text-muted-foreground">No depreciation runs yet.</td></tr>
               ) : log.map((l) => (
                 <tr key={l.id} className="border-b border-border/10 hover:bg-muted/10">
-                  <td className="px-4 py-3 text-muted-foreground">{new Date(l.date).toLocaleString()}</td>
-                  <td className="px-4 py-3"><span className="font-medium text-foreground">{l.assetName}</span> <span className="text-xs text-muted-foreground font-mono ml-1">{l.assetId}</span></td>
-                  <td className="px-4 py-3"><span className="px-2 py-0.5 rounded-lg text-[11px] font-semibold bg-primary/15 text-primary">{l.method}</span></td>
-                  <td className="px-4 py-3 text-right tabular-data text-destructive font-semibold">− PKR {l.depreciationAmount.toLocaleString()}</td>
-                  <td className="px-4 py-3 text-right tabular-data text-primary font-bold">PKR {l.newBookValue.toLocaleString()}</td>
+                  <td className="px-4 py-3 text-muted-foreground border-r border-dashed border-border/40 last:border-r-0">{new Date(l.date).toLocaleString()}</td>
+                  <td className="px-4 py-3 border-r border-dashed border-border/40 last:border-r-0"><span className="font-medium text-foreground">{l.assetName}</span> <span className="text-xs text-muted-foreground font-mono ml-1">{l.assetId}</span></td>
+                  <td className="px-4 py-3 border-r border-dashed border-border/40 last:border-r-0"><span className="px-2 py-0.5 rounded-lg text-[11px] font-semibold bg-primary/15 text-primary">{l.method}</span></td>
+                  <td className="px-4 py-3 text-right tabular-data text-destructive font-semibold border-r border-dashed border-border/40 last:border-r-0">− PKR {l.depreciationAmount.toLocaleString()}</td>
+                  <td className="px-4 py-3 text-right tabular-data text-primary font-bold border-r border-dashed border-border/40 last:border-r-0">PKR {l.newBookValue.toLocaleString()}</td>
                 </tr>
               ))}
             </tbody>

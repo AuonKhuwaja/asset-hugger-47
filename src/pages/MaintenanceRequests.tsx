@@ -102,30 +102,30 @@ export default function MaintenanceRequests() {
         <div className="vision-card overflow-hidden">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-border/50">
-                <th className="text-left px-4 py-3 text-xs font-semibold uppercase text-muted-foreground">ID</th>
-                <th className="text-left px-4 py-3 text-xs font-semibold uppercase text-muted-foreground">Asset</th>
-                <th className="text-left px-4 py-3 text-xs font-semibold uppercase text-muted-foreground">Issue</th>
-                <th className="text-left px-4 py-3 text-xs font-semibold uppercase text-muted-foreground">Priority</th>
-                <th className="text-left px-4 py-3 text-xs font-semibold uppercase text-muted-foreground">Date</th>
-                <th className="text-left px-4 py-3 text-xs font-semibold uppercase text-muted-foreground">Status</th>
+              <tr className="border-b-2 border-dashed border-border bg-muted/40">
+                <th className="text-left px-4 py-3 text-xs font-bold uppercase text-foreground border-r border-dashed border-border/60 last:border-r-0">ID</th>
+                <th className="text-left px-4 py-3 text-xs font-bold uppercase text-foreground border-r border-dashed border-border/60 last:border-r-0">Asset</th>
+                <th className="text-left px-4 py-3 text-xs font-bold uppercase text-foreground border-r border-dashed border-border/60 last:border-r-0">Issue</th>
+                <th className="text-left px-4 py-3 text-xs font-bold uppercase text-foreground border-r border-dashed border-border/60 last:border-r-0">Priority</th>
+                <th className="text-left px-4 py-3 text-xs font-bold uppercase text-foreground border-r border-dashed border-border/60 last:border-r-0">Date</th>
+                <th className="text-left px-4 py-3 text-xs font-bold uppercase text-foreground border-r border-dashed border-border/60 last:border-r-0">Status</th>
               </tr>
             </thead>
             <tbody>
               {requests.map(req => (
                 <tr key={req.id} className="border-b border-border/30 hover:bg-muted/20 transition-colors">
-                  <td className="px-4 py-3 font-mono text-xs text-muted-foreground">{req.id}</td>
-                  <td className="px-4 py-3 font-medium text-foreground">{req.assetName}</td>
-                  <td className="px-4 py-3 text-muted-foreground max-w-[200px] truncate">{req.issue}</td>
-                  <td className="px-4 py-3">
+                  <td className="px-4 py-3 font-mono text-xs text-muted-foreground border-r border-dashed border-border/40 last:border-r-0">{req.id}</td>
+                  <td className="px-4 py-3 font-medium text-foreground border-r border-dashed border-border/40 last:border-r-0">{req.assetName}</td>
+                  <td className="px-4 py-3 text-muted-foreground max-w-[200px] truncate border-r border-dashed border-border/40 last:border-r-0">{req.issue}</td>
+                  <td className="px-4 py-3 border-r border-dashed border-border/40 last:border-r-0">
                     <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${
                       req.priority === "high" ? "bg-red-500/15 text-red-400" :
                       req.priority === "medium" ? "bg-amber-500/15 text-amber-400" :
                       "bg-emerald-500/15 text-emerald-400"
                     }`}>{req.priority}</span>
                   </td>
-                  <td className="px-4 py-3 text-xs text-muted-foreground">{req.requestDate}</td>
-                  <td className="px-4 py-3">
+                  <td className="px-4 py-3 text-xs text-muted-foreground border-r border-dashed border-border/40 last:border-r-0">{req.requestDate}</td>
+                  <td className="px-4 py-3 border-r border-dashed border-border/40 last:border-r-0">
                     <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${statusColor(req.status)}`}>
                       {statusIcon(req.status)} {req.status}
                     </span>

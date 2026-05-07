@@ -285,7 +285,7 @@ export default function Employees() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-border/10">
+              <tr className="border-b-2 border-dashed border-border bg-muted/40">
                 {["ID", "Name", "Email", "Phone", "Department", "Designation", "Status", ...(canEdit ? ["Actions"] : [])].map((h) => (
                   <th key={h} className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">{h}</th>
                 ))}
@@ -294,24 +294,24 @@ export default function Employees() {
             <tbody>
               {filtered.map((emp) => (
                 <tr key={emp.id} className="border-b border-border/10 hover:bg-muted/10 transition-colors">
-                  <td className="px-4 py-3 font-mono text-xs text-muted-foreground">{emp.id}</td>
-                  <td className="px-4 py-3 font-medium flex items-center gap-2">
+                  <td className="px-4 py-3 font-mono text-xs text-muted-foreground border-r border-dashed border-border/40 last:border-r-0">{emp.id}</td>
+                  <td className="px-4 py-3 font-medium flex items-center gap-2 border-r border-dashed border-border/40 last:border-r-0">
                     <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">
                       {emp.name.split(" ").map((n) => n[0]).join("")}
                     </div>
                     {emp.name}
                   </td>
-                  <td className="px-4 py-3 text-muted-foreground">{emp.email}</td>
-                  <td className="px-4 py-3 text-muted-foreground">{emp.phone}</td>
-                  <td className="px-4 py-3 text-muted-foreground">{emp.department}</td>
-                  <td className="px-4 py-3 text-muted-foreground">{emp.designation}</td>
-                  <td className="px-4 py-3">
+                  <td className="px-4 py-3 text-muted-foreground border-r border-dashed border-border/40 last:border-r-0">{emp.email}</td>
+                  <td className="px-4 py-3 text-muted-foreground border-r border-dashed border-border/40 last:border-r-0">{emp.phone}</td>
+                  <td className="px-4 py-3 text-muted-foreground border-r border-dashed border-border/40 last:border-r-0">{emp.department}</td>
+                  <td className="px-4 py-3 text-muted-foreground border-r border-dashed border-border/40 last:border-r-0">{emp.designation}</td>
+                  <td className="px-4 py-3 border-r border-dashed border-border/40 last:border-r-0">
                     <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${emp.status === "active" ? "bg-emerald-500/10 text-emerald-500" : "bg-red-500/10 text-red-500"}`}>
                       {emp.status === "active" ? "Active" : "Inactive"}
                     </span>
                   </td>
                   {canEdit && (
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-3 border-r border-dashed border-border/40 last:border-r-0">
                       <div className="flex gap-1">
                         <button onClick={() => handleEdit(emp)} className="p-1.5 rounded-lg hover:bg-primary/10 text-primary transition-colors"><Pencil className="w-4 h-4" /></button>
                         <button onClick={() => handleDelete(emp.id)} className="p-1.5 rounded-lg hover:bg-destructive/10 text-destructive transition-colors"><Trash2 className="w-4 h-4" /></button>
