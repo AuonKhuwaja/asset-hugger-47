@@ -55,21 +55,21 @@ export default function DepreciationTracking() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-border/10">
+              <tr className="border-b-2 border-dashed border-border bg-muted/40">
                 {["Asset", "Category", "Purchase", "Current Value", "Depreciation", "Rate"].map((h, i) => (
-                  <th key={h} className={`px-4 py-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground ${i === 0 ? "text-left" : "text-right"}`}>{h}</th>
+                  <th key={h} className={`px-4 py-3 text-xs font-bold uppercase tracking-wider text-foreground ${i === 0 ? "text-left" : "text-right"} border-r border-dashed border-border/60 last:border-r-0`}>{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {rows.map((d) => (
-                <tr key={d.id} className="border-b border-border/10 hover:bg-muted/10">
-                  <td className="px-4 py-3 font-medium">{d.name}</td>
-                  <td className="px-4 py-3 text-right text-muted-foreground">{d.category}</td>
-                  <td className="px-4 py-3 text-right tabular-data">PKR {d.purchaseCost.toLocaleString()}</td>
-                  <td className="px-4 py-3 text-right tabular-data">PKR {d.currentValue.toLocaleString()}</td>
-                  <td className="px-4 py-3 text-right tabular-data text-destructive">-PKR {d.depreciation.toLocaleString()}</td>
-                  <td className="px-4 py-3 text-right">
+                <tr key={d.id} className="border-b border-dashed border-border/70 hover:bg-muted/50">
+                  <td className="px-4 py-3 font-medium border-r border-dashed border-border/40 last:border-r-0">{d.name}</td>
+                  <td className="px-4 py-3 text-right text-muted-foreground border-r border-dashed border-border/40 last:border-r-0">{d.category}</td>
+                  <td className="px-4 py-3 text-right tabular-data border-r border-dashed border-border/40 last:border-r-0">PKR {d.purchaseCost.toLocaleString()}</td>
+                  <td className="px-4 py-3 text-right tabular-data border-r border-dashed border-border/40 last:border-r-0">PKR {d.currentValue.toLocaleString()}</td>
+                  <td className="px-4 py-3 text-right tabular-data text-destructive border-r border-dashed border-border/40 last:border-r-0">-PKR {d.depreciation.toLocaleString()}</td>
+                  <td className="px-4 py-3 text-right border-r border-dashed border-border/40 last:border-r-0">
                     <span className={`tabular-data font-semibold ${d.depreciationRate > 50 ? "text-destructive" : d.depreciationRate > 20 ? "text-warning" : "text-success"}`}>
                       {d.depreciationRate}%
                     </span>

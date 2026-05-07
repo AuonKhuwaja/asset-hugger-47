@@ -129,24 +129,24 @@ export default function Categories() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-border/10">
+              <tr className="border-b-2 border-dashed border-border bg-muted/40">
                 {["ID", "Name", "Description", "Assets", "Created", ...(isViewer ? [] : ["Actions"])].map(h => (
-                  <th key={h} className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">{h}</th>
+                  <th key={h} className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-foreground border-r border-dashed border-border/60 last:border-r-0">{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {filtered.map(cat => (
-                <tr key={cat.id} className="border-b border-border/10 hover:bg-muted/10 transition-colors">
-                  <td className="px-4 py-3 font-mono text-xs text-muted-foreground">{cat.id}</td>
-                  <td className="px-4 py-3 font-medium flex items-center gap-2">
+                <tr key={cat.id} className="border-b border-dashed border-border/70 transition-colors hover:bg-muted/50">
+                  <td className="px-4 py-3 font-mono text-xs text-muted-foreground border-r border-dashed border-border/40 last:border-r-0">{cat.id}</td>
+                  <td className="px-4 py-3 font-medium flex items-center gap-2 border-r border-dashed border-border/40 last:border-r-0">
                     <FolderOpen className="w-4 h-4 text-primary" /> {cat.name}
                   </td>
-                  <td className="px-4 py-3 text-muted-foreground">{cat.description}</td>
-                  <td className="px-4 py-3 tabular-data">{cat.assetCount}</td>
-                  <td className="px-4 py-3 tabular-data text-muted-foreground">{cat.createdAt}</td>
+                  <td className="px-4 py-3 text-muted-foreground border-r border-dashed border-border/40 last:border-r-0">{cat.description}</td>
+                  <td className="px-4 py-3 tabular-data border-r border-dashed border-border/40 last:border-r-0">{cat.assetCount}</td>
+                  <td className="px-4 py-3 tabular-data text-muted-foreground border-r border-dashed border-border/40 last:border-r-0">{cat.createdAt}</td>
                   {!isViewer && (
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-3 border-r border-dashed border-border/40 last:border-r-0">
                       <div className="flex gap-1">
                         <button onClick={() => handleEdit(cat)} className="p-1.5 rounded-lg hover:bg-primary/10 text-primary transition-colors"><Pencil className="w-4 h-4" /></button>
                         <button onClick={() => handleDelete(cat.id)} className="p-1.5 rounded-lg hover:bg-destructive/10 text-destructive transition-colors"><Trash2 className="w-4 h-4" /></button>

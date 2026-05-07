@@ -275,27 +275,27 @@ export default function Assets() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-border/20">
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">ID</th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">Name</th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">Category</th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">Status</th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">Assignee</th>
-                    <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-muted-foreground">Value</th>
-                    {canEdit && <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">Actions</th>}
+                  <tr className="border-b-2 border-dashed border-border bg-muted/40">
+                    <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-foreground border-r border-dashed border-border/60 last:border-r-0">ID</th>
+                    <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-foreground border-r border-dashed border-border/60 last:border-r-0">Name</th>
+                    <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-foreground border-r border-dashed border-border/60 last:border-r-0">Category</th>
+                    <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-foreground border-r border-dashed border-border/60 last:border-r-0">Status</th>
+                    <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-foreground border-r border-dashed border-border/60 last:border-r-0">Assignee</th>
+                    <th className="px-4 py-3 text-right text-xs font-bold uppercase tracking-wider text-foreground border-r border-dashed border-border/60 last:border-r-0">Value</th>
+                    {canEdit && <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-foreground border-r border-dashed border-border/60 last:border-r-0">Actions</th>}
                   </tr>
                 </thead>
                 <tbody>
                   {filtered.map((a) => (
-                    <tr key={a.id} className="border-b border-border/10 hover:bg-muted/10 transition-colors">
-                      <td className="px-4 py-3 font-mono text-xs text-muted-foreground">{a.id}</td>
-                      <td className="px-4 py-3 font-medium">{a.name}</td>
-                      <td className="px-4 py-3 text-muted-foreground">{a.category}</td>
-                      <td className="px-4 py-3"><StatusBadge status={a.status} /></td>
-                      <td className="px-4 py-3 text-muted-foreground">{a.assignee || "—"}</td>
-                      <td className="px-4 py-3 text-right tabular-data font-medium text-primary">PKR {a.currentValue.toLocaleString()}</td>
+                    <tr key={a.id} className="border-b border-dashed border-border/70 transition-colors hover:bg-muted/50">
+                      <td className="px-4 py-3 font-mono text-xs text-muted-foreground border-r border-dashed border-border/40 last:border-r-0">{a.id}</td>
+                      <td className="px-4 py-3 font-medium border-r border-dashed border-border/40 last:border-r-0">{a.name}</td>
+                      <td className="px-4 py-3 text-muted-foreground border-r border-dashed border-border/40 last:border-r-0">{a.category}</td>
+                      <td className="px-4 py-3 border-r border-dashed border-border/40 last:border-r-0"><StatusBadge status={a.status} /></td>
+                      <td className="px-4 py-3 text-muted-foreground border-r border-dashed border-border/40 last:border-r-0">{a.assignee || "—"}</td>
+                      <td className="px-4 py-3 text-right tabular-data font-medium text-primary border-r border-dashed border-border/40 last:border-r-0">PKR {a.currentValue.toLocaleString()}</td>
                       {canEdit && (
-                        <td className="px-4 py-3">
+                        <td className="px-4 py-3 border-r border-dashed border-border/40 last:border-r-0">
                           <div className="flex gap-1">
                             <button onClick={() => handleEdit(a.id)} className="p-1.5 rounded-lg hover:bg-primary/10 text-primary transition-colors"><Pencil className="w-4 h-4" /></button>
                             <button onClick={() => handleDelete(a.id)} className="p-1.5 rounded-lg hover:bg-destructive/10 text-destructive transition-colors"><Trash2 className="w-4 h-4" /></button>

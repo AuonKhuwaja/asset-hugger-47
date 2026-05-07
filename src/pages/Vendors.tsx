@@ -210,30 +210,30 @@ export default function Vendors() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-border/10">
+              <tr className="border-b-2 border-dashed border-border bg-muted/40">
                 {["ID", "Vendor", "Contact", "Email", "Phone", "Category", "Status", ...(canEdit ? ["Actions"] : [])].map(h => (
-                  <th key={h} className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">{h}</th>
+                  <th key={h} className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-foreground border-r border-dashed border-border/60 last:border-r-0">{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {filtered.map(v => (
-                <tr key={v.id} className="border-b border-border/10 hover:bg-muted/10 transition-colors">
-                  <td className="px-4 py-3 font-mono text-xs text-muted-foreground">{v.id}</td>
-                  <td className="px-4 py-3 font-medium flex items-center gap-2">
+                <tr key={v.id} className="border-b border-dashed border-border/70 transition-colors hover:bg-muted/50">
+                  <td className="px-4 py-3 font-mono text-xs text-muted-foreground border-r border-dashed border-border/40 last:border-r-0">{v.id}</td>
+                  <td className="px-4 py-3 font-medium flex items-center gap-2 border-r border-dashed border-border/40 last:border-r-0">
                     <ShoppingBag className="w-4 h-4 text-primary" /> {v.name}
                   </td>
-                  <td className="px-4 py-3 text-muted-foreground">{v.contactPerson}</td>
-                  <td className="px-4 py-3 text-muted-foreground">{v.email}</td>
-                  <td className="px-4 py-3 text-muted-foreground">{v.phone}</td>
-                  <td className="px-4 py-3 text-muted-foreground">{v.category}</td>
-                  <td className="px-4 py-3">
+                  <td className="px-4 py-3 text-muted-foreground border-r border-dashed border-border/40 last:border-r-0">{v.contactPerson}</td>
+                  <td className="px-4 py-3 text-muted-foreground border-r border-dashed border-border/40 last:border-r-0">{v.email}</td>
+                  <td className="px-4 py-3 text-muted-foreground border-r border-dashed border-border/40 last:border-r-0">{v.phone}</td>
+                  <td className="px-4 py-3 text-muted-foreground border-r border-dashed border-border/40 last:border-r-0">{v.category}</td>
+                  <td className="px-4 py-3 border-r border-dashed border-border/40 last:border-r-0">
                     <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${v.status === "active" ? "bg-emerald-500/10 text-emerald-500" : "bg-red-500/10 text-red-500"}`}>
                       {v.status === "active" ? "Active" : "Inactive"}
                     </span>
                   </td>
                   {canEdit && (
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-3 border-r border-dashed border-border/40 last:border-r-0">
                       <div className="flex gap-1">
                         <button onClick={() => handleEdit(v)} className="p-1.5 rounded-lg hover:bg-primary/10 text-primary transition-colors"><Pencil className="w-4 h-4" /></button>
                         <button onClick={() => handleDelete(v.id)} className="p-1.5 rounded-lg hover:bg-destructive/10 text-destructive transition-colors"><Trash2 className="w-4 h-4" /></button>
