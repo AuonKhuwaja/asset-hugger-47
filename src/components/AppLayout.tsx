@@ -33,6 +33,7 @@ import {
   Play,
   CalendarRange,
   Calculator,
+  Shield,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -104,6 +105,7 @@ const getNavItems = (isAdmin: boolean, isEmployee: boolean): NavItem[] => {
         { to: "/billing/run-history", label: "Run History", icon: History },
       ],
     },
+    ...(isAdmin ? [{ to: "/users", icon: Shield, label: "User Management" }] : []),
     { to: "/profile", icon: UserCog, label: "My Profile" },
     { to: "/settings", icon: Settings, label: "Settings" },
   ];
