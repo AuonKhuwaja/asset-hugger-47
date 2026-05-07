@@ -2,12 +2,13 @@ import { Moon, Sun } from "lucide-react";
 import { useEffect, useState } from "react";
 
 export function ThemeToggle() {
-  const [dark, setDark] = useState(() => {
-    if (typeof window !== "undefined") {
-      return document.documentElement.classList.contains("dark");
-    }
-    return false; // default: light
-  });
+  const [dark, setDark] = useState(false); // default: light
+
+  useEffect(() => {
+    // On mount — force light class
+    document.documentElement.classList.remove("dark");
+    document.documentElement.classList.add("light");
+  }, []);
 
   useEffect(() => {
     if (dark) {
@@ -26,11 +27,13 @@ export function ThemeToggle() {
       aria-label="Toggle theme"
     >
       <div className="relative w-5 h-5">
+        {/* Sun shown in dark mode — click karo to go light */}
         <Sun
           className={`w-5 h-5 text-muted-foreground absolute inset-0 transition-all duration-300 ${
             dark ? "opacity-100 rotate-0 scale-100" : "opacity-0 rotate-90 scale-0"
           }`}
         />
+        {/* Moon shown in light mode — click karo to go dark */}
         <Moon
           className={`w-5 h-5 text-muted-foreground absolute inset-0 transition-all duration-300 ${
             dark ? "opacity-0 -rotate-90 scale-0" : "opacity-100 rotate-0 scale-100"

@@ -135,7 +135,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Department Cost Radar */}
+      {/* Department Cost Radar
       <div className="vision-card p-6">
         <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground mb-4">Department Cost Radar</h3>
         <div className="h-80">
@@ -152,9 +152,9 @@ export default function Dashboard() {
             </RadarChart>
           </ResponsiveContainer>
         </div>
-      </div>
+      </div> */}
 
-      {/* Asset Value Trend */}
+      {/* Asset Value Trend
       <div className="vision-card p-6">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground">Asset Value Trend</h3>
@@ -183,7 +183,7 @@ export default function Dashboard() {
             </AreaChart>
           </ResponsiveContainer>
         </div>
-      </div>
+      </div> */}
 
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

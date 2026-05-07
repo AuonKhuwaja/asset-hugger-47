@@ -346,3 +346,22 @@
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(66, 153, 225, 0.4);
 }
+/* ── Table headers: blue in light, purple in dark ── */
+
+/* Light mode — solid bright blue */
+.light thead tr {
+  background-color: rgb(25, 117, 230) !important;
+}
+.light thead th {
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+/* Dark mode — solid deep purple */
+:root:not(.light) thead tr {
+  background-color: rgb(61, 25, 102) !important;
+}
+:root:not(.light) thead th {
+  color: #e2d0ff !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
