@@ -117,7 +117,7 @@ const Auth = () => {
 
   return (
     <div className="h-screen flex bg-background overflow-hidden">
-      {/* Left Panel */}
+      {/* Left Panel — always dark (photo panel) */}
       <div className="hidden lg:flex lg:w-[55%] relative overflow-hidden flex-col justify-between p-10">
         {[authBg1, authBg2, authBg3, authBg4].map((bg, i) => (
           <img
@@ -130,6 +130,7 @@ const Auth = () => {
         ))}
         <div className="absolute inset-0 bg-gradient-to-br from-[hsl(213,80%,10%,0.7)] via-[hsl(230,50%,8%,0.6)] to-[hsl(250,40%,5%,0.8)]" />
 
+        {/* Top branding */}
         <div className="relative z-10">
           <div className="flex items-center gap-3 mb-2">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[hsl(213,80%,57%)] to-[hsl(258,80%,50%)] flex items-center justify-center shadow-[0_0_20px_hsl(213,80%,57%,0.4)]">
@@ -164,12 +165,13 @@ const Auth = () => {
         </div>
       </div>
 
-      {/* Right Panel */}
+      {/* Right Panel — uses CSS variables, responds to theme */}
       <div className="w-full lg:w-[45%] relative flex items-center justify-center p-6 sm:p-10 overflow-y-auto bg-background">
         <div className="absolute top-6 right-6 z-20 hidden lg:block">
           <ThemeToggle />
         </div>
 
+        {/* Background glow — only visible in dark */}
         <div
           className="absolute inset-0 dark:block hidden"
           style={{
@@ -194,6 +196,7 @@ const Auth = () => {
             <ThemeToggle />
           </div>
 
+          {/* Step content */}
           <div
             className="transition-all duration-300 ease-out"
             style={{
@@ -286,50 +289,59 @@ const Auth = () => {
               </div>
 
             ) : isSuperAdminMode ? (
-              /* SUPER ADMIN — same style as regular login */
+              /* SUPER ADMIN — Login */
               <div>
-                <div className="text-center mb-8">
-                  <h1 className="text-2xl font-bold text-foreground mb-1">Super Admin</h1>
-                  <p className="text-sm text-muted-foreground">
-                    Sign in to manage all companies
-                  </p>
+                <div className="text-center mb-6">
+                  <div className="w-16 h-16 rounded-2xl mx-auto mb-3 flex items-center justify-center bg-gradient-to-br from-red-600 to-red-800 shadow-[0_0_20px_hsl(0,80%,50%,0.4)]">
+                    <Lock className="w-7 h-7 text-white" />
+                  </div>
+                  <span className="inline-block px-3 py-1 rounded-full bg-red-600/20 border border-red-600/30 text-xs font-bold text-red-500 mb-2">
+                    Super Admin
+                  </span>
+                  <h2 className="text-lg font-bold text-foreground">Sign in to manage all companies</h2>
+                  <button
+                    onClick={() => setIsSuperAdminMode(false)}
+                    type="button"
+                    className="inline-flex items-center gap-1 mt-2 text-xs text-primary hover:text-primary/80 transition-colors"
+                  >
+                    <ArrowLeft className="w-3 h-3" />
+                    Back to standard sign in
+                  </button>
                 </div>
 
                 <form onSubmit={handleLogin} className="space-y-5">
-                  <div className="space-y-4">
-                    <div className="space-y-2">
-                      <Label className="text-xs font-semibold uppercase text-muted-foreground">Email</Label>
-                      <div className="relative">
-                        <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                        <Input
-                          type="email"
-                          placeholder="superadmin@trackvault.com"
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                          className="pl-11 h-12 rounded-xl bg-input border-border text-foreground placeholder:text-muted-foreground"
-                        />
-                      </div>
+                  <div className="space-y-2">
+                    <Label className="text-xs font-semibold uppercase text-muted-foreground">Email</Label>
+                    <div className="relative">
+                      <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                      <Input
+                        type="email"
+                        placeholder="superadmin@trackvault.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="pl-11 h-12 rounded-xl bg-input border-border text-foreground placeholder:text-muted-foreground"
+                      />
                     </div>
+                  </div>
 
-                    <div className="space-y-2">
-                      <Label className="text-xs font-semibold uppercase text-muted-foreground">Password</Label>
-                      <div className="relative">
-                        <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                        <Input
-                          type={showPassword ? "text" : "password"}
-                          placeholder="••••••••"
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
-                          className="pl-11 pr-11 h-12 rounded-xl bg-input border-border text-foreground placeholder:text-muted-foreground"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => setShowPassword(!showPassword)}
-                          className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                        >
-                          {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                        </button>
-                      </div>
+                  <div className="space-y-2">
+                    <Label className="text-xs font-semibold uppercase text-muted-foreground">Password</Label>
+                    <div className="relative">
+                      <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                      <Input
+                        type={showPassword ? "text" : "password"}
+                        placeholder="••••••••"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className="pl-11 pr-11 h-12 rounded-xl bg-input border-border text-foreground placeholder:text-muted-foreground"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                      >
+                        {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
                     </div>
                   </div>
 
@@ -337,32 +349,20 @@ const Auth = () => {
                     type="submit"
                     disabled={loading}
                     className="relative w-full h-12 rounded-xl overflow-hidden text-sm font-semibold text-white
-                      bg-gradient-to-r from-[hsl(215,90%,60%)] to-[hsl(270,80%,60%)]
-                      shadow-lg shadow-[hsl(215,90%,60%,0.25)] transition-all duration-300 group disabled:opacity-70"
+                      bg-gradient-to-r from-red-600 to-red-800
+                      shadow-lg shadow-red-600/25 transition-all duration-300 group disabled:opacity-70"
                   >
                     <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent
                       translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
                     <span className="relative z-10 flex items-center justify-center gap-2">
                       {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
-                      {loading ? "Signing in..." : "Sign In"}
-                      {!loading && <ChevronRight className="w-4 h-4" />}
+                      {loading ? "Signing in..." : "Sign In as Super Admin"}
                     </span>
                   </button>
                 </form>
 
-                <div className="mt-5 text-center">
-                  <button
-                    type="button"
-                    onClick={() => { setIsSuperAdminMode(false); setCompanyError(""); }}
-                    className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:text-primary/80 underline-offset-4 hover:underline transition-colors"
-                  >
-                    <ArrowLeft className="w-3 h-3" />
-                    Back to standard sign in
-                  </button>
-                </div>
-
-                <div className="mt-6 p-3 rounded-xl border border-primary/20 bg-primary/5">
-                  <p className="text-xs text-primary font-medium">
+                <div className="mt-6 p-3 rounded-xl border border-red-500/20 bg-red-500/5">
+                  <p className="text-xs text-red-500 font-medium">
                     Test: superadmin@trackvault.com / super123
                   </p>
                 </div>
@@ -389,40 +389,38 @@ const Auth = () => {
                 </div>
 
                 <form onSubmit={handleLogin} className="space-y-5">
-                  <div className="space-y-4">
-                    <div className="space-y-2">
-                      <Label className="text-xs font-semibold uppercase text-muted-foreground">Email</Label>
-                      <div className="relative">
-                        <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                        <Input
-                          type="email"
-                          placeholder="you@company.com"
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                          className="pl-11 h-12 rounded-xl bg-input border-border text-foreground placeholder:text-muted-foreground"
-                        />
-                      </div>
+                  <div className="space-y-2">
+                    <Label className="text-xs font-semibold uppercase text-muted-foreground">Email</Label>
+                    <div className="relative">
+                      <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                      <Input
+                        type="email"
+                        placeholder="you@company.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="pl-11 h-12 rounded-xl bg-input border-border text-foreground placeholder:text-muted-foreground"
+                      />
                     </div>
+                  </div>
 
-                    <div className="space-y-2">
-                      <Label className="text-xs font-semibold uppercase text-muted-foreground">Password</Label>
-                      <div className="relative">
-                        <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                        <Input
-                          type={showPassword ? "text" : "password"}
-                          placeholder="••••••••"
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
-                          className="pl-11 pr-11 h-12 rounded-xl bg-input border-border text-foreground placeholder:text-muted-foreground"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => setShowPassword(!showPassword)}
-                          className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                        >
-                          {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                        </button>
-                      </div>
+                  <div className="space-y-2">
+                    <Label className="text-xs font-semibold uppercase text-muted-foreground">Password</Label>
+                    <div className="relative">
+                      <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                      <Input
+                        type={showPassword ? "text" : "password"}
+                        placeholder="••••••••"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className="pl-11 pr-11 h-12 rounded-xl bg-input border-border text-foreground placeholder:text-muted-foreground"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                      >
+                        {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
                     </div>
                   </div>
 
