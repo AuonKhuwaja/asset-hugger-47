@@ -131,7 +131,7 @@ export default function MonthlyAssetValueReport() {
             <thead>
               <tr className="border-b-2 border-dashed border-border bg-muted/40">
                 {["Asset", "Purchase", "Current Value", "Depreciation", "Rate"].map((h, i) => (
-                  <th key={h} className={`px-4 py-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground ${i === 0 ? "text-left" : "text-right"}`}>{h}</th>
+                  <th key={h} className={`px-4 py-3 text-xs font-bold uppercase tracking-wider text-foreground ${i === 0 ? "text-left" : "text-right"} border-r border-dashed border-border/60 last:border-r-0`}>{h}</th>
                 ))}
               </tr>
             </thead>

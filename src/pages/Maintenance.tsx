@@ -716,7 +716,7 @@ export default function Maintenance() {
               <thead>
                 <tr className="border-b-2 border-dashed border-border bg-muted/40">
                   {["ID", "Asset", "Type", "Description", "Technician", "Date", "Recurrence", "Cost", "Status", "Actions"].map((h) => (
-                    <th key={h} className={`px-4 py-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground ${h === "Cost" ? "text-right" : "text-left"}`}>{h}</th>
+                    <th key={h} className={`px-4 py-3 text-xs font-bold uppercase tracking-wider text-foreground ${h === "Cost" ? "text-right" : "text-left"} border-r border-dashed border-border/60 last:border-r-0`}>{h}</th>
                   ))}
                 </tr>
               </thead>
