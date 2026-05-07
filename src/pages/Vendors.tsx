@@ -218,7 +218,7 @@ export default function Vendors() {
             </thead>
             <tbody>
               {filtered.map(v => (
-                <tr key={v.id} className="border-b border-border/10 hover:bg-muted/10 transition-colors">
+                <tr key={v.id} className="border-b border-dashed border-border/70 transition-colors hover:bg-muted/50">
                   <td className="px-4 py-3 font-mono text-xs text-muted-foreground border-r border-dashed border-border/40 last:border-r-0">{v.id}</td>
                   <td className="px-4 py-3 font-medium flex items-center gap-2 border-r border-dashed border-border/40 last:border-r-0">
                     <ShoppingBag className="w-4 h-4 text-primary" /> {v.name}

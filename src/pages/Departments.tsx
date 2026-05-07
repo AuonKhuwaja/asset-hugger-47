@@ -179,7 +179,7 @@ export default function Departments() {
             </thead>
             <tbody>
               {filtered.map(dept => (
-                <tr key={dept.id} className="border-b border-border/10 hover:bg-muted/10 transition-colors">
+                <tr key={dept.id} className="border-b border-dashed border-border/70 transition-colors hover:bg-muted/50">
                   <td className="px-4 py-3 font-mono text-xs text-muted-foreground border-r border-dashed border-border/40 last:border-r-0">{dept.id}</td>
                   <td className="px-4 py-3 font-medium flex items-center gap-2 border-r border-dashed border-border/40 last:border-r-0">
                     <Building2 className="w-4 h-4 text-primary" /> {dept.name}

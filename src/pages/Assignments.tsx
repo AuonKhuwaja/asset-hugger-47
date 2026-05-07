@@ -200,7 +200,7 @@ export default function Assignments() {
             </thead>
             <tbody>
               {filtered.map((t) => (
-                <tr key={t.id} className="border-b border-border/10 hover:bg-muted/10 transition-colors">
+                <tr key={t.id} className="border-b border-dashed border-border/70 transition-colors hover:bg-muted/50">
                   <td className="px-4 py-3 font-mono text-xs text-muted-foreground border-r border-dashed border-border/40 last:border-r-0">{t.id}</td>
                   <td className="px-4 py-3 font-medium border-r border-dashed border-border/40 last:border-r-0">{t.assetName}</td>
                   <td className="px-4 py-3 capitalize text-muted-foreground border-r border-dashed border-border/40 last:border-r-0">{t.type}</td>

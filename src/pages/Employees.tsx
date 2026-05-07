@@ -293,7 +293,7 @@ export default function Employees() {
             </thead>
             <tbody>
               {filtered.map((emp) => (
-                <tr key={emp.id} className="border-b border-border/10 hover:bg-muted/10 transition-colors">
+                <tr key={emp.id} className="border-b border-dashed border-border/70 transition-colors hover:bg-muted/50">
                   <td className="px-4 py-3 font-mono text-xs text-muted-foreground border-r border-dashed border-border/40 last:border-r-0">{emp.id}</td>
                   <td className="px-4 py-3 font-medium flex items-center gap-2 border-r border-dashed border-border/40 last:border-r-0">
                     <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">

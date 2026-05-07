@@ -113,7 +113,7 @@ export default function MaintenanceRequests() {
             </thead>
             <tbody>
               {requests.map(req => (
-                <tr key={req.id} className="border-b border-border/30 hover:bg-muted/20 transition-colors">
+                <tr key={req.id} className="border-b border-dashed border-border/70 transition-colors hover:bg-muted/50">
                   <td className="px-4 py-3 font-mono text-xs text-muted-foreground border-r border-dashed border-border/40 last:border-r-0">{req.id}</td>
                   <td className="px-4 py-3 font-medium text-foreground border-r border-dashed border-border/40 last:border-r-0">{req.assetName}</td>
                   <td className="px-4 py-3 text-muted-foreground max-w-[200px] truncate border-r border-dashed border-border/40 last:border-r-0">{req.issue}</td>

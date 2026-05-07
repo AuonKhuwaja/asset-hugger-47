@@ -722,7 +722,7 @@ export default function Maintenance() {
               </thead>
               <tbody>
                 {filtered.map((m) => (
-                  <tr key={m.id} className="border-b border-border/10 hover:bg-muted/10 transition-colors">
+                  <tr key={m.id} className="border-b border-dashed border-border/70 transition-colors hover:bg-muted/50">
                     <td className="px-4 py-3 font-mono text-xs text-muted-foreground border-r border-dashed border-border/40 last:border-r-0">{m.id}</td>
                     <td className="px-4 py-3 font-medium border-r border-dashed border-border/40 last:border-r-0">{m.assetName}</td>
                     <td className="px-4 py-3 border-r border-dashed border-border/40 last:border-r-0">

@@ -40,7 +40,7 @@ export default function DepreciationRunHistory() {
                 <tr><td colSpan={6} className="px-4 py-12 text-center text-muted-foreground">No depreciation runs yet. Trigger one from the scheduler.</td></tr>
               )}
               {runs.map((r) => (
-                <tr key={r.id} className="border-b border-border/10 hover:bg-muted/10">
+                <tr key={r.id} className="border-b border-dashed border-border/70 hover:bg-muted/50">
                   <td className="px-4 py-3 font-mono text-xs border-r border-dashed border-border/40 last:border-r-0">{r.id}</td>
                   <td className="px-4 py-3 border-r border-dashed border-border/40 last:border-r-0">{new Date(r.runAt).toLocaleString()}</td>
                   <td className="px-4 py-3 text-right tabular-data border-r border-dashed border-border/40 last:border-r-0">{r.assetsProcessed}</td>

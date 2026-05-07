@@ -170,7 +170,7 @@ export default function Billing() {
             </thead>
             <tbody>
               {filteredDepts.map((d) => (
-                <tr key={d.department} className="border-b border-border/10 hover:bg-muted/10 transition-colors">
+                <tr key={d.department} className="border-b border-dashed border-border/70 transition-colors hover:bg-muted/50">
                   <td className="px-4 py-3 font-medium border-r border-dashed border-border/40 last:border-r-0">{d.department}</td>
                   <td className="px-4 py-3 text-right tabular-data border-r border-dashed border-border/40 last:border-r-0">{d.assetCount}</td>
                   <td className="px-4 py-3 text-right tabular-data border-r border-dashed border-border/40 last:border-r-0">PKR {d.totalValue.toLocaleString()}</td>
@@ -201,7 +201,7 @@ export default function Billing() {
             </thead>
             <tbody>
               {depreciationData.map((d) => (
-                <tr key={d.id} className="border-b border-border/10 hover:bg-muted/10 transition-colors">
+                <tr key={d.id} className="border-b border-dashed border-border/70 transition-colors hover:bg-muted/50">
                   <td className="px-4 py-3 font-medium border-r border-dashed border-border/40 last:border-r-0">{d.name}</td>
                   <td className="px-4 py-3 text-right tabular-data border-r border-dashed border-border/40 last:border-r-0">PKR {d.purchaseCost.toLocaleString()}</td>
                   <td className="px-4 py-3 text-right tabular-data border-r border-dashed border-border/40 last:border-r-0">PKR {d.currentValue.toLocaleString()}</td>

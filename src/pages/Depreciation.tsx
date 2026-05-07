@@ -208,7 +208,7 @@ export default function Depreciation() {
               {previewRows.length === 0 ? (
                 <tr><td colSpan={5} className="px-4 py-12 text-center text-muted-foreground">No assets in selection.</td></tr>
               ) : previewRows.map((r) => (
-                <tr key={r.id} className="border-b border-border/10 hover:bg-muted/10">
+                <tr key={r.id} className="border-b border-dashed border-border/70 hover:bg-muted/50">
                   <td className="px-4 py-3 border-r border-dashed border-border/40 last:border-r-0"><span className="font-medium text-foreground">{r.name}</span> <span className="text-xs text-muted-foreground font-mono ml-1">{r.id}</span></td>
                   <td className="px-4 py-3 text-right tabular-data border-r border-dashed border-border/40 last:border-r-0">PKR {r.cost.toLocaleString()}</td>
                   <td className="px-4 py-3 text-right tabular-data border-r border-dashed border-border/40 last:border-r-0">PKR {r.bookValue.toLocaleString()}</td>
@@ -254,7 +254,7 @@ export default function Depreciation() {
               {log.length === 0 ? (
                 <tr><td colSpan={5} className="px-4 py-12 text-center text-muted-foreground">No depreciation runs yet.</td></tr>
               ) : log.map((l) => (
-                <tr key={l.id} className="border-b border-border/10 hover:bg-muted/10">
+                <tr key={l.id} className="border-b border-dashed border-border/70 hover:bg-muted/50">
                   <td className="px-4 py-3 text-muted-foreground border-r border-dashed border-border/40 last:border-r-0">{new Date(l.date).toLocaleString()}</td>
                   <td className="px-4 py-3 border-r border-dashed border-border/40 last:border-r-0"><span className="font-medium text-foreground">{l.assetName}</span> <span className="text-xs text-muted-foreground font-mono ml-1">{l.assetId}</span></td>
                   <td className="px-4 py-3 border-r border-dashed border-border/40 last:border-r-0"><span className="px-2 py-0.5 rounded-lg text-[11px] font-semibold bg-primary/15 text-primary">{l.method}</span></td>
