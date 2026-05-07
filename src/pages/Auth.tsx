@@ -5,31 +5,32 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import authBg1 from "@/assets/auth-bg-1.jpg";
 import authBg2 from "@/assets/auth-bg-2.jpg";
 import authBg3 from "@/assets/auth-bg-3.jpg";
 import authBg4 from "@/assets/auth-bg-4.jpg";
 
 const mockCompanies = [
-  { slug: "techcorp", name: "TechCorp Pvt Ltd", initials: "TC", color: "#2563EB" },
-  { slug: "retailplus", name: "RetailPlus", initials: "RP", color: "#7C3AED" },
-  { slug: "assetflow", name: "AssetFlow Demo", initials: "AF", color: "#059669" },
-  { slug: "nexatech", name: "NexaTech Solutions", initials: "NT", color: "#DC2626" },
-  { slug: "globalassets", name: "Global Assets Inc", initials: "GA", color: "#D97706" },
+  { slug: "techcorp", name: "TechCorp Pvt Ltd", initials: "TC", color: "#2563EB", pin: "1122" },
+  { slug: "retailplus", name: "RetailPlus", initials: "RP", color: "#7C3AED", pin: "3344" },
+  { slug: "assetflow", name: "AssetFlow Demo", initials: "AF", color: "#059669", pin: "5566" },
+  { slug: "nexatech", name: "NexaTech Solutions", initials: "NT", color: "#DC2626", pin: "7788" },
+  { slug: "globalassets", name: "Global Assets Inc", initials: "GA", color: "#D97706", pin: "9900" },
 ];
-
-const authBgs = [authBg1, authBg2, authBg3, authBg4];
 
 const Auth = () => {
   const [bgIndex, setBgIndex] = useState(0);
   useEffect(() => {
-    const interval = setInterval(() => setBgIndex(i => (i + 1) % 4), 5000);
+    const interval = setInterval(() => setBgIndex((i) => (i + 1) % 4), 5000);
     return () => clearInterval(interval);
   }, []);
+
   const [isSuperAdminMode, setIsSuperAdminMode] = useState(false);
   const [step, setStep] = useState<1 | 2>(1);
   const [companyCode, setCompanyCode] = useState("");
-  const [selectedCompany, setSelectedCompany] = useState<typeof mockCompanies[0] | null>(null);
+  const [companyPin, setCompanyPin] = useState("");
+  const [selectedCompany, setSelectedCompany] = useState<(typeof mockCompanies)[0] | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -42,10 +43,13 @@ const Auth = () => {
   const handleCompanyContinue = (e: React.FormEvent) => {
     e.preventDefault();
     if (!companyCode.trim()) { setCompanyError("Please enter a company code"); return; }
+    if (!companyPin.trim()) { setCompanyError("Please enter your company PIN"); return; }
     setLoading(true);
     setCompanyError("");
     setTimeout(() => {
-      const found = mockCompanies.find((c) => c.slug === companyCode.trim().toLowerCase());
+      const found = mockCompanies.find(
+        (c) => c.slug === companyCode.trim().toLowerCase() && c.pin === companyPin.trim()
+      );
       setLoading(false);
       if (found) {
         setSelectedCompany(found);
@@ -84,11 +88,13 @@ const Auth = () => {
           navigate("/dashboard");
         }
       } else {
-        // Demo fallback — Super Admin mode forces super_admin role
         const role = isSuperAdminMode ? "super_admin" : "admin";
         const demoUser = {
-          email, name: userName, role: role as any,
-          phone: "", department: "General",
+          email,
+          name: userName,
+          role: role as any,
+          phone: "",
+          department: "General",
           assignedCompanies: ["comp1", "comp2", "comp3"],
         };
         localStorage.setItem("tv_user", JSON.stringify(demoUser));
@@ -110,10 +116,9 @@ const Auth = () => {
   };
 
   return (
-    <div className="h-screen flex bg-[hsl(222,47%,7%)] overflow-hidden">
+    <div className="h-screen flex bg-background overflow-hidden">
       {/* Left Panel */}
       <div className="hidden lg:flex lg:w-[55%] relative overflow-hidden flex-col justify-between p-10">
-        {/* Rotating background images */}
         {[authBg1, authBg2, authBg3, authBg4].map((bg, i) => (
           <img
             key={i}
@@ -125,7 +130,6 @@ const Auth = () => {
         ))}
         <div className="absolute inset-0 bg-gradient-to-br from-[hsl(213,80%,10%,0.7)] via-[hsl(230,50%,8%,0.6)] to-[hsl(250,40%,5%,0.8)]" />
 
-        {/* Top branding */}
         <div className="relative z-10">
           <div className="flex items-center gap-3 mb-2">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[hsl(213,80%,57%)] to-[hsl(258,80%,50%)] flex items-center justify-center shadow-[0_0_20px_hsl(213,80%,57%,0.4)]">
@@ -161,14 +165,17 @@ const Auth = () => {
       </div>
 
       {/* Right Panel */}
-      <div className="w-full lg:w-[45%] relative flex items-center justify-center p-6 sm:p-10 overflow-y-auto">
+      <div className="w-full lg:w-[45%] relative flex items-center justify-center p-6 sm:p-10 overflow-y-auto bg-background">
+        <div className="absolute top-6 right-6 z-20 hidden lg:block">
+          <ThemeToggle />
+        </div>
+
         <div
-          className="absolute inset-0"
+          className="absolute inset-0 dark:block hidden"
           style={{
             background: `
               radial-gradient(ellipse 80% 45% at 30% 10%, hsla(215, 100%, 58%, 0.22) 0%, transparent 100%),
-              radial-gradient(ellipse 75% 50% at 75% 88%, hsla(270, 80%, 56%, 0.28) 0%, transparent 100%),
-              radial-gradient(ellipse 90% 90% at 50% 50%, transparent 50%, hsla(245, 60%, 3%, 0.5) 100%)
+              radial-gradient(ellipse 75% 50% at 75% 88%, hsla(270, 80%, 56%, 0.28) 0%, transparent 100%)
             `,
             pointerEvents: "none",
             zIndex: 0,
@@ -177,14 +184,16 @@ const Auth = () => {
 
         <div className="relative z-10 w-full max-w-md">
           {/* Mobile branding */}
-          <div className="lg:hidden flex items-center justify-center gap-2 mb-6">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[hsl(215,90%,60%)] to-[hsl(270,80%,60%)] flex items-center justify-center">
-              <Zap className="w-4 h-4 text-white" />
+          <div className="lg:hidden flex items-center justify-between gap-2 mb-6">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[hsl(215,90%,60%)] to-[hsl(270,80%,60%)] flex items-center justify-center">
+                <Zap className="w-4 h-4 text-white" />
+              </div>
+              <span className="text-lg font-bold tracking-wider text-foreground">TRACKVAULT</span>
             </div>
-            <span className="text-lg font-bold tracking-wider text-white">TRACKVAULT</span>
+            <ThemeToggle />
           </div>
 
-          {/* Step content with CSS fade transition */}
           <div
             className="transition-all duration-300 ease-out"
             style={{
@@ -196,28 +205,49 @@ const Auth = () => {
               /* STEP 1 — Company Code */
               <div>
                 <div className="text-center mb-8">
-                  <h1 className="text-2xl font-bold text-white mb-1">Welcome</h1>
-                  <p className="text-sm text-[hsl(215,20%,50%)]">Enter your company code to get started</p>
+                  <h1 className="text-2xl font-bold text-foreground mb-1">Welcome</h1>
+                  <p className="text-sm text-muted-foreground">
+                    Enter your company code and PIN to get started
+                  </p>
                 </div>
 
                 <form onSubmit={handleCompanyContinue} className="space-y-5">
-                  <div className="space-y-2">
-                    <Label className="text-xs font-semibold uppercase text-[hsl(215,20%,45%)]">
-                      Company Code
-                    </Label>
-                    <div className="relative">
-                      <Building2 className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[hsl(215,20%,40%)]" />
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label className="text-xs font-semibold uppercase text-muted-foreground">
+                        Company Code
+                      </Label>
+                      <div className="relative">
+                        <Building2 className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                        <Input
+                          type="text"
+                          placeholder="e.g. techcorp"
+                          value={companyCode}
+                          onChange={(e) => { setCompanyCode(e.target.value); setCompanyError(""); }}
+                          className="pl-11 h-12 rounded-xl bg-input border-border text-foreground placeholder:text-muted-foreground"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label className="text-xs font-semibold uppercase text-muted-foreground">
+                        Company PIN
+                      </Label>
                       <Input
                         type="text"
-                        placeholder="e.g. techcorp"
-                        value={companyCode}
-                        onChange={(e) => { setCompanyCode(e.target.value); setCompanyError(""); }}
-                        className="pl-11 h-12 bg-[hsl(223,37%,13%)] border-[hsl(222,20%,20%)] text-white rounded-xl"
+                        placeholder="e.g. 1122"
+                        value={companyPin}
+                        onChange={(e) => { setCompanyPin(e.target.value); setCompanyError(""); }}
+                        className="h-12 rounded-xl bg-input border-border text-foreground placeholder:text-muted-foreground"
                       />
                     </div>
-                    <p className="text-xs text-[hsl(215,20%,40%)]">Provided by your administrator</p>
+
+                    <p className="text-xs text-muted-foreground">
+                      Enter the company code and PIN supplied by your administrator.
+                    </p>
+
                     {companyError && (
-                      <p className="text-xs text-red-400 mt-1">{companyError}</p>
+                      <p className="text-xs text-destructive">{companyError}</p>
                     )}
                   </div>
 
@@ -242,134 +272,64 @@ const Auth = () => {
                   <button
                     type="button"
                     onClick={() => { setIsSuperAdminMode(true); setCompanyError(""); }}
-                    className="text-xs font-medium text-[hsl(215,90%,70%)] hover:text-white underline-offset-4 hover:underline transition-colors"
+                    className="text-xs font-medium text-primary hover:text-primary/80 underline-offset-4 hover:underline transition-colors"
                   >
                     Are you a Super Admin?
                   </button>
                 </div>
 
-                <div className="mt-6 p-3 rounded-xl border border-[hsl(215,90%,60%,0.2)] bg-[hsl(215,90%,60%,0.06)]">
-                  <p className="text-xs text-[hsl(215,90%,70%)] font-medium">
-                    Test codes: techcorp · retailplus · assetflow · nexatech · globalassets
+                <div className="mt-6 p-3 rounded-xl border border-primary/20 bg-primary/5">
+                  <p className="text-xs text-primary font-medium">
+                    Test codes: techcorp/1122 · retailplus/3344 · assetflow/5566 · nexatech/7788 · globalassets/9900
                   </p>
                 </div>
               </div>
+
             ) : isSuperAdminMode ? (
-              /* SUPER ADMIN — Login (no company PIN) */
+              /* SUPER ADMIN — same style as regular login */
               <div>
-                <div className="text-center mb-6">
-                  <div className="w-16 h-16 rounded-2xl mx-auto mb-3 flex items-center justify-center bg-gradient-to-br from-red-600 to-red-800 shadow-[0_0_20px_hsl(0,80%,50%,0.4)]">
-                    <Lock className="w-7 h-7 text-white" />
-                  </div>
-                  <span className="inline-block px-3 py-1 rounded-full bg-red-600/20 border border-red-600/30 text-xs font-bold text-red-400 mb-2">
-                    Super Admin
-                  </span>
-                  <h2 className="text-lg font-bold text-white">Sign in to manage all companies</h2>
-                  <button
-                    onClick={() => setIsSuperAdminMode(false)}
-                    type="button"
-                    className="inline-flex items-center gap-1 mt-2 text-xs text-[hsl(215,90%,70%)] hover:text-white transition-colors"
-                  >
-                    <ArrowLeft className="w-3 h-3" />
-                    Back to standard sign in
-                  </button>
-                </div>
-
-                <form onSubmit={handleLogin} className="space-y-5">
-                  <div className="space-y-2">
-                    <Label className="text-xs font-semibold uppercase text-[hsl(215,20%,45%)]">Email</Label>
-                    <div className="relative">
-                      <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[hsl(215,20%,40%)]" />
-                      <Input type="email" placeholder="superadmin@trackvault.com" value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="pl-11 h-12 bg-[hsl(223,37%,13%)] border-[hsl(222,20%,20%)] text-white rounded-xl" />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label className="text-xs font-semibold uppercase text-[hsl(215,20%,45%)]">Password</Label>
-                    <div className="relative">
-                      <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[hsl(215,20%,40%)]" />
-                      <Input type={showPassword ? "text" : "password"} placeholder="••••••••" value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className="pl-11 pr-11 h-12 bg-[hsl(223,37%,13%)] border-[hsl(222,20%,20%)] text-white rounded-xl" />
-                      <button type="button" onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[hsl(215,20%,40%)] hover:text-white">
-                        {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                      </button>
-                    </div>
-                  </div>
-                  <button type="submit" disabled={loading}
-                    className="relative w-full h-12 rounded-xl overflow-hidden text-sm font-semibold text-white bg-gradient-to-r from-red-600 to-red-800 shadow-lg shadow-red-600/25 transition-all duration-300 group disabled:opacity-70">
-                    <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
-                    <span className="relative z-10 flex items-center justify-center gap-2">
-                      {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
-                      {loading ? "Signing in..." : "Sign In as Super Admin"}
-                    </span>
-                  </button>
-                </form>
-
-                <div className="mt-6 p-3 rounded-xl border border-red-600/20 bg-red-600/10">
-                  <p className="text-xs text-red-300/80 font-medium">
-                    Test: superadmin@trackvault.com / super123
+                <div className="text-center mb-8">
+                  <h1 className="text-2xl font-bold text-foreground mb-1">Super Admin</h1>
+                  <p className="text-sm text-muted-foreground">
+                    Sign in to manage all companies
                   </p>
                 </div>
-              </div>
-            ) : (
-              /* STEP 2 — Login */
-              <div>
-                {/* Company header */}
-                <div className="text-center mb-6">
-                  <div
-                    className="w-16 h-16 rounded-full mx-auto mb-3 flex items-center justify-center text-white font-bold text-xl"
-                    style={{ backgroundColor: selectedCompany?.color }}
-                  >
-                    {selectedCompany?.initials}
-                  </div>
-                  <h2 className="text-lg font-bold text-white">{selectedCompany?.name}</h2>
-                  <button
-                    onClick={goBackToStep1}
-                    className="inline-flex items-center gap-1 mt-2 text-xs text-[hsl(215,90%,70%)] hover:text-white transition-colors"
-                  >
-                    <ArrowLeft className="w-3 h-3" />
-                    Change company
-                  </button>
-                </div>
 
                 <form onSubmit={handleLogin} className="space-y-5">
-                  {/* Email */}
-                  <div className="space-y-2">
-                    <Label className="text-xs font-semibold uppercase text-[hsl(215,20%,45%)]">Email</Label>
-                    <div className="relative">
-                      <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[hsl(215,20%,40%)]" />
-                      <Input
-                        type="email"
-                        placeholder="you@company.com"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="pl-11 h-12 bg-[hsl(223,37%,13%)] border-[hsl(222,20%,20%)] text-white rounded-xl"
-                      />
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label className="text-xs font-semibold uppercase text-muted-foreground">Email</Label>
+                      <div className="relative">
+                        <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                        <Input
+                          type="email"
+                          placeholder="superadmin@trackvault.com"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          className="pl-11 h-12 rounded-xl bg-input border-border text-foreground placeholder:text-muted-foreground"
+                        />
+                      </div>
                     </div>
-                  </div>
 
-                  {/* Password */}
-                  <div className="space-y-2">
-                    <Label className="text-xs font-semibold uppercase text-[hsl(215,20%,45%)]">Password</Label>
-                    <div className="relative">
-                      <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[hsl(215,20%,40%)]" />
-                      <Input
-                        type={showPassword ? "text" : "password"}
-                        placeholder="••••••••"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className="pl-11 pr-11 h-12 bg-[hsl(223,37%,13%)] border-[hsl(222,20%,20%)] text-white rounded-xl"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[hsl(215,20%,40%)] hover:text-white transition-colors"
-                      >
-                        {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                      </button>
+                    <div className="space-y-2">
+                      <Label className="text-xs font-semibold uppercase text-muted-foreground">Password</Label>
+                      <div className="relative">
+                        <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                        <Input
+                          type={showPassword ? "text" : "password"}
+                          placeholder="••••••••"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          className="pl-11 pr-11 h-12 rounded-xl bg-input border-border text-foreground placeholder:text-muted-foreground"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                        >
+                          {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                        </button>
+                      </div>
                     </div>
                   </div>
 
@@ -390,8 +350,101 @@ const Auth = () => {
                   </button>
                 </form>
 
-                <div className="mt-6 p-3 rounded-xl border border-[hsl(215,90%,60%,0.2)] bg-[hsl(215,90%,60%,0.06)]">
-                  <p className="text-xs text-[hsl(215,90%,70%)] font-medium">
+                <div className="mt-5 text-center">
+                  <button
+                    type="button"
+                    onClick={() => { setIsSuperAdminMode(false); setCompanyError(""); }}
+                    className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:text-primary/80 underline-offset-4 hover:underline transition-colors"
+                  >
+                    <ArrowLeft className="w-3 h-3" />
+                    Back to standard sign in
+                  </button>
+                </div>
+
+                <div className="mt-6 p-3 rounded-xl border border-primary/20 bg-primary/5">
+                  <p className="text-xs text-primary font-medium">
+                    Test: superadmin@trackvault.com / super123
+                  </p>
+                </div>
+              </div>
+
+            ) : (
+              /* STEP 2 — Login */
+              <div>
+                <div className="text-center mb-6">
+                  <div
+                    className="w-16 h-16 rounded-full mx-auto mb-3 flex items-center justify-center text-white font-bold text-xl"
+                    style={{ backgroundColor: selectedCompany?.color }}
+                  >
+                    {selectedCompany?.initials}
+                  </div>
+                  <h2 className="text-lg font-bold text-foreground">{selectedCompany?.name}</h2>
+                  <button
+                    onClick={goBackToStep1}
+                    className="inline-flex items-center gap-1 mt-2 text-xs text-primary hover:text-primary/80 transition-colors"
+                  >
+                    <ArrowLeft className="w-3 h-3" />
+                    Change company
+                  </button>
+                </div>
+
+                <form onSubmit={handleLogin} className="space-y-5">
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label className="text-xs font-semibold uppercase text-muted-foreground">Email</Label>
+                      <div className="relative">
+                        <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                        <Input
+                          type="email"
+                          placeholder="you@company.com"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          className="pl-11 h-12 rounded-xl bg-input border-border text-foreground placeholder:text-muted-foreground"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label className="text-xs font-semibold uppercase text-muted-foreground">Password</Label>
+                      <div className="relative">
+                        <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                        <Input
+                          type={showPassword ? "text" : "password"}
+                          placeholder="••••••••"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          className="pl-11 pr-11 h-12 rounded-xl bg-input border-border text-foreground placeholder:text-muted-foreground"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                        >
+                          {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="relative w-full h-12 rounded-xl overflow-hidden text-sm font-semibold text-white
+                      bg-gradient-to-r from-[hsl(215,90%,60%)] to-[hsl(270,80%,60%)]
+                      shadow-lg shadow-[hsl(215,90%,60%,0.25)] transition-all duration-300 group disabled:opacity-70"
+                  >
+                    <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent
+                      translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+                    <span className="relative z-10 flex items-center justify-center gap-2">
+                      {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                      {loading ? "Signing in..." : "Sign In"}
+                      {!loading && <ChevronRight className="w-4 h-4" />}
+                    </span>
+                  </button>
+                </form>
+
+                <div className="mt-6 p-3 rounded-xl border border-primary/20 bg-primary/5">
+                  <p className="text-xs text-primary font-medium">
                     Demo mode: any email & password will work
                   </p>
                 </div>
