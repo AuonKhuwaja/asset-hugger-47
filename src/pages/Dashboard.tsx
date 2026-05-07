@@ -1,21 +1,14 @@
 import {
-  Package,
-  DollarSign,
-  AlertTriangle,
-  Activity,
-  Wrench,
-  ArrowLeftRight,
-  PackagePlus,
-  ArrowRight,
-  Users,
+  Package, DollarSign, AlertTriangle, Activity, Wrench, ArrowLeftRight,
+  PackagePlus, ArrowRight, Users,
 } from "lucide-react";
 import { KpiCard } from "@/components/KpiCard";
-import { StatusBadge } from "@/components/StatusBadge";
 import { AssetTrackerCanvas } from "@/components/AssetTrackerCanvas";
 import { assets, departmentCosts, monthlyData, recentActivity } from "@/lib/mock-data";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
-  PieChart, Pie, Cell, AreaChart, Area,
+  PieChart, Pie, Cell, AreaChart, Area, LineChart, Line, RadarChart, Radar,
+  PolarGrid, PolarAngleAxis, PolarRadiusAxis, ComposedChart,
 } from "recharts";
 
 const totalValue = assets.reduce((s, a) => s + a.currentValue, 0);
