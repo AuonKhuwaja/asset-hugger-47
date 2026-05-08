@@ -116,7 +116,10 @@
 
 /* ── Main background gradient ── */
 .bg-vision {
-  background: linear-gradient(135deg, hsl(222 47% 9%) 0%, hsl(224 40% 13%) 40%, hsl(228 35% 11%) 100%);
+  background:
+    radial-gradient(ellipse 60% 40% at 15% 0%, hsla(265, 70%, 25%, 0.4) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 100% 100%, hsla(280, 65%, 22%, 0.35) 0%, transparent 60%),
+    linear-gradient(135deg, hsl(260 30% 7%) 0%, hsl(265 32% 9%) 50%, hsl(270 28% 8%) 100%);
 }
 .light .bg-vision {
   background: linear-gradient(135deg, hsl(220 20% 97%) 0%, hsl(220 25% 94%) 50%, hsl(220 20% 97%) 100%);
@@ -124,8 +127,8 @@
 
 /* ── Glass card ── */
 .vision-card {
-  background: linear-gradient(135deg, hsl(223 37% 15% / 0.8) 0%, hsl(225 32% 13% / 0.75) 100%);
-  border: 1.5px solid hsl(215 20% 60% / 0.08);
+  background: linear-gradient(135deg, hsl(260 28% 13% / 0.85) 0%, hsl(265 26% 11% / 0.8) 100%);
+  border: 1.5px solid hsl(265 30% 50% / 0.12);
   border-radius: 1.25rem;
   backdrop-filter: blur(24px);
 }
@@ -139,8 +142,8 @@
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .vision-card-hover:hover {
-  border-color: hsl(213 94% 58% / 0.18);
-  box-shadow: 0 8px 32px hsl(213 94% 58% / 0.1);
+  border-color: hsl(270 90% 70% / 0.25);
+  box-shadow: 0 8px 32px hsl(270 80% 50% / 0.18);
   transform: translateY(-2px);
 }
 .light .vision-card-hover:hover {
@@ -148,26 +151,17 @@
   box-shadow: 0 8px 24px rgba(66, 153, 225, 0.1);
 }
 
-/* ── Sidebar gradient ── */
-/* .bg-sidebar-vision {
-  background: linear-gradient(170deg,
-    hsl(224 42% 15%) 0%,
-    hsl(220 38% 12%) 30%,
-    hsl(230 35% 11%) 60%,
-    hsl(240 30% 13%) 85%,
-    hsl(224 42% 10%) 100%
-  );
-} */
-
+/* ── Sidebar gradient — premium violet ── */
 .bg-sidebar-vision {
   position: relative;
   overflow: hidden;
   isolation: isolate;
 
-  background: linear-gradient(170deg,
-    hsl(220, 60%, 12%) 0%,
-    hsl(255, 55%, 16%) 50%,
-    hsl(270, 60%, 14%) 100%
+  background: linear-gradient(180deg,
+    hsl(265, 50%, 14%) 0%,
+    hsl(270, 55%, 12%) 40%,
+    hsl(275, 60%, 10%) 75%,
+    hsl(270, 55%, 8%) 100%
   );
 }
 
@@ -179,23 +173,23 @@
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
   background-size: 200px 200px;
   mix-blend-mode: soft-light;
-  opacity: 0.18;
+  opacity: 0.15;
   pointer-events: none;
   z-index: 0;
 }
 
-/* Blue + purple glows */
+/* Violet glows */
 .bg-sidebar-vision::after {
   content: '';
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 80% 45% at 30% 10%,
-      hsla(215, 100%, 58%, 0.22) 0%, transparent 100%),
-    radial-gradient(ellipse 75% 50% at 75% 88%,
-      hsla(270, 80%, 56%, 0.28) 0%, transparent 100%),
+    radial-gradient(ellipse 90% 50% at 50% 0%,
+      hsla(275, 90%, 60%, 0.28) 0%, transparent 100%),
+    radial-gradient(ellipse 80% 50% at 50% 100%,
+      hsla(290, 80%, 55%, 0.22) 0%, transparent 100%),
     radial-gradient(ellipse 90% 90% at 50% 50%,
-      transparent 50%, hsla(245, 60%, 3%, 0.5) 100%);
+      transparent 55%, hsla(270, 60%, 4%, 0.6) 100%);
   pointer-events: none;
   z-index: 0;
 }
