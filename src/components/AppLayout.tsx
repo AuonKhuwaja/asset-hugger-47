@@ -219,37 +219,39 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         <div className="absolute left-0 top-0 bottom-0 w-[2px] bg-gradient-to-b from-primary/60 via-secondary/40 to-transparent" />
 
         {/* Logo + Collapse toggle */}
-        <div className="flex items-center justify-between h-[72px] px-3 shrink-0">
-          <div className="flex items-center gap-2 overflow-hidden">
-            <div
-              className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-white font-bold text-xs"
+        <div className={`flex items-center h-[72px] shrink-0 ${collapsed ? "justify-center px-2" : "justify-between px-3"}`}>
+          <div className="flex items-center gap-2 min-w-0">
+            <button
+              onClick={collapsed ? toggleCollapsed : undefined}
+              title={collapsed ? "Expand sidebar" : undefined}
+              className="w-9 h-9 rounded-full flex items-center justify-center shrink-0 text-white font-bold text-[11px] shadow-md ring-1 ring-white/10 hover:opacity-90 transition"
               style={{ backgroundColor: companyColor }}
             >
               {companyInitials}
+            </button>
+            {!collapsed && (
+              <span className="text-[15px] font-bold text-foreground tracking-tight whitespace-nowrap truncate">
+                {companyName}
+              </span>
+            )}
+          </div>
+          {!collapsed && (
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() => setMobileOpen(false)}
+                className="md:hidden p-1 rounded-lg hover:bg-sidebar-accent text-muted-foreground"
+              >
+                <X className="w-4 h-4" />
+              </button>
+              <button
+                onClick={toggleCollapsed}
+                className="hidden md:flex p-1.5 rounded-lg hover:bg-sidebar-accent text-muted-foreground transition-colors"
+                title="Collapse sidebar"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
             </div>
-            <span
-              className={`text-[15px] font-bold text-foreground tracking-tight whitespace-nowrap transition-all duration-300 ${
-                collapsed ? "opacity-0 w-0" : "opacity-100 w-auto"
-              }`}
-            >
-              {companyName}
-            </span>
-          </div>
-          <div className="flex items-center gap-1">
-            <button
-              onClick={() => setMobileOpen(false)}
-              className="md:hidden p-1 rounded-lg hover:bg-sidebar-accent text-muted-foreground"
-            >
-              <X className="w-4 h-4" />
-            </button>
-            <button
-              onClick={toggleCollapsed}
-              className="hidden md:flex p-1.5 rounded-lg hover:bg-sidebar-accent text-muted-foreground transition-colors"
-              title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-            >
-              {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
-            </button>
-          </div>
+          )}
         </div>
 
         <div className="px-3 mb-2">
