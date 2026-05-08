@@ -6,53 +6,53 @@
 
 @layer base {
   :root {
-    /* Refined dark palette — warmer navy with better contrast */
-    --background: 222 47% 11%;
-    --foreground: 213 31% 91%;
+    /* Premium dark palette — deep violet base with refined contrast */
+    --background: 260 30% 8%;
+    --foreground: 270 20% 95%;
 
-    --card: 223 37% 15%;
-    --card-foreground: 213 31% 91%;
+    --card: 260 28% 12%;
+    --card-foreground: 270 20% 95%;
 
-    --popover: 223 37% 15%;
-    --popover-foreground: 213 31% 91%;
+    --popover: 260 30% 11%;
+    --popover-foreground: 270 20% 95%;
 
-    --primary: 213 94% 58%;
-    --primary-foreground: 222 47% 8%;
+    --primary: 265 85% 65%;
+    --primary-foreground: 260 40% 8%;
 
-    --secondary: 258 90% 66%;
-    --secondary-foreground: 213 31% 91%;
+    --secondary: 280 70% 60%;
+    --secondary-foreground: 270 20% 95%;
 
-    --muted: 223 30% 19%;
-    --muted-foreground: 215 20% 60%;
+    --muted: 260 22% 16%;
+    --muted-foreground: 265 12% 65%;
 
-    --accent: 213 94% 58%;
-    --accent-foreground: 222 47% 8%;
+    --accent: 270 80% 62%;
+    --accent-foreground: 260 40% 8%;
 
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 213 31% 91%;
+    --destructive: 350 80% 60%;
+    --destructive-foreground: 270 20% 95%;
 
-    --border: 222 20% 24%;
-    --input: 222 25% 20%;
-    --ring: 213 94% 58%;
+    --border: 265 20% 20%;
+    --input: 260 25% 14%;
+    --ring: 265 85% 65%;
 
     --radius: 0.75rem;
 
     /* Sidebar */
-    --sidebar-background: 224 42% 12%;
-    --sidebar-foreground: 215 20% 60%;
-    --sidebar-primary: 213 94% 58%;
-    --sidebar-primary-foreground: 222 47% 8%;
-    --sidebar-accent: 223 35% 22%;
-    --sidebar-accent-foreground: 213 31% 91%;
-    --sidebar-border: 222 20% 20%;
-    --sidebar-ring: 213 94% 58%;
+    --sidebar-background: 265 40% 10%;
+    --sidebar-foreground: 265 15% 70%;
+    --sidebar-primary: 270 90% 70%;
+    --sidebar-primary-foreground: 260 40% 8%;
+    --sidebar-accent: 268 35% 18%;
+    --sidebar-accent-foreground: 270 20% 95%;
+    --sidebar-border: 265 25% 18%;
+    --sidebar-ring: 270 90% 70%;
 
-    --success: 142 76% 36%;
-    --success-foreground: 213 31% 91%;
-    --warning: 38 92% 50%;
-    --warning-foreground: 222 47% 8%;
-    --info: 213 94% 58%;
-    --info-foreground: 213 31% 91%;
+    --success: 150 65% 45%;
+    --success-foreground: 270 20% 95%;
+    --warning: 38 92% 55%;
+    --warning-foreground: 260 40% 8%;
+    --info: 265 85% 65%;
+    --info-foreground: 270 20% 95%;
   }
 
   /* Light mode */
