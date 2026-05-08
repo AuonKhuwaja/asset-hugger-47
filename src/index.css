@@ -215,15 +215,16 @@
 }
 /* ── Sidebar active pill ── */
 .sidebar-active {
-  background: linear-gradient(90deg, hsl(213 94% 58% / 0.15), hsl(213 94% 58% / 0.05));
+  background: linear-gradient(90deg, hsl(270 90% 65% / 0.22), hsl(280 80% 60% / 0.08));
   border-radius: 12px;
+  box-shadow: inset 0 0 0 1px hsl(270 90% 70% / 0.18);
 }
 
 /* ── Navbar glass ── */
 .navbar-glass {
-  background: hsl(222 47% 11% / 0.85);
+  background: hsl(260 30% 9% / 0.85);
   backdrop-filter: blur(20px);
-  border-bottom: 1px solid hsl(215 20% 60% / 0.08);
+  border-bottom: 1px solid hsl(265 30% 50% / 0.1);
 }
 .light .navbar-glass {
   background: rgba(255, 255, 255, 0.85);
@@ -232,44 +233,38 @@
 
 /* ── Dark input background ── */
 .input-dark {
-  background: hsl(223 37% 15% / 0.7);
-}
-
-/* ── Sidebar active pill ── */
-.sidebar-active {
-  background: linear-gradient(90deg, rgba(66, 153, 225, 0.15), rgba(66, 153, 225, 0.05));
-  border-radius: 12px;
+  background: hsl(260 28% 13% / 0.7);
 }
 
 /* ── Glow icon container ── */
 .icon-glow {
-  background: linear-gradient(135deg, hsl(213 80% 57%), hsl(213 80% 42%));
-  box-shadow: 0 4px 12px rgba(66, 153, 225, 0.35);
+  background: linear-gradient(135deg, hsl(265 85% 65%), hsl(275 80% 50%));
+  box-shadow: 0 4px 12px hsl(270 80% 50% / 0.4);
   border-radius: 12px;
 }
 
 .icon-glow-purple {
-  background: linear-gradient(135deg, hsl(258 100% 67%), hsl(258 80% 50%));
-  box-shadow: 0 4px 12px rgba(117, 81, 255, 0.35);
+  background: linear-gradient(135deg, hsl(280 90% 70%), hsl(290 80% 55%));
+  box-shadow: 0 4px 12px hsl(285 80% 55% / 0.4);
   border-radius: 12px;
 }
 
 .icon-glow-green {
-  background: linear-gradient(135deg, hsl(142 76% 36%), hsl(142 60% 28%));
-  box-shadow: 0 4px 12px rgba(72, 187, 120, 0.35);
+  background: linear-gradient(135deg, hsl(150 65% 45%), hsl(155 60% 35%));
+  box-shadow: 0 4px 12px hsl(150 65% 40% / 0.35);
   border-radius: 12px;
 }
 
 .icon-glow-orange {
-  background: linear-gradient(135deg, hsl(38 92% 50%), hsl(38 80% 40%));
-  box-shadow: 0 4px 12px rgba(237, 137, 54, 0.35);
+  background: linear-gradient(135deg, hsl(38 92% 55%), hsl(30 85% 45%));
+  box-shadow: 0 4px 12px hsl(35 90% 50% / 0.35);
   border-radius: 12px;
 }
 
 /* ── Help card gradient ── */
 .help-card-gradient {
-  background: linear-gradient(135deg, hsl(213 80% 57%), hsl(213 80% 42%));
-  box-shadow: 0 4px 12px rgba(66, 153, 225, 0.35);
+  background: linear-gradient(135deg, hsl(265 85% 65%), hsl(280 75% 50%));
+  box-shadow: 0 4px 12px hsl(270 80% 50% / 0.4);
   border-radius: 16px;
 }
 
@@ -279,7 +274,7 @@
   width: 500px;
   height: 500px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(66, 153, 225, 0.12) 0%, transparent 70%);
+  background: radial-gradient(circle, hsl(270 80% 60% / 0.15) 0%, transparent 70%);
   pointer-events: none;
 }
 
