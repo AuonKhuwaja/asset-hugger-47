@@ -497,7 +497,7 @@ export default function Maintenance() {
                             </span>
                           )}
                           {status === "not-sent" && (
-                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-muted/40 text-muted-foreground">
+                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-primary/15 dark:bg-primary/20 text-muted-foreground">
                               <MailX className="w-3 h-3" /> Not Sent
                             </span>
                           )}
@@ -714,7 +714,7 @@ export default function Maintenance() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b-2 border-dashed border-border bg-muted/40">
+                <tr className="border-b-2 border-dashed border-border bg-primary/15 dark:bg-primary/20">
                   {["ID", "Asset", "Type", "Description", "Technician", "Date", "Recurrence", "Cost", "Status", "Actions"].map((h) => (
                     <th key={h} className={`px-4 py-3 text-xs font-bold uppercase tracking-wider text-foreground ${h === "Cost" ? "text-right" : "text-left"} border-r border-dashed border-border/60 last:border-r-0`}>{h}</th>
                   ))}
