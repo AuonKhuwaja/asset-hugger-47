@@ -497,7 +497,7 @@ export default function Maintenance() {
                             </span>
                           )}
                           {status === "not-sent" && (
-                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-primary/15 dark:bg-primary/20 text-muted-foreground">
+                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-muted/40 text-muted-foreground">
                               <MailX className="w-3 h-3" /> Not Sent
                             </span>
                           )}
