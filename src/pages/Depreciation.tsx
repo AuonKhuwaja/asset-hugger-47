@@ -279,7 +279,7 @@ export default function Depreciation() {
           </DialogHeader>
           <div className="max-h-72 overflow-y-auto rounded-xl border border-border/20">
             <table className="w-full text-xs">
-              <thead className="bg-muted/30 sticky top-0 border-r border-dashed border-border/60 last:border-r-0">
+              <thead className="bg-primary/15 dark:bg-primary/20 sticky top-0">
                 <tr>{["Asset", "Book Value", "Depreciation", "New Book Value"].map((h, i) => (
                   <th key={h} className={`px-3 py-2 ${i === 0 ? "text-left" : "text-right"} text-foreground font-bold uppercase border-r border-dashed border-border/60 last:border-r-0`}>{h}</th>
                 ))}</tr>
