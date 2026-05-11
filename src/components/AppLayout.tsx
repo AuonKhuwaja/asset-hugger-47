@@ -134,6 +134,15 @@ function getBreadcrumbs(pathname: string) {
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [notifOpen, setNotifOpen] = useState(false);
+  const notifications = [
+    { id: 1, title: "New asset assigned", desc: "MacBook Pro 16\" assigned to John Doe", time: "2m ago", unread: true },
+    { id: 2, title: "Maintenance due", desc: "Printer #A-204 scheduled for service tomorrow", time: "1h ago", unread: true },
+    { id: 3, title: "Depreciation run completed", desc: "Monthly run finished successfully", time: "3h ago", unread: true },
+    { id: 4, title: "Asset request approved", desc: "Your request for a monitor was approved", time: "Yesterday", unread: false },
+    { id: 5, title: "New employee onboarded", desc: "Sarah Khan added to Engineering", time: "2d ago", unread: false },
+  ];
+  const unreadCount = notifications.filter((n) => n.unread).length;
   const [collapsed, setCollapsed] = useState(() => {
     const saved = localStorage.getItem("sidebarCollapsed");
     return saved === "true";
