@@ -31,7 +31,7 @@ export default function DepreciationRunHistory() {
             <thead>
               <tr className="border-b-2 border-dashed border-border bg-primary text-primary-foreground">
                 {["Run ID", "Date & Time", "Assets", "Value Reduced", "Trigger", "Status"].map((h, i) => (
-                  <th key={h} className={`px-4 py-3 text-xs font-bold uppercase tracking-wider text-foreground ${i === 0 || i === 1 ? "text-left" : i === 5 ? "text-center" : "text-right"} border-r border-dashed border-border/60 last:border-r-0`}>{h}</th>
+                  <th key={h} className={`px-4 py-3 text-xs font-bold uppercase tracking-wider text-primary-foreground ${i === 0 || i === 1 ? "text-left" : i === 5 ? "text-center" : "text-right"} border-r border-dashed border-primary-foreground/30 last:border-r-0`}>{h}</th>
                 ))}
               </tr>
             </thead>
