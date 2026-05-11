@@ -474,10 +474,49 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                 className="w-56 pl-9 pr-4 py-2 rounded-full bg-muted/30 border border-border/50 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all"
               />
             </div>
-            <button className="relative p-2.5 rounded-xl hover:bg-muted/30 transition-colors">
-              <Bell className="w-5 h-5 text-muted-foreground" />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-primary rounded-full" />
-            </button>
+            <div className="relative">
+              <button
+                onClick={() => setNotifOpen((v) => !v)}
+                className="relative p-2.5 rounded-xl hover:bg-muted/30 transition-colors"
+                aria-label="Notifications"
+              >
+                <Bell className="w-5 h-5 text-muted-foreground" />
+                {unreadCount > 0 && (
+                  <span className="absolute top-1 right-1 min-w-[16px] h-4 px-1 rounded-full bg-primary text-[10px] font-bold text-primary-foreground flex items-center justify-center">
+                    {unreadCount}
+                  </span>
+                )}
+              </button>
+              {notifOpen && (
+                <>
+                  <div className="fixed inset-0 z-30" onClick={() => setNotifOpen(false)} />
+                  <div className="absolute right-0 mt-2 w-80 max-h-[420px] overflow-hidden rounded-xl border border-border/60 bg-card shadow-2xl z-40 animate-fade-in flex flex-col">
+                    <div className="flex items-center justify-between px-4 py-3 border-b border-dashed border-border">
+                      <div>
+                        <p className="text-sm font-semibold text-foreground">Notifications</p>
+                        <p className="text-[11px] text-muted-foreground">{unreadCount} unread</p>
+                      </div>
+                      <button className="text-[11px] font-medium text-primary hover:underline">Mark all read</button>
+                    </div>
+                    <div className="flex-1 overflow-y-auto divide-y divide-dashed divide-border">
+                      {notifications.map((n) => (
+                        <div key={n.id} className="px-4 py-3 hover:bg-muted/40 cursor-pointer flex gap-3">
+                          <span className={`mt-1.5 w-2 h-2 rounded-full shrink-0 ${n.unread ? "bg-primary" : "bg-muted-foreground/30"}`} />
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium text-foreground truncate">{n.title}</p>
+                            <p className="text-xs text-muted-foreground line-clamp-2">{n.desc}</p>
+                            <p className="text-[10px] text-muted-foreground/70 mt-1">{n.time}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="px-4 py-2 border-t border-dashed border-border text-center">
+                      <button className="text-xs font-medium text-primary hover:underline">View all</button>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
             <ThemeToggle />
             <button className="p-2.5 rounded-xl hover:bg-muted/30 transition-colors">
               <Settings className="w-5 h-5 text-muted-foreground" />
