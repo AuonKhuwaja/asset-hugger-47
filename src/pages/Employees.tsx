@@ -287,31 +287,31 @@ export default function Employees() {
             <thead>
               <tr className="border-b-2 border-dashed border-border bg-primary text-primary-foreground">
                 {["ID", "Name", "Email", "Phone", "Department", "Designation", "Status", ...(canEdit ? ["Actions"] : [])].map((h) => (
-                  <th key={h} className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-primary-foreground border-r border-dashed border-primary-foreground/30 last:border-r-0">{h}</th>
+                  <th key={h} className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-primary-foreground border-r border-dashed border-primary-foreground/60 last:border-r-0">{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {filtered.map((emp) => (
-                <tr key={emp.id} className="border-b border-dashed border-border/70 transition-colors hover:bg-muted/50">
-                  <td className="px-4 py-3 font-mono text-xs text-muted-foreground border-r border-dashed border-border/40 last:border-r-0">{emp.id}</td>
-                  <td className="px-4 py-3 font-medium flex items-center gap-2 border-r border-dashed border-border/40 last:border-r-0">
+                <tr key={emp.id} className="border-b border-dashed border-border transition-colors hover:bg-muted/50">
+                  <td className="px-4 py-3 font-mono text-xs text-muted-foreground border-r border-dashed border-border last:border-r-0">{emp.id}</td>
+                  <td className="px-4 py-3 font-medium flex items-center gap-2 border-r border-dashed border-border last:border-r-0">
                     <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">
                       {emp.name.split(" ").map((n) => n[0]).join("")}
                     </div>
                     {emp.name}
                   </td>
-                  <td className="px-4 py-3 text-muted-foreground border-r border-dashed border-border/40 last:border-r-0">{emp.email}</td>
-                  <td className="px-4 py-3 text-muted-foreground border-r border-dashed border-border/40 last:border-r-0">{emp.phone}</td>
-                  <td className="px-4 py-3 text-muted-foreground border-r border-dashed border-border/40 last:border-r-0">{emp.department}</td>
-                  <td className="px-4 py-3 text-muted-foreground border-r border-dashed border-border/40 last:border-r-0">{emp.designation}</td>
-                  <td className="px-4 py-3 border-r border-dashed border-border/40 last:border-r-0">
+                  <td className="px-4 py-3 text-muted-foreground border-r border-dashed border-border last:border-r-0">{emp.email}</td>
+                  <td className="px-4 py-3 text-muted-foreground border-r border-dashed border-border last:border-r-0">{emp.phone}</td>
+                  <td className="px-4 py-3 text-muted-foreground border-r border-dashed border-border last:border-r-0">{emp.department}</td>
+                  <td className="px-4 py-3 text-muted-foreground border-r border-dashed border-border last:border-r-0">{emp.designation}</td>
+                  <td className="px-4 py-3 border-r border-dashed border-border last:border-r-0">
                     <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${emp.status === "active" ? "bg-emerald-500/10 text-emerald-500" : "bg-red-500/10 text-red-500"}`}>
                       {emp.status === "active" ? "Active" : "Inactive"}
                     </span>
                   </td>
                   {canEdit && (
-                    <td className="px-4 py-3 border-r border-dashed border-border/40 last:border-r-0">
+                    <td className="px-4 py-3 border-r border-dashed border-border last:border-r-0">
                       <div className="flex gap-1">
                         <button onClick={() => handleEdit(emp)} className="p-1.5 rounded-lg hover:bg-primary/10 text-primary transition-colors"><Pencil className="w-4 h-4" /></button>
                         <button onClick={() => handleDelete(emp.id)} className="p-1.5 rounded-lg hover:bg-destructive/10 text-destructive transition-colors"><Trash2 className="w-4 h-4" /></button>

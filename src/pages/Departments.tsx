@@ -173,22 +173,22 @@ export default function Departments() {
             <thead>
               <tr className="border-b-2 border-dashed border-border bg-primary text-primary-foreground">
                 {["ID", "Name", "Description", "Employees", "Created", ...(canEdit ? ["Actions"] : [])].map(h => (
-                  <th key={h} className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-primary-foreground border-r border-dashed border-primary-foreground/30 last:border-r-0">{h}</th>
+                  <th key={h} className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-primary-foreground border-r border-dashed border-primary-foreground/60 last:border-r-0">{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {filtered.map(dept => (
-                <tr key={dept.id} className="border-b border-dashed border-border/70 transition-colors hover:bg-muted/50">
-                  <td className="px-4 py-3 font-mono text-xs text-muted-foreground border-r border-dashed border-border/40 last:border-r-0">{dept.id}</td>
-                  <td className="px-4 py-3 font-medium flex items-center gap-2 border-r border-dashed border-border/40 last:border-r-0">
+                <tr key={dept.id} className="border-b border-dashed border-border transition-colors hover:bg-muted/50">
+                  <td className="px-4 py-3 font-mono text-xs text-muted-foreground border-r border-dashed border-border last:border-r-0">{dept.id}</td>
+                  <td className="px-4 py-3 font-medium flex items-center gap-2 border-r border-dashed border-border last:border-r-0">
                     <Building2 className="w-4 h-4 text-primary" /> {dept.name}
                   </td>
-                  <td className="px-4 py-3 text-muted-foreground border-r border-dashed border-border/40 last:border-r-0">{dept.description}</td>
-                  <td className="px-4 py-3 tabular-data border-r border-dashed border-border/40 last:border-r-0">{dept.employeeCount}</td>
-                  <td className="px-4 py-3 tabular-data text-muted-foreground border-r border-dashed border-border/40 last:border-r-0">{dept.createdAt}</td>
+                  <td className="px-4 py-3 text-muted-foreground border-r border-dashed border-border last:border-r-0">{dept.description}</td>
+                  <td className="px-4 py-3 tabular-data border-r border-dashed border-border last:border-r-0">{dept.employeeCount}</td>
+                  <td className="px-4 py-3 tabular-data text-muted-foreground border-r border-dashed border-border last:border-r-0">{dept.createdAt}</td>
                   {canEdit && (
-                    <td className="px-4 py-3 border-r border-dashed border-border/40 last:border-r-0">
+                    <td className="px-4 py-3 border-r border-dashed border-border last:border-r-0">
                       <div className="flex gap-1">
                         <button onClick={() => handleEdit(dept)} className="p-1.5 rounded-lg hover:bg-primary/10 text-primary transition-colors"><Pencil className="w-4 h-4" /></button>
                         <button onClick={() => handleDelete(dept.id)} className="p-1.5 rounded-lg hover:bg-destructive/10 text-destructive transition-colors"><Trash2 className="w-4 h-4" /></button>

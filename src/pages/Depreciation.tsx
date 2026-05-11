@@ -200,7 +200,7 @@ export default function Depreciation() {
             <thead>
               <tr className="border-b-2 border-dashed border-border bg-primary text-primary-foreground">
                 {["Asset", "Cost", "Book Value", "Depreciation Amount", "New Book Value"].map((h, i) => (
-                  <th key={h} className={`px-4 py-3 text-xs font-bold uppercase tracking-wider text-primary-foreground ${i === 0 ? "text-left" : "text-right"} border-r border-dashed border-primary-foreground/30 last:border-r-0`}>{h}</th>
+                  <th key={h} className={`px-4 py-3 text-xs font-bold uppercase tracking-wider text-primary-foreground ${i === 0 ? "text-left" : "text-right"} border-r border-dashed border-primary-foreground/60 last:border-r-0`}>{h}</th>
                 ))}
               </tr>
             </thead>
@@ -208,12 +208,12 @@ export default function Depreciation() {
               {previewRows.length === 0 ? (
                 <tr><td colSpan={5} className="px-4 py-12 text-center text-muted-foreground">No assets in selection.</td></tr>
               ) : previewRows.map((r) => (
-                <tr key={r.id} className="border-b border-dashed border-border/70 hover:bg-muted/50">
-                  <td className="px-4 py-3 border-r border-dashed border-border/40 last:border-r-0"><span className="font-medium text-foreground">{r.name}</span> <span className="text-xs text-muted-foreground font-mono ml-1">{r.id}</span></td>
-                  <td className="px-4 py-3 text-right tabular-data border-r border-dashed border-border/40 last:border-r-0">PKR {r.cost.toLocaleString()}</td>
-                  <td className="px-4 py-3 text-right tabular-data border-r border-dashed border-border/40 last:border-r-0">PKR {r.bookValue.toLocaleString()}</td>
-                  <td className="px-4 py-3 text-right tabular-data text-destructive font-semibold border-r border-dashed border-border/40 last:border-r-0">− PKR {r.depreciationAmount.toLocaleString()}</td>
-                  <td className="px-4 py-3 text-right tabular-data text-primary font-bold border-r border-dashed border-border/40 last:border-r-0">PKR {r.newBookValue.toLocaleString()}</td>
+                <tr key={r.id} className="border-b border-dashed border-border hover:bg-muted/50">
+                  <td className="px-4 py-3 border-r border-dashed border-border last:border-r-0"><span className="font-medium text-foreground">{r.name}</span> <span className="text-xs text-muted-foreground font-mono ml-1">{r.id}</span></td>
+                  <td className="px-4 py-3 text-right tabular-data border-r border-dashed border-border last:border-r-0">PKR {r.cost.toLocaleString()}</td>
+                  <td className="px-4 py-3 text-right tabular-data border-r border-dashed border-border last:border-r-0">PKR {r.bookValue.toLocaleString()}</td>
+                  <td className="px-4 py-3 text-right tabular-data text-destructive font-semibold border-r border-dashed border-border last:border-r-0">− PKR {r.depreciationAmount.toLocaleString()}</td>
+                  <td className="px-4 py-3 text-right tabular-data text-primary font-bold border-r border-dashed border-border last:border-r-0">PKR {r.newBookValue.toLocaleString()}</td>
                 </tr>
               ))}
             </tbody>
@@ -246,7 +246,7 @@ export default function Depreciation() {
             <thead>
               <tr className="border-b-2 border-dashed border-border bg-primary text-primary-foreground">
                 {["Date", "Asset", "Method", "Amount", "New Book Value"].map((h, i) => (
-                  <th key={h} className={`px-4 py-3 text-xs font-bold uppercase tracking-wider text-primary-foreground ${i <= 2 ? "text-left" : "text-right"} border-r border-dashed border-primary-foreground/30 last:border-r-0`}>{h}</th>
+                  <th key={h} className={`px-4 py-3 text-xs font-bold uppercase tracking-wider text-primary-foreground ${i <= 2 ? "text-left" : "text-right"} border-r border-dashed border-primary-foreground/60 last:border-r-0`}>{h}</th>
                 ))}
               </tr>
             </thead>
@@ -254,12 +254,12 @@ export default function Depreciation() {
               {log.length === 0 ? (
                 <tr><td colSpan={5} className="px-4 py-12 text-center text-muted-foreground">No depreciation runs yet.</td></tr>
               ) : log.map((l) => (
-                <tr key={l.id} className="border-b border-dashed border-border/70 hover:bg-muted/50">
-                  <td className="px-4 py-3 text-muted-foreground border-r border-dashed border-border/40 last:border-r-0">{new Date(l.date).toLocaleString()}</td>
-                  <td className="px-4 py-3 border-r border-dashed border-border/40 last:border-r-0"><span className="font-medium text-foreground">{l.assetName}</span> <span className="text-xs text-muted-foreground font-mono ml-1">{l.assetId}</span></td>
-                  <td className="px-4 py-3 border-r border-dashed border-border/40 last:border-r-0"><span className="px-2 py-0.5 rounded-lg text-[11px] font-semibold bg-primary/15 text-primary">{l.method}</span></td>
-                  <td className="px-4 py-3 text-right tabular-data text-destructive font-semibold border-r border-dashed border-border/40 last:border-r-0">− PKR {l.depreciationAmount.toLocaleString()}</td>
-                  <td className="px-4 py-3 text-right tabular-data text-primary font-bold border-r border-dashed border-border/40 last:border-r-0">PKR {l.newBookValue.toLocaleString()}</td>
+                <tr key={l.id} className="border-b border-dashed border-border hover:bg-muted/50">
+                  <td className="px-4 py-3 text-muted-foreground border-r border-dashed border-border last:border-r-0">{new Date(l.date).toLocaleString()}</td>
+                  <td className="px-4 py-3 border-r border-dashed border-border last:border-r-0"><span className="font-medium text-foreground">{l.assetName}</span> <span className="text-xs text-muted-foreground font-mono ml-1">{l.assetId}</span></td>
+                  <td className="px-4 py-3 border-r border-dashed border-border last:border-r-0"><span className="px-2 py-0.5 rounded-lg text-[11px] font-semibold bg-primary/15 text-primary">{l.method}</span></td>
+                  <td className="px-4 py-3 text-right tabular-data text-destructive font-semibold border-r border-dashed border-border last:border-r-0">− PKR {l.depreciationAmount.toLocaleString()}</td>
+                  <td className="px-4 py-3 text-right tabular-data text-primary font-bold border-r border-dashed border-border last:border-r-0">PKR {l.newBookValue.toLocaleString()}</td>
                 </tr>
               ))}
             </tbody>
@@ -281,7 +281,7 @@ export default function Depreciation() {
             <table className="w-full text-xs">
               <thead className="bg-primary text-primary-foreground sticky top-0">
                 <tr>{["Asset", "Book Value", "Depreciation", "New Book Value"].map((h, i) => (
-                  <th key={h} className={`px-3 py-2 ${i === 0 ? "text-left" : "text-right"} text-foreground font-bold uppercase border-r border-dashed border-primary-foreground/30 last:border-r-0`}>{h}</th>
+                  <th key={h} className={`px-3 py-2 ${i === 0 ? "text-left" : "text-right"} text-foreground font-bold uppercase border-r border-dashed border-primary-foreground/60 last:border-r-0`}>{h}</th>
                 ))}</tr>
               </thead>
               <tbody>
