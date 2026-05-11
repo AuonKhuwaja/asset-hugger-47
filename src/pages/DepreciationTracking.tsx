@@ -57,19 +57,19 @@ export default function DepreciationTracking() {
             <thead>
               <tr className="border-b-2 border-dashed border-border bg-primary text-primary-foreground">
                 {["Asset", "Category", "Purchase", "Current Value", "Depreciation", "Rate"].map((h, i) => (
-                  <th key={h} className={`px-4 py-3 text-xs font-bold uppercase tracking-wider text-primary-foreground ${i === 0 ? "text-left" : "text-right"} border-r border-dashed border-primary-foreground/30 last:border-r-0`}>{h}</th>
+                  <th key={h} className={`px-4 py-3 text-xs font-bold uppercase tracking-wider text-primary-foreground ${i === 0 ? "text-left" : "text-right"} border-r border-dashed border-primary-foreground/60 last:border-r-0`}>{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {rows.map((d) => (
-                <tr key={d.id} className="border-b border-dashed border-border/70 hover:bg-muted/50">
-                  <td className="px-4 py-3 font-medium border-r border-dashed border-border/40 last:border-r-0">{d.name}</td>
-                  <td className="px-4 py-3 text-right text-muted-foreground border-r border-dashed border-border/40 last:border-r-0">{d.category}</td>
-                  <td className="px-4 py-3 text-right tabular-data border-r border-dashed border-border/40 last:border-r-0">PKR {d.purchaseCost.toLocaleString()}</td>
-                  <td className="px-4 py-3 text-right tabular-data border-r border-dashed border-border/40 last:border-r-0">PKR {d.currentValue.toLocaleString()}</td>
-                  <td className="px-4 py-3 text-right tabular-data text-destructive border-r border-dashed border-border/40 last:border-r-0">-PKR {d.depreciation.toLocaleString()}</td>
-                  <td className="px-4 py-3 text-right border-r border-dashed border-border/40 last:border-r-0">
+                <tr key={d.id} className="border-b border-dashed border-border hover:bg-muted/50">
+                  <td className="px-4 py-3 font-medium border-r border-dashed border-border last:border-r-0">{d.name}</td>
+                  <td className="px-4 py-3 text-right text-muted-foreground border-r border-dashed border-border last:border-r-0">{d.category}</td>
+                  <td className="px-4 py-3 text-right tabular-data border-r border-dashed border-border last:border-r-0">PKR {d.purchaseCost.toLocaleString()}</td>
+                  <td className="px-4 py-3 text-right tabular-data border-r border-dashed border-border last:border-r-0">PKR {d.currentValue.toLocaleString()}</td>
+                  <td className="px-4 py-3 text-right tabular-data text-destructive border-r border-dashed border-border last:border-r-0">-PKR {d.depreciation.toLocaleString()}</td>
+                  <td className="px-4 py-3 text-right border-r border-dashed border-border last:border-r-0">
                     <span className={`tabular-data font-semibold ${d.depreciationRate > 50 ? "text-destructive" : d.depreciationRate > 20 ? "text-warning" : "text-success"}`}>
                       {d.depreciationRate}%
                     </span>

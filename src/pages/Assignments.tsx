@@ -194,20 +194,20 @@ export default function Assignments() {
             <thead>
               <tr className="border-b-2 border-dashed border-border bg-primary text-primary-foreground">
                 {["ID", "Asset", "Type", "From", "To", "Date", "Status"].map((h) => (
-                  <th key={h} className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-primary-foreground border-r border-dashed border-primary-foreground/30 last:border-r-0">{h}</th>
+                  <th key={h} className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-primary-foreground border-r border-dashed border-primary-foreground/60 last:border-r-0">{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {filtered.map((t) => (
-                <tr key={t.id} className="border-b border-dashed border-border/70 transition-colors hover:bg-muted/50">
-                  <td className="px-4 py-3 font-mono text-xs text-muted-foreground border-r border-dashed border-border/40 last:border-r-0">{t.id}</td>
-                  <td className="px-4 py-3 font-medium border-r border-dashed border-border/40 last:border-r-0">{t.assetName}</td>
-                  <td className="px-4 py-3 capitalize text-muted-foreground border-r border-dashed border-border/40 last:border-r-0">{t.type}</td>
-                  <td className="px-4 py-3 text-muted-foreground border-r border-dashed border-border/40 last:border-r-0">{t.fromEmployee}</td>
-                  <td className="px-4 py-3 text-muted-foreground border-r border-dashed border-border/40 last:border-r-0">{t.toEmployee}</td>
-                  <td className="px-4 py-3 tabular-data text-muted-foreground border-r border-dashed border-border/40 last:border-r-0">{t.date}</td>
-                  <td className="px-4 py-3 border-r border-dashed border-border/40 last:border-r-0"><StatusBadge status={t.status} /></td>
+                <tr key={t.id} className="border-b border-dashed border-border transition-colors hover:bg-muted/50">
+                  <td className="px-4 py-3 font-mono text-xs text-muted-foreground border-r border-dashed border-border last:border-r-0">{t.id}</td>
+                  <td className="px-4 py-3 font-medium border-r border-dashed border-border last:border-r-0">{t.assetName}</td>
+                  <td className="px-4 py-3 capitalize text-muted-foreground border-r border-dashed border-border last:border-r-0">{t.type}</td>
+                  <td className="px-4 py-3 text-muted-foreground border-r border-dashed border-border last:border-r-0">{t.fromEmployee}</td>
+                  <td className="px-4 py-3 text-muted-foreground border-r border-dashed border-border last:border-r-0">{t.toEmployee}</td>
+                  <td className="px-4 py-3 tabular-data text-muted-foreground border-r border-dashed border-border last:border-r-0">{t.date}</td>
+                  <td className="px-4 py-3 border-r border-dashed border-border last:border-r-0"><StatusBadge status={t.status} /></td>
                 </tr>
               ))}
             </tbody>
