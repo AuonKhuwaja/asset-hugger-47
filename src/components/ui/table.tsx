@@ -4,8 +4,8 @@ import { cn } from "@/lib/utils";
 
 const Table = React.forwardRef<HTMLTableElement, React.HTMLAttributes<HTMLTableElement>>(
   ({ className, ...props }, ref) => (
-    <div className="relative w-full overflow-auto">
-      <table ref={ref} className={cn("w-full caption-bottom text-sm", className)} {...props} />
+    <div className="relative w-full overflow-auto rounded-md border border-dashed border-border">
+      <table ref={ref} className={cn("w-full caption-bottom text-sm border-collapse", className)} {...props} />
     </div>
   ),
 );
@@ -16,7 +16,7 @@ const TableHeader = React.forwardRef<HTMLTableSectionElement, React.HTMLAttribut
     <thead
       ref={ref}
       className={cn(
-        "[&_tr]:border-b-2 [&_tr]:border-dashed [&_tr]:border-border [&_tr]:bg-primary/15 dark:[&_tr]:bg-primary/20 font-bold uppercase tracking-wide text-primary",
+        "[&_tr]:border-b-2 [&_tr]:border-dashed [&_tr]:border-border [&_tr]:bg-primary [&_tr]:text-primary-foreground font-bold uppercase tracking-wide",
         className,
       )}
       {...props}
@@ -58,7 +58,7 @@ const TableHead = React.forwardRef<HTMLTableCellElement, React.ThHTMLAttributes<
     <th
       ref={ref}
       className={cn(
-        "h-12 px-4 text-left align-middle font-bold text-foreground border-r border-dashed border-border/60 last:border-r-0 [&:has([role=checkbox])]:pr-0",
+        "h-12 px-4 text-left align-middle font-bold text-primary-foreground border-r border-dashed border-primary-foreground/30 last:border-r-0 [&:has([role=checkbox])]:pr-0",
         className,
       )}
       {...props}
