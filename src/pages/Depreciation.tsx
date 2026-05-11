@@ -200,7 +200,7 @@ export default function Depreciation() {
             <thead>
               <tr className="border-b-2 border-dashed border-border bg-primary text-primary-foreground">
                 {["Asset", "Cost", "Book Value", "Depreciation Amount", "New Book Value"].map((h, i) => (
-                  <th key={h} className={`px-4 py-3 text-xs font-bold uppercase tracking-wider text-foreground ${i === 0 ? "text-left" : "text-right"} border-r border-dashed border-border/60 last:border-r-0`}>{h}</th>
+                  <th key={h} className={`px-4 py-3 text-xs font-bold uppercase tracking-wider text-primary-foreground ${i === 0 ? "text-left" : "text-right"} border-r border-dashed border-primary-foreground/30 last:border-r-0`}>{h}</th>
                 ))}
               </tr>
             </thead>
@@ -246,7 +246,7 @@ export default function Depreciation() {
             <thead>
               <tr className="border-b-2 border-dashed border-border bg-primary text-primary-foreground">
                 {["Date", "Asset", "Method", "Amount", "New Book Value"].map((h, i) => (
-                  <th key={h} className={`px-4 py-3 text-xs font-bold uppercase tracking-wider text-foreground ${i <= 2 ? "text-left" : "text-right"} border-r border-dashed border-border/60 last:border-r-0`}>{h}</th>
+                  <th key={h} className={`px-4 py-3 text-xs font-bold uppercase tracking-wider text-primary-foreground ${i <= 2 ? "text-left" : "text-right"} border-r border-dashed border-primary-foreground/30 last:border-r-0`}>{h}</th>
                 ))}
               </tr>
             </thead>
@@ -281,7 +281,7 @@ export default function Depreciation() {
             <table className="w-full text-xs">
               <thead className="bg-primary text-primary-foreground sticky top-0">
                 <tr>{["Asset", "Book Value", "Depreciation", "New Book Value"].map((h, i) => (
-                  <th key={h} className={`px-3 py-2 ${i === 0 ? "text-left" : "text-right"} text-foreground font-bold uppercase border-r border-dashed border-border/60 last:border-r-0`}>{h}</th>
+                  <th key={h} className={`px-3 py-2 ${i === 0 ? "text-left" : "text-right"} text-foreground font-bold uppercase border-r border-dashed border-primary-foreground/30 last:border-r-0`}>{h}</th>
                 ))}</tr>
               </thead>
               <tbody>
