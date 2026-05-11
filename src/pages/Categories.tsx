@@ -129,7 +129,7 @@ export default function Categories() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b-2 border-dashed border-border bg-primary/15 dark:bg-primary/20">
+              <tr className="border-b-2 border-dashed border-border bg-primary text-primary-foreground">
                 {["ID", "Name", "Description", "Assets", "Created", ...(isViewer ? [] : ["Actions"])].map(h => (
                   <th key={h} className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-foreground border-r border-dashed border-border/60 last:border-r-0">{h}</th>
                 ))}

@@ -102,7 +102,7 @@ export default function MaintenanceRequests() {
         <div className="vision-card overflow-hidden">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b-2 border-dashed border-border bg-primary/15 dark:bg-primary/20">
+              <tr className="border-b-2 border-dashed border-border bg-primary text-primary-foreground">
                 <th className="text-left px-4 py-3 text-xs font-bold uppercase text-foreground border-r border-dashed border-border/60 last:border-r-0">ID</th>
                 <th className="text-left px-4 py-3 text-xs font-bold uppercase text-foreground border-r border-dashed border-border/60 last:border-r-0">Asset</th>
                 <th className="text-left px-4 py-3 text-xs font-bold uppercase text-foreground border-r border-dashed border-border/60 last:border-r-0">Issue</th>
