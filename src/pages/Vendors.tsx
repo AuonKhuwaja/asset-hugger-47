@@ -212,7 +212,7 @@ export default function Vendors() {
             <thead>
               <tr className="border-b-2 border-dashed border-border bg-primary text-primary-foreground">
                 {["ID", "Vendor", "Contact", "Email", "Phone", "Category", "Status", ...(canEdit ? ["Actions"] : [])].map(h => (
-                  <th key={h} className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-foreground border-r border-dashed border-border/60 last:border-r-0">{h}</th>
+                  <th key={h} className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-primary-foreground border-r border-dashed border-primary-foreground/30 last:border-r-0">{h}</th>
                 ))}
               </tr>
             </thead>

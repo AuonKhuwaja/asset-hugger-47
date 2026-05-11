@@ -276,13 +276,13 @@ export default function Assets() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b-2 border-dashed border-border bg-primary text-primary-foreground">
-                    <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-foreground border-r border-dashed border-border/60 last:border-r-0">ID</th>
-                    <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-foreground border-r border-dashed border-border/60 last:border-r-0">Name</th>
-                    <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-foreground border-r border-dashed border-border/60 last:border-r-0">Category</th>
-                    <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-foreground border-r border-dashed border-border/60 last:border-r-0">Status</th>
-                    <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-foreground border-r border-dashed border-border/60 last:border-r-0">Assignee</th>
-                    <th className="px-4 py-3 text-right text-xs font-bold uppercase tracking-wider text-foreground border-r border-dashed border-border/60 last:border-r-0">Value</th>
-                    {canEdit && <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-foreground border-r border-dashed border-border/60 last:border-r-0">Actions</th>}
+                    <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-primary-foreground border-r border-dashed border-primary-foreground/30 last:border-r-0">ID</th>
+                    <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-primary-foreground border-r border-dashed border-primary-foreground/30 last:border-r-0">Name</th>
+                    <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-primary-foreground border-r border-dashed border-primary-foreground/30 last:border-r-0">Category</th>
+                    <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-primary-foreground border-r border-dashed border-primary-foreground/30 last:border-r-0">Status</th>
+                    <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-primary-foreground border-r border-dashed border-primary-foreground/30 last:border-r-0">Assignee</th>
+                    <th className="px-4 py-3 text-right text-xs font-bold uppercase tracking-wider text-primary-foreground border-r border-dashed border-primary-foreground/30 last:border-r-0">Value</th>
+                    {canEdit && <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-primary-foreground border-r border-dashed border-primary-foreground/30 last:border-r-0">Actions</th>}
                   </tr>
                 </thead>
                 <tbody>
