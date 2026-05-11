@@ -60,6 +60,7 @@ export default function Assets() {
     }
     return true;
   });
+  const pag = usePagination(filtered, view === "grid" ? 12 : 10);
 
   const resetForm = () => { setForm(emptyForm); setEditing(null); setShowForm(false); };
 
