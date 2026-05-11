@@ -266,10 +266,8 @@ export default function Assets() {
         </div>
       </div>
 
-      {(() => null)()}
-      {filtered.length > 0 ? (() => {
-        const pag = usePagination(filtered, view === "grid" ? 12 : 10);
-        return view === "grid" ? (
+      {filtered.length > 0 ? (
+        view === "grid" ? (
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {pag.paged.map((asset) => <AssetCard key={asset.id} asset={asset} />)}
@@ -317,8 +315,8 @@ export default function Assets() {
             </div>
             <TablePagination total={pag.total} page={pag.page} pageSize={pag.pageSize} onPageChange={pag.setPage} onPageSizeChange={pag.setPageSize} />
           </div>
-        );
-      })() : (
+        )
+      ) : (
         <div className="flex flex-col items-center justify-center py-20 text-muted-foreground vision-card">
           <SlidersHorizontal className="w-8 h-8 mb-3" />
           <p className="text-sm font-medium">No assets match your filters.</p>
