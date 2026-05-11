@@ -6,11 +6,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, X, Send, Clock, CheckCircle, XCircle } from "lucide-react";
+import { TablePagination, usePagination } from "@/components/TablePagination";
 
 export default function AssetRequests() {
   const { user } = useAuth();
   const { toast } = useToast();
   const [requests, setRequests] = useState<AssetRequest[]>(initialRequests.filter(r => r.requestedBy === user?.name));
+  const pag = usePagination(requests, 10);
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({ assetCategory: "", reason: "", priority: "medium" as AssetRequest["priority"] });
 
@@ -110,7 +112,7 @@ export default function AssetRequests() {
               </tr>
             </thead>
             <tbody>
-              {requests.map(req => (
+              {pag.paged.map(req => (
                 <tr key={req.id} className="border-b border-dashed border-border transition-colors hover:bg-muted/50">
                   <td className="px-4 py-3 font-mono text-xs text-muted-foreground border-r border-dashed border-border last:border-r-0">{req.id}</td>
                   <td className="px-4 py-3 font-medium text-foreground border-r border-dashed border-border last:border-r-0">{req.assetCategory}</td>
@@ -132,6 +134,7 @@ export default function AssetRequests() {
               ))}
             </tbody>
           </table>
+          <TablePagination total={pag.total} page={pag.page} pageSize={pag.pageSize} onPageChange={pag.setPage} onPageSizeChange={pag.setPageSize} />
         </div>
       )}
     </div>

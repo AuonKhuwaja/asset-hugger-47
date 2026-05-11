@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { ArrowLeftRight, UserPlus, RotateCcw, Search } from "lucide-react";
 import { ExportButtons } from "@/components/ExportButtons";
 import { useToast } from "@/hooks/use-toast";
+import { TablePagination, usePagination } from "@/components/TablePagination";
 
 type FormTab = "issue" | "transfer" | "return";
 
@@ -23,6 +24,7 @@ export default function Assignments() {
     const q = search.toLowerCase();
     return t.assetName.toLowerCase().includes(q) || t.fromEmployee.toLowerCase().includes(q) || t.toEmployee.toLowerCase().includes(q);
   });
+  const pag = usePagination(filtered, 10);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -199,7 +201,7 @@ export default function Assignments() {
               </tr>
             </thead>
             <tbody>
-              {filtered.map((t) => (
+              {pag.paged.map((t) => (
                 <tr key={t.id} className="border-b border-dashed border-border transition-colors hover:bg-muted/50">
                   <td className="px-4 py-3 font-mono text-xs text-muted-foreground border-r border-dashed border-border last:border-r-0">{t.id}</td>
                   <td className="px-4 py-3 font-medium border-r border-dashed border-border last:border-r-0">{t.assetName}</td>
@@ -213,6 +215,7 @@ export default function Assignments() {
             </tbody>
           </table>
         </div>
+        <TablePagination total={pag.total} page={pag.page} pageSize={pag.pageSize} onPageChange={pag.setPage} onPageSizeChange={pag.setPageSize} />
       </div>
     </div>
   );
