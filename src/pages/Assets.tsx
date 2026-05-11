@@ -278,79 +278,44 @@ export default function Assets() {
             </div>
           </>
         ) : (
-         <div className="vision-card overflow-hidden">
-  {/* ✅ Categories jaisa top bar */}
-  <div className="p-5 border-b border-border/10 flex items-center justify-between gap-3">
-    <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground">All Assets</h3>
-    <div className="flex items-center gap-3">
-      <div className="relative w-64">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-        <input
-          type="text"
-          placeholder="Search assets..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-full pl-9 pr-3 py-2 rounded-xl bg-muted/20 border border-border/20 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
-        />
-      </div>
-      <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value as AssetStatus | "all")} className="select-vision">
-        <option value="all">All Statuses</option>
-        {statuses.map((s) => <option key={s} value={s}>{s.replace("-", " ").replace(/^\w/, c => c.toUpperCase())}</option>)}
-      </select>
-      <select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value as AssetCategory | "all")} className="select-vision">
-        <option value="all">All Categories</option>
-        {categories.map((c) => <option key={c} value={c}>{c}</option>)}
-      </select>
-      <div className="flex items-center gap-1 border border-border/30 rounded-xl p-1">
-        <button onClick={() => setView("grid")} className={`p-2 rounded-lg transition ${view === "grid" ? "bg-primary/20 text-primary" : "text-muted-foreground hover:text-foreground"}`}>
-          <Grid3X3 className="w-4 h-4" />
-        </button>
-        <button onClick={() => setView("table")} className={`p-2 rounded-lg transition ${view === "table" ? "bg-primary/20 text-primary" : "text-muted-foreground hover:text-foreground"}`}>
-          <List className="w-4 h-4" />
-        </button>
-      </div>
-      <span className="text-xs text-muted-foreground tabular-data">{filtered.length} asset{filtered.length !== 1 ? "s" : ""}</span>
-    </div>
-  </div>
-
-  <div className="overflow-x-auto">
-    <table className="w-full text-sm">
-      <thead>
-        <tr className="border-b-2 border-dashed border-border bg-primary text-primary-foreground">
-          {["ID", "Name", "Category", "Status", "Assignee", "Value", ...(canEdit ? ["Actions"] : [])].map(h => (
-            <th key={h} className={`px-4 py-3 text-xs font-bold uppercase tracking-wider text-primary-foreground border-r border-dashed border-primary-foreground/60 last:border-r-0 ${h === "Value" ? "text-right" : "text-left"}`}>
-              {h}
-            </th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {pag.paged.map((a) => (
-          <tr key={a.id} className="border-b border-dashed border-border transition-colors hover:bg-muted/50">
-            <td className="px-4 py-3 font-mono text-xs text-muted-foreground border-r border-dashed border-border last:border-r-0">{a.id}</td>
-            <td className="px-4 py-3 font-medium border-r border-dashed border-border last:border-r-0">{a.name}</td>
-            <td className="px-4 py-3 text-muted-foreground border-r border-dashed border-border last:border-r-0">{a.category}</td>
-            <td className="px-4 py-3 border-r border-dashed border-border last:border-r-0"><StatusBadge status={a.status} /></td>
-            <td className="px-4 py-3 text-muted-foreground border-r border-dashed border-border last:border-r-0">{a.assignee || "—"}</td>
-            <td className="px-4 py-3 text-right tabular-data font-medium text-primary border-r border-dashed border-border last:border-r-0">PKR {a.currentValue.toLocaleString()}</td>
-            {canEdit && (
-              <td className="px-4 py-3 border-r border-dashed border-border last:border-r-0">
-                <div className="flex gap-1">
-                  <button onClick={() => handleEdit(a.id)} className="p-1.5 rounded-lg hover:bg-primary/10 text-primary transition-colors"><Pencil className="w-4 h-4" /></button>
-                  <button onClick={() => handleDelete(a.id)} className="p-1.5 rounded-lg hover:bg-destructive/10 text-destructive transition-colors"><Trash2 className="w-4 h-4" /></button>
-                </div>
-              </td>
-            )}
-          </tr>
-        ))}
-        {filtered.length === 0 && (
-          <tr><td colSpan={canEdit ? 7 : 6} className="px-4 py-8 text-center text-muted-foreground">No assets found.</td></tr>
-        )}
-      </tbody>
-    </table>
-  </div>
-  <TablePagination total={pag.total} page={pag.page} pageSize={pag.pageSize} onPageChange={pag.setPage} onPageSizeChange={pag.setPageSize} />
-</div>
+          <div className="vision-card overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b-2 border-dashed border-border bg-primary text-primary-foreground">
+                    <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-primary-foreground border-r border-dashed border-primary-foreground/60 last:border-r-0">ID</th>
+                    <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-primary-foreground border-r border-dashed border-primary-foreground/60 last:border-r-0">Name</th>
+                    <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-primary-foreground border-r border-dashed border-primary-foreground/60 last:border-r-0">Category</th>
+                    <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-primary-foreground border-r border-dashed border-primary-foreground/60 last:border-r-0">Status</th>
+                    <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-primary-foreground border-r border-dashed border-primary-foreground/60 last:border-r-0">Assignee</th>
+                    <th className="px-4 py-3 text-right text-xs font-bold uppercase tracking-wider text-primary-foreground border-r border-dashed border-primary-foreground/60 last:border-r-0">Value</th>
+                    {canEdit && <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-primary-foreground border-r border-dashed border-primary-foreground/60 last:border-r-0">Actions</th>}
+                  </tr>
+                </thead>
+                <tbody>
+                  {pag.paged.map((a) => (
+                    <tr key={a.id} className="border-b border-dashed border-border transition-colors hover:bg-muted/50">
+                      <td className="px-4 py-3 font-mono text-xs text-muted-foreground border-r border-dashed border-border last:border-r-0">{a.id}</td>
+                      <td className="px-4 py-3 font-medium border-r border-dashed border-border last:border-r-0">{a.name}</td>
+                      <td className="px-4 py-3 text-muted-foreground border-r border-dashed border-border last:border-r-0">{a.category}</td>
+                      <td className="px-4 py-3 border-r border-dashed border-border last:border-r-0"><StatusBadge status={a.status} /></td>
+                      <td className="px-4 py-3 text-muted-foreground border-r border-dashed border-border last:border-r-0">{a.assignee || "—"}</td>
+                      <td className="px-4 py-3 text-right tabular-data font-medium text-primary border-r border-dashed border-border last:border-r-0">PKR {a.currentValue.toLocaleString()}</td>
+                      {canEdit && (
+                        <td className="px-4 py-3 border-r border-dashed border-border last:border-r-0">
+                          <div className="flex gap-1">
+                            <button onClick={() => handleEdit(a.id)} className="p-1.5 rounded-lg hover:bg-primary/10 text-primary transition-colors"><Pencil className="w-4 h-4" /></button>
+                            <button onClick={() => handleDelete(a.id)} className="p-1.5 rounded-lg hover:bg-destructive/10 text-destructive transition-colors"><Trash2 className="w-4 h-4" /></button>
+                          </div>
+                        </td>
+                      )}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <TablePagination total={pag.total} page={pag.page} pageSize={pag.pageSize} onPageChange={pag.setPage} onPageSizeChange={pag.setPageSize} />
+          </div>
         )
       ) : (
         <div className="flex flex-col items-center justify-center py-20 text-muted-foreground vision-card">
