@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Pencil, Trash2, Search, Users, UserCog, X, Mail, Phone, Upload, FileSpreadsheet } from "lucide-react";
 import { ExportButtons } from "@/components/ExportButtons";
+import { TablePagination, usePagination } from "@/components/TablePagination";
 
 interface Employee {
   id: string;
@@ -44,6 +45,7 @@ export default function Employees() {
     const q = search.toLowerCase();
     return e.name.toLowerCase().includes(q) || e.email.toLowerCase().includes(q) || e.department.toLowerCase().includes(q) || e.designation.toLowerCase().includes(q);
   });
+  const pag = usePagination(filtered, 10);
 
   const resetForm = () => {
     setForm({ name: "", email: "", phone: "", department: "", designation: "", status: "active" });
@@ -292,7 +294,7 @@ export default function Employees() {
               </tr>
             </thead>
             <tbody>
-              {filtered.map((emp) => (
+              {pag.paged.map((emp) => (
                 <tr key={emp.id} className="border-b border-dashed border-border transition-colors hover:bg-muted/50">
                   <td className="px-4 py-3 font-mono text-xs text-muted-foreground border-r border-dashed border-border last:border-r-0">{emp.id}</td>
                   <td className="px-4 py-3 font-medium flex items-center gap-2 border-r border-dashed border-border last:border-r-0">
@@ -326,6 +328,7 @@ export default function Employees() {
             </tbody>
           </table>
         </div>
+        <TablePagination total={pag.total} page={pag.page} pageSize={pag.pageSize} onPageChange={pag.setPage} onPageSizeChange={pag.setPageSize} />
       </div>
     </div>
   );
