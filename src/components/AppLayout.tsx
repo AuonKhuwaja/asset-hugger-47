@@ -268,7 +268,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         </div>
 
         {/* Nav */}
-        <nav className="flex-1 px-2 space-y-0.5 overflow-y-auto overflow-x-hidden">
+        <nav className="flex-1 min-h-0 px-2 space-y-0.5 overflow-y-auto overflow-x-hidden">
           {navItems.map((item) => {
             // Single-child menus: render as direct link without arrow
             if (item.children && item.children.length === 1) {
@@ -336,7 +336,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                     <div
                       className="overflow-hidden transition-all duration-300 ease-in-out"
                       style={{
-                        maxHeight: menuOpen ? `${item.children!.length * 44}px` : "0px",
+                        maxHeight: menuOpen ? `${item.children!.length * 44 + 16}px` : "0px",
                         opacity: menuOpen ? 1 : 0,
                       }}
                     >
