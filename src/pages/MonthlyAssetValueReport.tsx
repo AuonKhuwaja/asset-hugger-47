@@ -3,6 +3,7 @@ import { assets, depreciationData, monthlyData } from "@/lib/mock-data";
 import { KpiCard } from "@/components/KpiCard";
 import { Button } from "@/components/ui/button";
 import { ExportButtons } from "@/components/ExportButtons";
+import { TablePagination, usePagination } from "@/components/TablePagination";
 import { exportToPdf } from "@/lib/export-utils";
 import { TrendingDown, DollarSign, Package, Download } from "lucide-react";
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, Area, AreaChart } from "recharts";
@@ -19,6 +20,7 @@ const tooltipStyle = {
 export default function MonthlyAssetValueReport() {
   const { toast } = useToast();
   const [month, setMonth] = useState(() => new Date().toISOString().slice(0, 7));
+  const pag = usePagination(depreciationData, 10);
 
   const totalCurrent = assets.reduce((s, a) => s + a.currentValue, 0);
   const totalPurchase = assets.reduce((s, a) => s + a.purchaseCost, 0);
@@ -136,7 +138,7 @@ export default function MonthlyAssetValueReport() {
               </tr>
             </thead>
             <tbody>
-              {depreciationData.map((d) => (
+              {pag.paged.map((d) => (
                 <tr key={d.id} className="border-b border-dashed border-border hover:bg-muted/50">
                   <td className="px-4 py-3 font-medium border-r border-dashed border-border last:border-r-0">{d.name}</td>
                   <td className="px-4 py-3 text-right tabular-data border-r border-dashed border-border last:border-r-0">PKR {d.purchaseCost.toLocaleString()}</td>
@@ -148,6 +150,7 @@ export default function MonthlyAssetValueReport() {
             </tbody>
           </table>
         </div>
+        <TablePagination total={pag.total} page={pag.page} pageSize={pag.pageSize} onPageChange={pag.setPage} onPageSizeChange={pag.setPageSize} />
       </div>
     </div>
   );

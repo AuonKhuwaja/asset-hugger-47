@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Pencil, Trash2, Search, ShoppingBag, X, Phone, Mail, Globe, MapPin } from "lucide-react";
 import { ExportButtons } from "@/components/ExportButtons";
+import { TablePagination, usePagination } from "@/components/TablePagination";
 
 interface Vendor {
   id: string;
@@ -50,6 +51,7 @@ export default function Vendors() {
     const q = search.toLowerCase();
     return v.name.toLowerCase().includes(q) || v.contactPerson.toLowerCase().includes(q) || v.email.toLowerCase().includes(q) || v.category.toLowerCase().includes(q);
   });
+  const pag = usePagination(filtered, 10);
 
   const resetForm = () => { setForm({ name: "", contactPerson: "", email: "", phone: "", address: "", website: "", category: "", status: "active" }); setEditing(null); setShowForm(false); };
 
@@ -217,7 +219,7 @@ export default function Vendors() {
               </tr>
             </thead>
             <tbody>
-              {filtered.map(v => (
+              {pag.paged.map(v => (
                 <tr key={v.id} className="border-b border-dashed border-border transition-colors hover:bg-muted/50">
                   <td className="px-4 py-3 font-mono text-xs text-muted-foreground border-r border-dashed border-border last:border-r-0">{v.id}</td>
                   <td className="px-4 py-3 font-medium flex items-center gap-2 border-r border-dashed border-border last:border-r-0">
@@ -248,6 +250,7 @@ export default function Vendors() {
             </tbody>
           </table>
         </div>
+        <TablePagination total={pag.total} page={pag.page} pageSize={pag.pageSize} onPageChange={pag.setPage} onPageSizeChange={pag.setPageSize} />
       </div>
     </div>
   );

@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Pencil, Trash2, Search, FolderOpen, X } from "lucide-react";
 import { ExportButtons } from "@/components/ExportButtons";
+import { TablePagination, usePagination } from "@/components/TablePagination";
 
 export default function Categories() {
   const { isViewer } = useAuth();
@@ -22,6 +23,7 @@ export default function Categories() {
     const q = search.toLowerCase();
     return c.name.toLowerCase().includes(q) || c.description.toLowerCase().includes(q);
   });
+  const pag = usePagination(filtered, 10);
 
   const resetForm = () => {
     setForm({ name: "", description: "" });
@@ -136,7 +138,7 @@ export default function Categories() {
               </tr>
             </thead>
             <tbody>
-              {filtered.map(cat => (
+              {pag.paged.map(cat => (
                 <tr key={cat.id} className="border-b border-dashed border-border transition-colors hover:bg-muted/50">
                   <td className="px-4 py-3 font-mono text-xs text-muted-foreground border-r border-dashed border-border last:border-r-0">{cat.id}</td>
                   <td className="px-4 py-3 font-medium flex items-center gap-2 border-r border-dashed border-border last:border-r-0">
@@ -161,6 +163,7 @@ export default function Categories() {
             </tbody>
           </table>
         </div>
+        <TablePagination total={pag.total} page={pag.page} pageSize={pag.pageSize} onPageChange={pag.setPage} onPageSizeChange={pag.setPageSize} />
       </div>
     </div>
   );

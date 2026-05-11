@@ -5,12 +5,14 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, X, Wrench, Clock, CheckCircle, AlertCircle } from "lucide-react";
+import { TablePagination, usePagination } from "@/components/TablePagination";
 
 export default function MaintenanceRequests() {
   const { user } = useAuth();
   const { toast } = useToast();
   const myAssets = assets.filter(a => user?.assignedAssets?.includes(a.id));
   const [requests, setRequests] = useState<MaintenanceRequest[]>(initialRequests.filter(r => r.requestedBy === user?.name));
+  const pag = usePagination(requests, 10);
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({ assetId: "", issue: "", priority: "medium" as MaintenanceRequest["priority"] });
 
@@ -112,7 +114,7 @@ export default function MaintenanceRequests() {
               </tr>
             </thead>
             <tbody>
-              {requests.map(req => (
+              {pag.paged.map(req => (
                 <tr key={req.id} className="border-b border-dashed border-border transition-colors hover:bg-muted/50">
                   <td className="px-4 py-3 font-mono text-xs text-muted-foreground border-r border-dashed border-border last:border-r-0">{req.id}</td>
                   <td className="px-4 py-3 font-medium text-foreground border-r border-dashed border-border last:border-r-0">{req.assetName}</td>
@@ -134,6 +136,7 @@ export default function MaintenanceRequests() {
               ))}
             </tbody>
           </table>
+          <TablePagination total={pag.total} page={pag.page} pageSize={pag.pageSize} onPageChange={pag.setPage} onPageSizeChange={pag.setPageSize} />
         </div>
       )}
     </div>

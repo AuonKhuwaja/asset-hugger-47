@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Search, SlidersHorizontal, Grid3X3, List, Plus, Pencil, Trash2, X, Package, DollarSign, AlertTriangle, CheckCircle } from "lucide-react";
+import { TablePagination, usePagination } from "@/components/TablePagination";
 
 const statuses: AssetStatus[] = ["available", "in-use", "maintenance", "damaged", "retired"];
 const categories: AssetCategory[] = ["Laptop", "Monitor", "Printer", "Mobile", "Server", "Tablet", "Projector", "Network Equipment", "Other"];
@@ -59,6 +60,7 @@ export default function Assets() {
     }
     return true;
   });
+  const pag = usePagination(filtered, view === "grid" ? 12 : 10);
 
   const resetForm = () => { setForm(emptyForm); setEditing(null); setShowForm(false); };
 
@@ -267,9 +269,14 @@ export default function Assets() {
 
       {filtered.length > 0 ? (
         view === "grid" ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filtered.map((asset) => <AssetCard key={asset.id} asset={asset} />)}
-          </div>
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {pag.paged.map((asset) => <AssetCard key={asset.id} asset={asset} />)}
+            </div>
+            <div className="vision-card overflow-hidden mt-4">
+              <TablePagination total={pag.total} page={pag.page} pageSize={pag.pageSize} onPageChange={pag.setPage} onPageSizeChange={pag.setPageSize} pageSizeOptions={[12, 24, 48, 96]} />
+            </div>
+          </>
         ) : (
           <div className="vision-card overflow-hidden">
             <div className="overflow-x-auto">
@@ -286,7 +293,7 @@ export default function Assets() {
                   </tr>
                 </thead>
                 <tbody>
-                  {filtered.map((a) => (
+                  {pag.paged.map((a) => (
                     <tr key={a.id} className="border-b border-dashed border-border transition-colors hover:bg-muted/50">
                       <td className="px-4 py-3 font-mono text-xs text-muted-foreground border-r border-dashed border-border last:border-r-0">{a.id}</td>
                       <td className="px-4 py-3 font-medium border-r border-dashed border-border last:border-r-0">{a.name}</td>
@@ -307,6 +314,7 @@ export default function Assets() {
                 </tbody>
               </table>
             </div>
+            <TablePagination total={pag.total} page={pag.page} pageSize={pag.pageSize} onPageChange={pag.setPage} onPageSizeChange={pag.setPageSize} />
           </div>
         )
       ) : (

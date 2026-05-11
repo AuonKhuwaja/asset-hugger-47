@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { DollarSign, Package, BarChart3, Download, TrendingDown } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, PieChart, Pie, Cell } from "recharts";
 import { useToast } from "@/hooks/use-toast";
+import { TablePagination, usePagination } from "@/components/TablePagination";
 
 const totalValue = assets.reduce((s, a) => s + a.currentValue, 0);
 const totalPurchase = assets.reduce((s, a) => s + a.purchaseCost, 0);
@@ -28,6 +29,7 @@ const tooltipStyle = {
 
 export default function Reports() {
   const { toast } = useToast();
+  const pag = usePagination(departmentCosts, 10);
 
   return (
     <div className="space-y-6">
@@ -137,7 +139,7 @@ export default function Reports() {
               </tr>
             </thead>
             <tbody>
-              {departmentCosts.map((d) => (
+              {pag.paged.map((d) => (
                 <tr key={d.department} className="border-b border-dashed border-border transition-colors hover:bg-muted/50">
                   <td className="px-4 py-3 font-medium border-r border-dashed border-border last:border-r-0">{d.department}</td>
                   <td className="px-4 py-3 text-right tabular-data border-r border-dashed border-border last:border-r-0">{d.assetCount}</td>
@@ -151,6 +153,7 @@ export default function Reports() {
             </tbody>
           </table>
         </div>
+        <TablePagination total={pag.total} page={pag.page} pageSize={pag.pageSize} onPageChange={pag.setPage} onPageSizeChange={pag.setPageSize} />
       </div>
     </div>
   );

@@ -24,6 +24,7 @@ import {
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import type { DateRange } from "react-day-picker";
+import { TablePagination, usePagination } from "@/components/TablePagination";
 
 const EMAIL_LOG_KEY = "tv_maintenance_email_log";
 type EmailLog = Record<string, string>; // recordId -> ISO timestamp
@@ -83,6 +84,7 @@ export default function Maintenance() {
         || m.description.toLowerCase().includes(q)
         || m.technician.toLowerCase().includes(q);
   });
+  const pag = usePagination(filtered, 10);
 
   // ── Due-soon employees (employees whose assigned asset has scheduled maintenance soon) ──
   const dueSoon = useMemo(() => {
@@ -721,7 +723,7 @@ export default function Maintenance() {
                 </tr>
               </thead>
               <tbody>
-                {filtered.map((m) => (
+                {pag.paged.map((m) => (
                   <tr key={m.id} className="border-b border-dashed border-border transition-colors hover:bg-muted/50">
                     <td className="px-4 py-3 font-mono text-xs text-muted-foreground border-r border-dashed border-border last:border-r-0">{m.id}</td>
                     <td className="px-4 py-3 font-medium border-r border-dashed border-border last:border-r-0">{m.assetName}</td>
@@ -758,6 +760,7 @@ export default function Maintenance() {
               </tbody>
             </table>
           </div>
+          <TablePagination total={pag.total} page={pag.page} pageSize={pag.pageSize} onPageChange={pag.setPage} onPageSizeChange={pag.setPageSize} />
         </div>
       )}
 

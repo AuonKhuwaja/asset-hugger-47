@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Receipt, FileText, Plus, Search, DollarSign, TrendingDown, Wrench } from "lucide-react";
 import { ExportButtons } from "@/components/ExportButtons";
 import { useToast } from "@/hooks/use-toast";
+import { TablePagination, usePagination } from "@/components/TablePagination";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
 
 const chartData = departmentCosts.map((d) => ({
@@ -34,6 +35,8 @@ export default function Billing() {
   const [search, setSearch] = useState("");
 
   const filteredDepts = departmentCosts.filter((d) => !search || d.department.toLowerCase().includes(search.toLowerCase()));
+  const pagDepts = usePagination(filteredDepts, 10);
+  const pagDep = usePagination(depreciationData, 10);
 
   const handleRepairSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -169,7 +172,7 @@ export default function Billing() {
               </tr>
             </thead>
             <tbody>
-              {filteredDepts.map((d) => (
+              {pagDepts.paged.map((d) => (
                 <tr key={d.department} className="border-b border-dashed border-border transition-colors hover:bg-muted/50">
                   <td className="px-4 py-3 font-medium border-r border-dashed border-border last:border-r-0">{d.department}</td>
                   <td className="px-4 py-3 text-right tabular-data border-r border-dashed border-border last:border-r-0">{d.assetCount}</td>
@@ -183,6 +186,7 @@ export default function Billing() {
             </tbody>
           </table>
         </div>
+        <TablePagination total={pagDepts.total} page={pagDepts.page} pageSize={pagDepts.pageSize} onPageChange={pagDepts.setPage} onPageSizeChange={pagDepts.setPageSize} />
       </div>
 
       {/* Depreciation Tracking */}
@@ -200,7 +204,7 @@ export default function Billing() {
               </tr>
             </thead>
             <tbody>
-              {depreciationData.map((d) => (
+              {pagDep.paged.map((d) => (
                 <tr key={d.id} className="border-b border-dashed border-border transition-colors hover:bg-muted/50">
                   <td className="px-4 py-3 font-medium border-r border-dashed border-border last:border-r-0">{d.name}</td>
                   <td className="px-4 py-3 text-right tabular-data border-r border-dashed border-border last:border-r-0">PKR {d.purchaseCost.toLocaleString()}</td>
@@ -216,6 +220,7 @@ export default function Billing() {
             </tbody>
           </table>
         </div>
+        <TablePagination total={pagDep.total} page={pagDep.page} pageSize={pagDep.pageSize} onPageChange={pagDep.setPage} onPageSizeChange={pagDep.setPageSize} />
       </div>
     </div>
   );

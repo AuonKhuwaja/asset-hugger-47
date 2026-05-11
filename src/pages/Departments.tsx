@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Pencil, Trash2, Search, Building2, X, Users } from "lucide-react";
 import { ExportButtons } from "@/components/ExportButtons";
+import { TablePagination, usePagination } from "@/components/TablePagination";
 
 interface Department {
   id: string;
@@ -38,6 +39,7 @@ export default function Departments() {
     const q = search.toLowerCase();
     return d.name.toLowerCase().includes(q) || d.description.toLowerCase().includes(q);
   });
+  const pag = usePagination(filtered, 10);
 
   const resetForm = () => {
     setForm({ name: "", description: "" });
@@ -178,7 +180,7 @@ export default function Departments() {
               </tr>
             </thead>
             <tbody>
-              {filtered.map(dept => (
+              {pag.paged.map(dept => (
                 <tr key={dept.id} className="border-b border-dashed border-border transition-colors hover:bg-muted/50">
                   <td className="px-4 py-3 font-mono text-xs text-muted-foreground border-r border-dashed border-border last:border-r-0">{dept.id}</td>
                   <td className="px-4 py-3 font-medium flex items-center gap-2 border-r border-dashed border-border last:border-r-0">
@@ -203,6 +205,7 @@ export default function Departments() {
             </tbody>
           </table>
         </div>
+        <TablePagination total={pag.total} page={pag.page} pageSize={pag.pageSize} onPageChange={pag.setPage} onPageSizeChange={pag.setPageSize} />
       </div>
     </div>
   );

@@ -1,9 +1,11 @@
 import { loadRuns } from "./DepreciationRun";
 import { ExportButtons } from "@/components/ExportButtons";
+import { TablePagination, usePagination } from "@/components/TablePagination";
 import { CheckCircle2, XCircle } from "lucide-react";
 
 export default function DepreciationRunHistory() {
   const runs = loadRuns();
+  const pag = usePagination(runs, 10);
 
   return (
     <div className="space-y-6">
@@ -39,7 +41,7 @@ export default function DepreciationRunHistory() {
               {runs.length === 0 && (
                 <tr><td colSpan={6} className="px-4 py-12 text-center text-muted-foreground">No depreciation runs yet. Trigger one from the scheduler.</td></tr>
               )}
-              {runs.map((r) => (
+              {pag.paged.map((r) => (
                 <tr key={r.id} className="border-b border-dashed border-border hover:bg-muted/50">
                   <td className="px-4 py-3 font-mono text-xs border-r border-dashed border-border last:border-r-0">{r.id}</td>
                   <td className="px-4 py-3 border-r border-dashed border-border last:border-r-0">{new Date(r.runAt).toLocaleString()}</td>
@@ -62,6 +64,7 @@ export default function DepreciationRunHistory() {
             </tbody>
           </table>
         </div>
+        <TablePagination total={pag.total} page={pag.page} pageSize={pag.pageSize} onPageChange={pag.setPage} onPageSizeChange={pag.setPageSize} />
       </div>
     </div>
   );

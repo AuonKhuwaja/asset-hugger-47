@@ -2,6 +2,7 @@ import { useState } from "react";
 import { depreciationData, assets } from "@/lib/mock-data";
 import { KpiCard } from "@/components/KpiCard";
 import { ExportButtons } from "@/components/ExportButtons";
+import { TablePagination, usePagination } from "@/components/TablePagination";
 import { TrendingDown, DollarSign, Package, Search } from "lucide-react";
 
 const totalPurchase = depreciationData.reduce((s, d) => s + d.purchaseCost, 0);
@@ -13,6 +14,7 @@ export default function DepreciationTracking() {
   const rows = depreciationData
     .map((d) => ({ ...d, category: assets.find((a) => a.id === d.id)?.category || "—" }))
     .filter((d) => !search || d.name.toLowerCase().includes(search.toLowerCase()));
+  const pag = usePagination(rows, 10);
 
   return (
     <div className="space-y-6">
@@ -62,7 +64,7 @@ export default function DepreciationTracking() {
               </tr>
             </thead>
             <tbody>
-              {rows.map((d) => (
+              {pag.paged.map((d) => (
                 <tr key={d.id} className="border-b border-dashed border-border hover:bg-muted/50">
                   <td className="px-4 py-3 font-medium border-r border-dashed border-border last:border-r-0">{d.name}</td>
                   <td className="px-4 py-3 text-right text-muted-foreground border-r border-dashed border-border last:border-r-0">{d.category}</td>
@@ -79,6 +81,7 @@ export default function DepreciationTracking() {
             </tbody>
           </table>
         </div>
+        <TablePagination total={pag.total} page={pag.page} pageSize={pag.pageSize} onPageChange={pag.setPage} onPageSizeChange={pag.setPageSize} />
       </div>
     </div>
   );
