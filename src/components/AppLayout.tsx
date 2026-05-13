@@ -105,7 +105,10 @@ const getNavItems = (isAdmin: boolean, isEmployee: boolean): NavItem[] => {
         { to: "/billing/run-history", label: "Run History", icon: History },
       ],
     },
+    { to: "/qr", icon: QrCode, label: "QR & Barcode" },
+    { to: "/rentals", icon: CalendarRange, label: "Rentals" },
     ...(isAdmin ? [{ to: "/users", icon: Shield, label: "User Management" }] : []),
+    ...(isAdmin ? [{ to: "/roles", icon: UserCog, label: "Role Permissions" }] : []),
     { to: "/profile", icon: UserCog, label: "My Profile" },
     { to: "/settings", icon: Settings, label: "Settings" },
   ];

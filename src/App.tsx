@@ -35,6 +35,9 @@ import DepreciationRunHistory from "@/pages/DepreciationRunHistory";
 import MonthlyAssetValueReport from "@/pages/MonthlyAssetValueReport";
 import Depreciation from "@/pages/Depreciation";
 import UserManagement from "@/pages/UserManagement";
+import RolePermissions from "@/pages/RolePermissions";
+import QRTracking from "@/pages/QRTracking";
+import Rentals from "@/pages/Rentals";
 
 const queryClient = new QueryClient();
 
@@ -75,6 +78,9 @@ function AppRoutes() {
       <Route path="/settings" element={<ProtectedRoute><AppLayout><Settings /></AppLayout></ProtectedRoute>} />
       <Route path="/profile" element={<ProtectedRoute><AppLayout><Profile /></AppLayout></ProtectedRoute>} />
       <Route path="/users" element={<AdminRoute><AppLayout><UserManagement /></AppLayout></AdminRoute>} />
+      <Route path="/roles" element={<AdminRoute><AppLayout><RolePermissions /></AppLayout></AdminRoute>} />
+      <Route path="/qr" element={<ProtectedRoute><AppLayout><QRTracking /></AppLayout></ProtectedRoute>} />
+      <Route path="/rentals" element={<ProtectedRoute><AppLayout><Rentals /></AppLayout></ProtectedRoute>} />
       <Route path="/companies" element={<ProtectedRoute><AppLayout><Companies /></AppLayout></ProtectedRoute>} />
       <Route path="/vendors" element={<ProtectedRoute><AppLayout><Vendors /></AppLayout></ProtectedRoute>} />
 
